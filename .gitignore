@@ -1,0 +1,32 @@
+node_modules/
+apps/**/node_modules/
+cms/**/node_modules/
+
+# build outputs
+apps/**/.out/
+apps/**/dist/
+cms/admin/dist/
+
+# Cloudflare Workers local state
+cms/workers/.wrangler/
+
+# Build artifacts
+*.zip
+*.patch
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# build output should not be committed (deployed via CI/SFTP)
+apps/**/.out/
+apps/web/outter/
+.git.old/
