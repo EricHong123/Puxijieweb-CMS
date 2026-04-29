@@ -1,0 +1,46 @@
+# Puxijie
+
+Puxijie is a B2B OEM/ODM audio manufacturer for waterproof Bluetooth speakers, portable wireless speakers, specialty speakers, and Bluetooth earbuds.
+
+## Buyer Intent
+- OEM Bluetooth speaker manufacturer
+- Waterproof speaker wholesale supplier
+- Private label portable speaker factory
+- Bluetooth earbuds wholesale
+- IPX6/IPX7 outdoor speaker sourcing
+- RFQ-ready consumer electronics procurement
+
+## Public Pricing Policy
+Product pages do not publish unit prices. RFQs are quoted by project after quantity, destination market, packaging, logo, compliance, and timeline are confirmed.
+
+## Verified Product Models
+- G34 (IPX7 waterproof Bluetooth speaker): https://puxijietech.com/en/model/g34
+- G31 (IPX6 waterproof Bluetooth speaker): https://puxijietech.com/en/model/g31
+- G23 (portable wireless Bluetooth speaker): https://puxijietech.com/en/model/g23
+- G21 (portable wireless Bluetooth speaker): https://puxijietech.com/en/model/g21
+- G14 (portable wireless Bluetooth speaker): https://puxijietech.com/en/model/g14
+- A5 (portable wireless Bluetooth speaker): https://puxijietech.com/en/model/a5
+- F19 (mini portable Bluetooth speaker with TWS): https://puxijietech.com/en/model/f19
+- G29 (round desktop Bluetooth speaker with TF AUX USB playback): https://puxijietech.com/en/model/g29
+- G06 (portable wireless Bluetooth speaker): https://puxijietech.com/en/model/g06
+- C-01 Bell (specialty speaker with wireless charging): https://puxijietech.com/en/model/c-01
+- C-01 Cotton (specialty speaker with wireless charging): https://puxijietech.com/en/model/c-01-cotton
+- ME-136 (Bluetooth earbuds): https://puxijietech.com/en/model/me-136
+- ME-88P (Bluetooth earbuds): https://puxijietech.com/en/model/me-88p
+- ME-636 (Bluetooth earbuds): https://puxijietech.com/en/model/me-636
+- ME-176 (Bluetooth earbuds): https://puxijietech.com/en/model/me-176
+
+## Crawlable Product Data
+Product pages expose model code, category, IP rating where applicable, chipset, Bluetooth version, battery configuration, transmission distance, MOQ guidance, color options, package size, carton quantity, carton weight, and buyer RFQ notes.
+
+## Important Pages
+- Products: https://puxijietech.com/en/products
+- B2B & Wholesale: https://puxijietech.com/en/b2b
+- Factory and company profile: https://puxijietech.com/en/about-us
+- Lab reports and compliance support: https://puxijietech.com/en/lab
+- FAQ: https://puxijietech.com/en/faq
+- News and buyer education: https://puxijietech.com/en/news
+- Contact: https://puxijietech.com/en/contact
+
+## Contact
+Primary buyer contact: WeChat ID EricH0625.

@@ -1,0 +1,22 @@
+Puxijie 静态站部署（Hostinger）
+
+1) 本地构建
+   cd apps/web
+   npm run build
+   （内部执行 node tools/run-build.mjs：geo + llms + vite + 给 index.html 打时间戳）
+   产物目录：apps/web/.out（整包上传，不要只传 index.html）
+
+2) 上传位置
+   把 .out 里的「所有文件和文件夹」解压/上传到网站根目录（通常是 public_html）。
+   正确：public_html/index.html、public_html/assets/...
+   错误：public_html/.out/index.html（多一层文件夹会导致路径或仍是旧站）
+
+3) 上线后仍显示旧版时
+   - Hostinger hPanel → 性能 / LiteSpeed → Purge All（清除缓存）
+   - 浏览器 Ctrl+Shift+R 强刷，或隐身窗口打开
+   - 若用 Cloudflare：Caching → Purge Everything
+
+4) 验证是否已是新包
+   浏览器打开站点 → 右键「查看网页源代码」→ 第一行应类似：
+   <!-- puxijie-build 2026-... -->
+   并与本地 apps/web/.out/index.html 首行一致；且其中的 /assets/index-xxxxx.js 文件名应与本地一致。
