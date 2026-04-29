@@ -29,4 +29,5 @@ Thumbs.db
 # build output should not be committed (deployed via CI/SFTP)
 apps/**/.out/
 apps/web/outter/
+apps/web/.tmp/
 .git.old/
