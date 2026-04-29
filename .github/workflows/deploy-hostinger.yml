@@ -1,0 +1,43 @@
+name: React Vite Deploy
+
+on:
+  push:
+    branches:
+      - main # 每次推送到 main 分支时触发
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      # GitHub Actions JS actions will move to Node 24 by default (2026-06-02).
+      # Opt in early to avoid surprises.
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install & Build
+        working-directory: apps/web
+        run: |
+          npm install
+          npm run build
+
+      - name: Sync to Hostinger
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          port: 21
+          # 本项目 build 输出在 apps/web/.out（不是默认 dist）
+          local-dir: apps/web/.out/
+          server-dir: /public_html/
+          # 清理远端多余旧文件，避免残留影响 SEO/资源引用
+          dangerous-clean-slate: true
+

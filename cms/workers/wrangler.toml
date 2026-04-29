@@ -1,0 +1,16 @@
+name = "puxijie-cms-api"
+main = "src/index.ts"
+compatibility_date = "2025-04-28"
+
+[vars]
+SUPABASE_URL = ""
+SUPABASE_ANON_KEY = ""
+SUPABASE_SERVICE_ROLE_KEY = ""
+JWT_SECRET = ""
+GITHUB_TOKEN = ""
+GITHUB_REPO = "EricHong123/Puxijieweb-CMS"
+
+[env.production]
+routes = [
+  { pattern = "api.puxijietech.com/*", zone_id = "" }
+]

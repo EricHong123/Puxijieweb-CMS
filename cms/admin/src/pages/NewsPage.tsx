@@ -1,0 +1,119 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import api from '@/api/client';
+import { Plus, Edit3, Trash2, Eye, EyeOff, Globe } from 'lucide-react';
+
+interface Article {
+  id: string;
+  slug: string;
+  locale: string;
+  title: string;
+  description: string;
+  date: string;
+  is_published: boolean;
+}
+
+export default function NewsPage() {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [locale, setLocale] = useState('en');
+
+  const fetchNews = async () => {
+    setLoading(true);
+    const { data } = await api.get('/news', { params: { locale, limit: '50' } });
+    if (data.success) setArticles(data.data.items);
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchNews(); }, [locale]);
+
+  const togglePublish = async (id: string, current: boolean) => {
+    await api.patch(`/news/${id}/publish`, { is_published: !current });
+    setArticles((prev) => prev.map((a) => a.id === id ? { ...a, is_published: !current } : a));
+  };
+
+  const handleDelete = async (id: string, title: string) => {
+    if (!confirm(`确定删除 "${title}"？`)) return;
+    await api.delete(`/news/${id}`);
+    setArticles((prev) => prev.filter((a) => a.id !== id));
+  };
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">新闻管理</h1>
+          <p className="text-sm text-muted-foreground mt-1">{articles.length} 篇文章</p>
+        </div>
+        <Link
+          to="/news/new"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90"
+        >
+          <Plus className="h-4 w-4" />
+          新建文章
+        </Link>
+      </div>
+
+      <div className="flex gap-1 bg-slate-100 p-1 rounded-lg w-fit">
+        {[{ key: 'en', label: 'English' }, { key: 'fr', label: 'Français' }, { key: 'vi', label: 'Tiếng Việt' }].map((l) => (
+          <button
+            key={l.key}
+            onClick={() => setLocale(l.key)}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              locale === l.key ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            {l.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="space-y-3">
+        {loading ? (
+          <div className="py-12 text-center text-muted-foreground">加载中...</div>
+        ) : articles.length === 0 ? (
+          <div className="py-12 text-center text-muted-foreground">
+            暂无{locale.toUpperCase()}文章，点击"新建文章"添加
+          </div>
+        ) : (
+          articles.map((a) => (
+            <div key={a.id} className="bg-white rounded-xl border p-5 hover:shadow-sm transition-shadow group flex items-center gap-4">
+              <div className="flex-1 min-w-0">
+                <Link to={`/news/${a.id}`} className="font-semibold text-slate-900 hover:text-primary transition-colors">
+                  {a.title}
+                </Link>
+                {a.description && (
+                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{a.description}</p>
+                )}
+                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Globe className="h-3 w-3" />{a.locale.toUpperCase()}
+                  </span>
+                  {a.date && <span>{a.date}</span>}
+                </div>
+              </div>
+
+              <button
+                onClick={() => togglePublish(a.id, a.is_published)}
+                className={`px-2.5 py-1 rounded-full text-xs font-medium shrink-0 ${
+                  a.is_published ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                }`}
+              >
+                {a.is_published ? '已发布' : '草稿'}
+              </button>
+
+              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                <Link to={`/news/${a.id}`} className="p-2 text-slate-400 hover:text-primary rounded-lg hover:bg-slate-100">
+                  <Edit3 className="h-4 w-4" />
+                </Link>
+                <button onClick={() => handleDelete(a.id, a.title)} className="p-2 text-slate-400 hover:text-red-500 rounded-lg hover:bg-red-50">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
