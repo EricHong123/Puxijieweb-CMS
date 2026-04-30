@@ -48,3 +48,4 @@ jobs:
           local-dir: apps/web/.out/
           server-dir: public_html/
           protocol: ftps
+          dangerous-clean-slate: true
