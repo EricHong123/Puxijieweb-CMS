@@ -18,16 +18,16 @@ export default function I18nTabs({ active, onChange, items }: I18nTabsProps) {
   const tabs = items || LOCALES;
 
   return (
-    <div className="flex gap-1 bg-slate-100 p-1 rounded-lg w-fit">
+    <div className="flex gap-1 bg-[#F5F5F5] p-1 rounded-lg w-fit">
       {tabs.map((tab) => (
         <button
           key={tab.key}
           type="button"
           onClick={() => onChange(tab.key as Locale)}
           className={cn(
-            'px-4 py-2 rounded-md text-sm font-medium transition-all',
+            'px-4 py-2 rounded-md text-sm font-medium transition-all duration-fluent',
             active === tab.key
-              ? 'bg-white text-slate-900 shadow-sm'
+              ? 'bg-white text-slate-800 shadow-elevation-1'
               : 'text-slate-500 hover:text-slate-700'
           )}
         >

@@ -4,8 +4,13 @@ import { useForm } from 'react-hook-form';
 import api from '@/api/client';
 import I18nTabs, { type Locale, LOCALES } from '@/components/I18nTabs';
 import MediaPicker from '@/components/MediaPicker';
-import { ArrowLeft, Plus, Trash2, Save, GripVertical, X } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Save, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/input';
+import { FormField } from '@/components/ui/input';
+import { Card, CardTitle } from '@/components/ui/card';
 
 const CATEGORIES = [
   { value: 'waterproof_bt', label: '防水蓝牙音箱' },
@@ -64,7 +69,6 @@ export default function ProductEditorPage() {
   const [selectedImageIds, setSelectedImageIds] = useState<string[]>([]);
   const [downloads, setDownloads] = useState<Array<{ title: string; url: string }>>([]);
   const [relatedIds, setRelatedIds] = useState<string[]>([]);
-  const [relatedSearch, setRelatedSearch] = useState('');
   const [productList, setProductList] = useState<Array<{ id: string; slug: string; name: string }>>([]);
 
   const { register, handleSubmit, reset, watch, setValue, getValues, formState: { errors } } = useForm({
@@ -80,7 +84,6 @@ export default function ProductEditorPage() {
   const translations = watch('translations');
   const activeIdx = LOCALES.findIndex((l) => l.key === activeLocale);
 
-  // Fetch existing product data
   useEffect(() => {
     if (id) {
       api.get(`/products/${id}`).then(({ data }) => {
@@ -90,7 +93,6 @@ export default function ProductEditorPage() {
         setValue('category', p.category);
         setValue('sort_order', p.sort_order || 0);
 
-        // Translations
         const trs = buildEmptyTranslations();
         for (let i = 0; i < LOCALES.length; i++) {
           const t = p.product_translations?.find((t: any) => t.locale === LOCALES[i].key);
@@ -113,7 +115,6 @@ export default function ProductEditorPage() {
         }
         setValue('translations', trs);
 
-        // Specs
         if (p.product_specs) {
           const specs = buildEmptySpecs();
           for (const [key] of SPEC_FIELDS) {
@@ -122,12 +123,10 @@ export default function ProductEditorPage() {
           setValue('specs', specs);
         }
 
-        // Images
         if (p.product_images) {
           setSelectedImageIds(p.product_images.map((pi: any) => pi.media_id));
         }
 
-        // Downloads
         if (p.downloads && Array.isArray(p.downloads)) {
           setDownloads(p.downloads);
         }
@@ -135,7 +134,6 @@ export default function ProductEditorPage() {
     }
   }, [id, setValue]);
 
-  // Fetch product list for related products
   useEffect(() => {
     api.get('/products', { params: { locale: 'en', limit: '100' } }).then(({ data }) => {
       if (data.success) {
@@ -148,7 +146,6 @@ export default function ProductEditorPage() {
     });
   }, []);
 
-  // Array item helpers for translations
   const addArrayItem = useCallback((field: 'features' | 'benefits' | 'procurement_notes') => {
     const trs = [...getValues('translations')];
     trs[activeIdx] = { ...trs[activeIdx], [field]: [...(trs[activeIdx][field] || []), ''] };
@@ -174,30 +171,19 @@ export default function ProductEditorPage() {
   const onSubmit = async (formData: any) => {
     setSaving(true);
     try {
-      const payload = {
-        ...formData,
-        image_ids: selectedImageIds,
-        downloads,
-        related_ids: relatedIds,
-      };
-
+      const payload = { ...formData, image_ids: selectedImageIds, downloads, related_ids: relatedIds };
       if (isNew) {
         const { data } = await api.post('/products', payload);
         if (data.success) {
-          // Attach images
           for (let i = 0; i < selectedImageIds.length; i++) {
             await api.post(`/products/${data.data.id}/images`, {
-              media_id: selectedImageIds[i],
-              sort_order: i,
-              is_primary: i === 0,
+              media_id: selectedImageIds[i], sort_order: i, is_primary: i === 0,
             }).catch(() => {});
           }
           navigate(`/products/${data.data.id}`);
         }
       } else {
         await api.put(`/products/${id}`, payload);
-        // Sync images: delete all, re-add
-        // In production, use a dedicated reorder endpoint
       }
     } catch (err: any) {
       alert(err.response?.data?.error || '保存失败');
@@ -212,34 +198,30 @@ export default function ProductEditorPage() {
       <div>
         <div className="flex items-center justify-between mb-2">
           <label className="text-sm font-medium text-slate-700">{label}</label>
-          <button
-            type="button"
-            onClick={() => addArrayItem(field)}
-            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-primary hover:bg-primary/5 rounded"
-          >
+          <Button variant="ghost" size="sm" type="button" onClick={() => addArrayItem(field)}>
             <Plus className="h-3 w-3" /> 添加
-          </button>
+          </Button>
         </div>
         <div className="space-y-2">
           {items.map((item: string, idx: number) => (
             <div key={idx} className="flex gap-2">
-              <input
+              <Input
                 value={item}
                 onChange={(e) => updateArrayItem(field, idx, e.target.value)}
                 placeholder={label}
-                className="flex-1 px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
-              <button
+              <Button
+                variant="destructive-ghost"
+                size="icon"
                 type="button"
                 onClick={() => removeArrayItem(field, idx)}
-                className="p-2 text-slate-400 hover:text-red-500 rounded-lg hover:bg-red-50 shrink-0"
               >
                 <X className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
           ))}
           {items.length === 0 && (
-            <div className="text-xs text-muted-foreground py-2">暂无内容，点击"添加"按钮</div>
+            <div className="text-xs text-slate-500 py-2">暂无内容，点击"添加"按钮</div>
           )}
         </div>
       </div>
@@ -250,87 +232,69 @@ export default function ProductEditorPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate('/products')} className="p-2 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/products')}>
           <ArrowLeft className="h-5 w-5" />
-        </button>
+        </Button>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-slate-900">{isNew ? '添加产品' : `编辑 ${watch('slug')}`}</h1>
-          <p className="text-sm text-muted-foreground mt-1">{isNew ? '创建新产品' : '修改产品内容后点击保存'}</p>
+          <h1 className="text-2xl font-bold text-slate-800">{isNew ? '添加产品' : `编辑 ${watch('slug')}`}</h1>
+          <p className="text-sm text-slate-500 mt-1">{isNew ? '创建新产品' : '修改产品内容后点击保存'}</p>
         </div>
-        <button
-          type="button"
-          onClick={handleSubmit(onSubmit)}
-          disabled={saving}
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50 shadow-sm"
-        >
+        <Button type="button" onClick={handleSubmit(onSubmit)} disabled={saving}>
           <Save className="h-4 w-4" />
           {saving ? '保存中...' : '保存'}
-        </button>
+        </Button>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Basic info */}
-        <section className="bg-white rounded-xl border p-6 space-y-4">
-          <h2 className="font-semibold text-slate-900 text-lg">基本信息</h2>
+        <Card padding="lg">
+          <CardTitle>基本信息</CardTitle>
           <div className="grid gap-4 sm:grid-cols-3">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Slug *</label>
-              <input
+            <FormField label="Slug *" htmlFor="slug">
+              <Input
+                id="slug"
                 {...register('slug', { required: true, pattern: /^[a-z0-9-]+$/ })}
                 placeholder="qw-g34"
-                className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">分类 *</label>
-              <select {...register('category')} className="w-full px-3 py-2.5 rounded-lg border text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary/30">
+            </FormField>
+            <FormField label="分类 *" htmlFor="category">
+              <Select id="category" {...register('category')}>
                 {CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">排序</label>
-              <input
+              </Select>
+            </FormField>
+            <FormField label="排序" htmlFor="sort_order">
+              <Input
+                id="sort_order"
                 type="number"
                 {...register('sort_order', { valueAsNumber: true })}
-                className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
-            </div>
+            </FormField>
           </div>
-        </section>
+        </Card>
 
         {/* Product Images */}
-        <section className="bg-white rounded-xl border p-6 space-y-4">
-          <h2 className="font-semibold text-slate-900 text-lg">产品图片</h2>
-          <MediaPicker
-            selected={selectedImageIds}
-            onSelect={setSelectedImageIds}
-            multiple
-          />
-        </section>
+        <Card padding="lg">
+          <CardTitle>产品图片</CardTitle>
+          <MediaPicker selected={selectedImageIds} onSelect={setSelectedImageIds} multiple />
+        </Card>
 
         {/* Downloads */}
-        <section className="bg-white rounded-xl border p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-slate-900 text-lg">下载文件</h2>
-            <button
-              type="button"
-              onClick={() => setDownloads([...downloads, { title: '', url: '' }])}
-              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs text-primary hover:bg-primary/5 rounded-lg border border-dashed border-primary/30"
-            >
+        <Card padding="lg">
+          <div className="flex items-center justify-between mb-4">
+            <CardTitle className="mb-0">下载文件</CardTitle>
+            <Button variant="outline" size="sm" type="button" onClick={() => setDownloads([...downloads, { title: '', url: '' }])}>
               <Plus className="h-3 w-3" /> 添加下载
-            </button>
+            </Button>
           </div>
           {downloads.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-2">暂无下载文件。点击"添加下载"关联产品文档（如规格书 PDF、色卡 PDF 等）。</p>
+            <p className="text-sm text-slate-500 py-2">暂无下载文件。点击"添加下载"关联产品文档（如规格书 PDF、色卡 PDF 等）。</p>
           ) : (
             <div className="space-y-3">
               {downloads.map((d, idx) => (
-                <div key={idx} className="flex gap-3 items-start p-3 bg-slate-50 rounded-lg border">
-                  <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-slate-200 text-xs font-medium text-slate-600 mt-2">
-                    {idx + 1}
-                  </span>
+                <div key={idx} className="flex gap-3 items-start p-3 bg-[#FAFAFA] rounded-lg border border-[#EBEBEB]">
+                  <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-[#EBEBEB] text-xs font-medium text-slate-600 mt-2">{idx + 1}</span>
                   <div className="flex-1 grid gap-2 sm:grid-cols-2">
-                    <input
+                    <Input
                       value={d.title}
                       onChange={(e) => {
                         const next = [...downloads];
@@ -338,9 +302,8 @@ export default function ProductEditorPage() {
                         setDownloads(next);
                       }}
                       placeholder="文件名（如：产品规格书 PDF）"
-                      className="w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                     />
-                    <input
+                    <Input
                       value={d.url}
                       onChange={(e) => {
                         const next = [...downloads];
@@ -348,122 +311,76 @@ export default function ProductEditorPage() {
                         setDownloads(next);
                       }}
                       placeholder="文件 URL（如：/specs/qw-g34.pdf）"
-                      className="w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                     />
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = [...downloads];
-                      next.splice(idx, 1);
-                      setDownloads(next);
-                    }}
-                    className="p-2 text-slate-400 hover:text-red-500 rounded-lg hover:bg-red-50 shrink-0"
-                  >
+                  <Button variant="destructive-ghost" size="icon" type="button"
+                    onClick={() => { const next = [...downloads]; next.splice(idx, 1); setDownloads(next); }}>
                     <Trash2 className="h-4 w-4" />
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>
           )}
-        </section>
+        </Card>
 
         {/* Translations */}
-        <section className="bg-white rounded-xl border p-6 space-y-5">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-slate-900 text-lg">多语言内容</h2>
+        <Card padding="lg">
+          <div className="flex items-center justify-between mb-4">
+            <CardTitle className="mb-0">多语言内容</CardTitle>
             <I18nTabs active={activeLocale} onChange={setActiveLocale} />
           </div>
 
           {activeIdx >= 0 && (
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                    产品名 ({activeLocale.toUpperCase()}) *
-                  </label>
-                  <input
-                    {...register(`translations.${activeIdx}.name`, { required: true })}
-                    className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">副标题 ({activeLocale.toUpperCase()})</label>
-                  <input
-                    {...register(`translations.${activeIdx}.subtitle`)}
-                    className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  />
-                </div>
+                <FormField label={`产品名 (${activeLocale.toUpperCase()}) *`}>
+                  <Input {...register(`translations.${activeIdx}.name`, { required: true })} />
+                </FormField>
+                <FormField label={`副标题 (${activeLocale.toUpperCase()})`}>
+                  <Input {...register(`translations.${activeIdx}.subtitle`)} />
+                </FormField>
               </div>
-
               <div className="grid gap-4 sm:grid-cols-3">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">材质</label>
-                  <input {...register(`translations.${activeIdx}.material`)} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">重量</label>
-                  <input {...register(`translations.${activeIdx}.weight`)} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">尺寸</label>
-                  <input {...register(`translations.${activeIdx}.dimensions`)} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                </div>
+                <FormField label="材质"><Input {...register(`translations.${activeIdx}.material`)} /></FormField>
+                <FormField label="重量"><Input {...register(`translations.${activeIdx}.weight`)} /></FormField>
+                <FormField label="尺寸"><Input {...register(`translations.${activeIdx}.dimensions`)} /></FormField>
               </div>
-
               <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">防水深度</label>
-                  <input {...register(`translations.${activeIdx}.waterproof_depth`)} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">频率范围</label>
-                  <input {...register(`translations.${activeIdx}.frequency_range`)} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                </div>
+                <FormField label="防水深度"><Input {...register(`translations.${activeIdx}.waterproof_depth`)} /></FormField>
+                <FormField label="频率范围"><Input {...register(`translations.${activeIdx}.frequency_range`)} /></FormField>
               </div>
 
-              {/* Features */}
               <ArrayEditor field="features" label="产品特性" />
-
-              {/* Benefits */}
               <ArrayEditor field="benefits" label="卖点/优势" />
-
-              {/* Procurement notes */}
               <ArrayEditor field="procurement_notes" label="采购备注" />
 
-              {/* Description HTML */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">描述 (HTML)</label>
+              <FormField label="描述 (HTML)">
                 <textarea
                   {...register(`translations.${activeIdx}.description_html`)}
                   rows={5}
-                  className="w-full px-3 py-2.5 rounded-lg border text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="w-full px-3 py-2.5 rounded-lg border text-sm font-mono bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))] transition-colors duration-150 resize-y"
                   placeholder="<p>产品描述...</p>"
                 />
-              </div>
+              </FormField>
             </div>
           )}
-        </section>
+        </Card>
 
         {/* Technical Specs */}
-        <section className="bg-white rounded-xl border p-6 space-y-4">
-          <h2 className="font-semibold text-slate-900 text-lg">技术规格</h2>
+        <Card padding="lg">
+          <CardTitle>技术规格</CardTitle>
           <div className="grid gap-4 sm:grid-cols-3">
             {SPEC_FIELDS.map(([key, label]) => (
-              <div key={key}>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">{label}</label>
-                <input
-                  {...register(`specs.${key}`)}
-                  className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                />
-              </div>
+              <FormField key={key} label={label}>
+                <Input {...register(`specs.${key}`)} />
+              </FormField>
             ))}
           </div>
-        </section>
+        </Card>
 
         {/* Related Products */}
-        <section className="bg-white rounded-xl border p-6 space-y-4">
-          <h2 className="font-semibold text-slate-900 text-lg">关联产品</h2>
+        <Card padding="lg">
+          <CardTitle>关联产品</CardTitle>
           <div className="flex flex-wrap gap-2 mb-3">
             {relatedIds.map((rid) => {
               const p = productList.find((x) => x.id === rid);
@@ -477,21 +394,21 @@ export default function ProductEditorPage() {
               );
             })}
           </div>
-          <select
+          <Select
             value=""
             onChange={(e) => {
               if (e.target.value && !relatedIds.includes(e.target.value)) {
                 setRelatedIds([...relatedIds, e.target.value]);
               }
             }}
-            className="w-full max-w-xs px-3 py-2.5 rounded-lg border text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary/30"
+            className="max-w-xs"
           >
             <option value="">选择关联产品...</option>
             {productList.filter((p) => p.id !== id && !relatedIds.includes(p.id)).map((p) => (
               <option key={p.id} value={p.id}>{p.name} ({p.slug})</option>
             ))}
-          </select>
-        </section>
+          </Select>
+        </Card>
       </form>
     </div>
   );

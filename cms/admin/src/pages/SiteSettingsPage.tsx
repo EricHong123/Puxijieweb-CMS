@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import api from '@/api/client';
-import { Settings, Save } from 'lucide-react';
+import { Save } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardTitle } from '@/components/ui/card';
 
 const SETTINGS_KEYS = [
   { key: 'site_name', label: '网站名称', type: 'text' },
@@ -40,23 +43,19 @@ export default function SiteSettingsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">网站设置</h1>
-        <p className="text-sm text-muted-foreground mt-1">管理全局网站配置</p>
+        <h1 className="text-2xl font-bold text-slate-800">网站设置</h1>
+        <p className="text-sm text-slate-500 mt-1">管理全局网站配置</p>
       </div>
 
       <div className="space-y-4">
         {SETTINGS_KEYS.map((sk) => (
-          <div key={sk.key} className="bg-white rounded-xl border p-5">
+          <Card key={sk.key} padding="lg">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-semibold text-slate-900">{sk.label}</label>
-              <button
-                onClick={() => handleSave(sk.key)}
-                disabled={saving[sk.key]}
-                className="inline-flex items-center gap-1 px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-xs font-medium hover:opacity-90 disabled:opacity-50"
-              >
+              <CardTitle className="mb-0">{sk.label}</CardTitle>
+              <Button size="sm" onClick={() => handleSave(sk.key)} disabled={saving[sk.key]}>
                 <Save className="h-3 w-3" />
                 {saving[sk.key] ? '保存中...' : '保存'}
-              </button>
+              </Button>
             </div>
             {sk.type === 'json' ? (
               <textarea
@@ -65,19 +64,18 @@ export default function SiteSettingsPage() {
                   try { setSettings({ ...settings, [sk.key]: JSON.parse(e.target.value) }); } catch {}
                 }}
                 rows={6}
-                className="w-full px-3 py-2 rounded-lg border text-sm font-mono"
+                className="w-full px-3 py-2 rounded-lg border text-sm font-mono bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))] transition-colors resize-y"
                 placeholder="{}"
               />
             ) : (
-              <input
+              <Input
                 type="text"
                 value={settings[sk.key] || ''}
                 onChange={(e) => setSettings({ ...settings, [sk.key]: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border text-sm"
               />
             )}
-            <div className="text-xs text-muted-foreground mt-1">key: {sk.key}</div>
-          </div>
+            <div className="text-xs text-slate-400 mt-1.5">key: {sk.key}</div>
+          </Card>
         ))}
       </div>
     </div>

@@ -33,11 +33,46 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        fluent: {
+          50: '#E8F4FD',
+          100: '#B3D9F7',
+          200: '#60B5F1',
+          400: '#2196E0',
+          DEFAULT: '#0078D4',
+          600: '#106EBE',
+          700: '#004D8C',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      backdropBlur: {
+        'acrylic': '24px',
+        'acrylic-sm': '16px',
+      },
+      boxShadow: {
+        'elevation-1': '0 1px 3px 0 rgb(0 0 0 / 0.04)',
+        'elevation-2': '0 2px 8px 0 rgb(0 0 0 / 0.06)',
+        'elevation-3': '0 4px 16px 0 rgb(0 0 0 / 0.08)',
+        'acrylic': '0 4px 24px 0 rgb(0 0 0 / 0.06)',
+      },
+      fontFamily: {
+        sans: ['"Segoe UI"', '"SF Pro Text"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+      },
+      transitionDuration: {
+        'fluent': '200ms',
+        'fluent-slow': '300ms',
+      },
+      keyframes: {
+        'fade-in-up': {
+          '0%': { opacity: '0', transform: 'translateY(4px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        'fade-in-up': 'fade-in-up 0.25s ease-out',
       },
     },
   },

@@ -15,7 +15,7 @@ import { deployRoutes } from './routes/deploy';
 const app = new Hono();
 
 app.use('*', cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://admin.puxijietech.com', 'https://puxijietech.com'],
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://admin.puxijietech.com', 'https://puxijietech.com', 'https://puxijie-cms-admin.pages.dev'],
   allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization'],
   credentials: true,

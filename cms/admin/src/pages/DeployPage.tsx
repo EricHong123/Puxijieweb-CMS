@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import api from '@/api/client';
-import { Rocket, RefreshCw, CheckCircle, XCircle, Clock, Loader2 } from 'lucide-react';
+import { Rocket, CheckCircle, XCircle, Clock, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardTitle } from '@/components/ui/card';
 
 interface DeployLog {
   id: string;
@@ -50,26 +52,30 @@ export default function DeployPage() {
     }
   };
 
+  const isRunning = latest?.status === 'building' || latest?.status === 'uploading';
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">部署管理</h1>
-          <p className="text-sm text-muted-foreground mt-1">触发网站构建和发布</p>
+          <h1 className="text-2xl font-bold text-slate-800">部署管理</h1>
+          <p className="text-sm text-slate-500 mt-1">触发网站构建和发布</p>
         </div>
-        <button
-          onClick={handleDeploy}
-          disabled={deploying || latest?.status === 'building' || latest?.status === 'uploading'}
-          className="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-bold hover:opacity-90 disabled:opacity-50 shadow-lg shadow-primary/20"
-        >
+        <Button size="lg" onClick={handleDeploy} disabled={deploying || isRunning} className="shadow-lg shadow-primary/20">
           <Rocket className="h-5 w-5" />
           {deploying ? '触发中...' : '一键部署'}
-        </button>
+        </Button>
       </div>
 
       {/* Latest deploy status */}
       {latest && (
-        <div className={`bg-white rounded-xl border p-6 ${latest.status === 'failed' ? 'border-red-200' : latest.status === 'success' ? 'border-emerald-200' : ''}`}>
+        <Card
+          padding="lg"
+          className={
+            latest.status === 'failed' ? 'border-red-200' :
+            latest.status === 'success' ? 'border-emerald-200' : ''
+          }
+        >
           <div className="flex items-center gap-3">
             {(() => {
               const cfg = statusConfig[latest.status] || statusConfig.pending;
@@ -77,10 +83,10 @@ export default function DeployPage() {
               return <Icon className={`h-8 w-8 ${cfg.color}`} />;
             })()}
             <div>
-              <div className="text-lg font-semibold text-slate-900">
+              <div className="text-lg font-semibold text-slate-800">
                 {statusConfig[latest.status]?.label || latest.status}
               </div>
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-slate-500">
                 {latest.started_at ? new Date(latest.started_at).toLocaleString('zh-CN') : '-'}
               </div>
             </div>
@@ -88,28 +94,28 @@ export default function DeployPage() {
           {latest.error_message && (
             <div className="mt-3 p-3 bg-red-50 text-red-700 rounded-lg text-sm">{latest.error_message}</div>
           )}
-        </div>
+        </Card>
       )}
 
       {/* History */}
-      <div className="bg-white rounded-xl border">
-        <div className="px-5 py-4 border-b">
-          <h2 className="font-semibold text-slate-900">部署历史</h2>
+      <Card padding="none">
+        <div className="px-5 py-4 border-b border-[#EBEBEB]">
+          <CardTitle>部署历史</CardTitle>
         </div>
-        <div className="divide-y">
+        <div className="divide-y divide-[#EBEBEB]">
           {logs.length === 0 ? (
-            <div className="p-8 text-center text-muted-foreground text-sm">暂无部署记录</div>
+            <div className="p-8 text-center text-slate-500 text-sm">暂无部署记录</div>
           ) : (
             logs.map((log) => {
               const cfg = statusConfig[log.status] || statusConfig.pending;
               const Icon = cfg.icon;
               return (
-                <div key={log.id} className="px-5 py-3 flex items-center gap-3 hover:bg-slate-50">
+                <div key={log.id} className="px-5 py-3 flex items-center gap-3 hover:bg-[#FAFAFA]/80 transition-colors">
                   <Icon className={`h-4 w-4 ${cfg.color}`} />
                   <div className="flex-1">
                     <span className="text-sm font-medium text-slate-700">{cfg.label}</span>
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-slate-500">
                     {log.started_at ? new Date(log.started_at).toLocaleString('zh-CN') : '-'}
                   </div>
                 </div>
@@ -117,7 +123,7 @@ export default function DeployPage() {
             })
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

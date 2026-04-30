@@ -4,24 +4,40 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Fluent 2 Blue primary */
+    --primary: 210 100% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Background - soft blue-tinted */
+    --background: 216 40% 97%;
+    --foreground: 215 28% 17%;
+
+    /* Cards */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --card-foreground: 215 28% 17%;
+
+    /* Neutral grays */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 215 25% 27%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 100% 97%;
+    --accent-foreground: 215 25% 27%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders and inputs */
+    --border: 216 12% 84%;
+    --input: 216 12% 84%;
+    --ring: 210 100% 40%;
+
+    /* Radius */
     --radius: 0.5rem;
+
+    /* Acrylic material */
+    --acrylic-bg: 220 20% 98%;
+    --acrylic-border: 220 14% 92%;
+    --acrylic-blur: 24px;
   }
 }
 
@@ -30,6 +46,27 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground antialiased;
+    background: linear-gradient(135deg, hsl(216, 40%, 96%), hsl(220, 33%, 95%), hsl(222, 40%, 94%));
+    background-attachment: fixed;
+    font-family: "Segoe UI", "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  .acrylic {
+    background: hsl(var(--acrylic-bg) / 0.7);
+    backdrop-filter: blur(var(--acrylic-blur));
+    -webkit-backdrop-filter: blur(var(--acrylic-blur));
+    border: 1px solid hsl(var(--acrylic-border) / 0.5);
+  }
+
+  .acrylic-strong {
+    background: hsl(var(--acrylic-bg) / 0.85);
+    backdrop-filter: blur(var(--acrylic-blur));
+    -webkit-backdrop-filter: blur(var(--acrylic-blur));
+    border: 1px solid hsl(var(--acrylic-border) / 0.6);
   }
 }

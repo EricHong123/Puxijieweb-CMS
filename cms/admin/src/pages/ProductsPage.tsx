@@ -1,8 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import api from '@/api/client';
-import { Plus, Edit3, Trash2, Eye, EyeOff, Search, Filter, Check, X } from 'lucide-react';
+import { Plus, Edit3, Trash2, Eye, EyeOff, Search, Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '@/components/ui/table';
 
 interface Product {
   id: string;
@@ -21,11 +26,11 @@ const categoryLabels: Record<string, string> = {
   earbuds: '蓝牙耳机',
 };
 
-const categoryColors: Record<string, string> = {
-  waterproof_bt: 'bg-blue-50 text-blue-700',
-  normal_bt: 'bg-slate-100 text-slate-700',
-  specialty: 'bg-amber-50 text-amber-700',
-  earbuds: 'bg-purple-50 text-purple-700',
+const categoryBadgeVariant: Record<string, 'blue' | 'secondary' | 'warning' | 'purple'> = {
+  waterproof_bt: 'blue',
+  normal_bt: 'secondary',
+  specialty: 'warning',
+  earbuds: 'purple',
 };
 
 export default function ProductsPage() {
@@ -99,15 +104,14 @@ export default function ProductsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">产品管理</h1>
-          <p className="text-sm text-muted-foreground mt-1">{products.length} 个产品</p>
+          <h1 className="text-2xl font-bold text-slate-800">产品管理</h1>
+          <p className="text-sm text-slate-500 mt-1">{products.length} 个产品</p>
         </div>
-        <Link
-          to="/products/new"
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 shadow-sm"
-        >
-          <Plus className="h-4 w-4" />
-          添加产品
+        <Link to="/products/new">
+          <Button>
+            <Plus className="h-4 w-4" />
+            添加产品
+          </Button>
         </Link>
       </div>
 
@@ -115,22 +119,22 @@ export default function ProductsPage() {
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <input
+          <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="搜索产品名或 slug..."
-            className="w-full pl-9 pr-4 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+            className="pl-9"
           />
         </div>
 
-        <div className="flex gap-1 bg-slate-100 p-1 rounded-lg">
+        <div className="flex gap-1 bg-[#F5F5F5] p-1 rounded-lg">
           {Object.entries({ '': '全部', ...categoryLabels }).map(([k, v]) => (
             <button
               key={k}
               onClick={() => setCategory(k)}
               className={cn(
-                'px-3 py-1.5 rounded-md text-xs font-medium transition-all',
-                category === k ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                'px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-fluent',
+                category === k ? 'bg-white text-slate-800 shadow-elevation-1' : 'text-slate-500 hover:text-slate-700'
               )}
             >
               {v}
@@ -141,30 +145,22 @@ export default function ProductsPage() {
         {/* Bulk actions */}
         {selected.size > 0 && (
           <div className="flex items-center gap-2 ml-auto">
-            <span className="text-sm text-muted-foreground">{selected.size} 个已选</span>
-            <button
-              onClick={() => bulkPublish(true)}
-              disabled={bulkActioning}
-              className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-medium hover:bg-emerald-100"
-            >
+            <span className="text-sm text-slate-500">{selected.size} 个已选</span>
+            <Button variant="outline" size="sm" onClick={() => bulkPublish(true)} disabled={bulkActioning}>
               <Eye className="h-3 w-3" /> 批量发布
-            </button>
-            <button
-              onClick={() => bulkPublish(false)}
-              disabled={bulkActioning}
-              className="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-lg text-xs font-medium hover:bg-amber-100"
-            >
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => bulkPublish(false)} disabled={bulkActioning}>
               <EyeOff className="h-3 w-3" /> 批量下架
-            </button>
+            </Button>
           </div>
         )}
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border overflow-hidden">
+      <Card padding="none" className="overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b">
+          <Table>
+            <TableHeader>
               <tr>
                 <th className="w-10 px-4 py-3">
                   <button
@@ -179,18 +175,18 @@ export default function ProductsPage() {
                     {selected.size === filtered.length && filtered.length > 0 && <Check className="h-3 w-3" />}
                   </button>
                 </th>
-                <th className="text-left px-4 py-3 font-medium text-slate-600">产品</th>
-                <th className="text-left px-4 py-3 font-medium text-slate-600">分类</th>
-                <th className="text-left px-4 py-3 font-medium text-slate-600">排序</th>
-                <th className="text-left px-4 py-3 font-medium text-slate-600">状态</th>
-                <th className="text-right px-4 py-3 font-medium text-slate-600">操作</th>
+                <TableHead>产品</TableHead>
+                <TableHead>分类</TableHead>
+                <TableHead>排序</TableHead>
+                <TableHead>状态</TableHead>
+                <th className="text-right px-4 py-3 font-medium text-slate-600 text-xs">操作</th>
               </tr>
-            </thead>
-            <tbody className="divide-y">
+            </TableHeader>
+            <TableBody>
               {loading ? (
-                <tr><td colSpan={6} className="px-4 py-16 text-center text-muted-foreground">加载中...</td></tr>
+                <tr><td colSpan={6} className="px-4 py-16 text-center text-slate-500">加载中...</td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={6} className="px-4 py-16 text-center text-muted-foreground">
+                <tr><td colSpan={6} className="px-4 py-16 text-center text-slate-500">
                   {search || category ? '没有匹配的产品' : '暂无产品，点击"添加产品"开始'}
                 </td></tr>
               ) : (
@@ -198,8 +194,8 @@ export default function ProductsPage() {
                   const isSel = selected.has(p.id);
                   const firstImg = p.product_images?.[0]?.media?.variants?.publicUrl;
                   return (
-                    <tr key={p.id} className={cn('hover:bg-slate-50/50 transition-colors', isSel && 'bg-primary/[0.03]')}>
-                      <td className="px-4 py-3">
+                    <TableRow key={p.id} isSelected={isSel}>
+                      <TableCell>
                         <button
                           onClick={() => toggleSelect(p.id)}
                           className={cn(
@@ -209,70 +205,64 @@ export default function ProductsPage() {
                         >
                           {isSel && <Check className="h-3 w-3" />}
                         </button>
-                      </td>
-                      <td className="px-4 py-3">
+                      </TableCell>
+                      <TableCell>
                         <Link to={`/products/${p.id}`} className="flex items-center gap-3 hover:opacity-80">
-                          <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center overflow-hidden shrink-0">
+                          <div className="w-10 h-10 rounded-lg bg-[#FAFAFA] flex items-center justify-center overflow-hidden shrink-0 border border-[#EBEBEB]">
                             {firstImg ? (
                               <img src={firstImg} alt="" className="w-full h-full object-cover" />
                             ) : (
-                              <div className="w-5 h-5 bg-slate-200 rounded" />
+                              <div className="w-5 h-5 bg-[#EBEBEB] rounded" />
                             )}
                           </div>
                           <div>
-                            <div className="font-medium text-slate-900">
+                            <div className="font-medium text-slate-800">
                               {p.product_translations?.[0]?.name || p.slug}
                             </div>
                             <div className="text-xs text-slate-400 font-mono">{p.slug}</div>
                           </div>
                         </Link>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={cn('px-2 py-0.5 rounded-full text-xs font-medium', categoryColors[p.category] || 'bg-slate-100 text-slate-600')}>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={categoryBadgeVariant[p.category] || 'secondary'}>
                           {categoryLabels[p.category] || p.category}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-slate-500">{p.sort_order}</td>
-                      <td className="px-4 py-3">
-                        <button
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-slate-500">{p.sort_order}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={p.is_published ? 'success' : 'warning'}
+                          interactive
                           onClick={() => togglePublish(p.id, p.is_published)}
-                          className={cn(
-                            'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium transition-colors',
-                            p.is_published
-                              ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                              : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-                          )}
                         >
-                          {p.is_published ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
-                          {p.is_published ? '已发布' : '草稿'}
-                        </button>
-                      </td>
-                      <td className="px-4 py-3">
+                          {p.is_published ? <><Eye className="h-3 w-3" /> 已发布</> : <><EyeOff className="h-3 w-3" /> 草稿</>}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
                         <div className="flex items-center justify-end gap-1">
-                          <Link
-                            to={`/products/${p.id}`}
-                            className="p-2 text-slate-400 hover:text-primary rounded-lg hover:bg-primary/5 transition-colors"
-                            title="编辑"
-                          >
-                            <Edit3 className="h-4 w-4" />
+                          <Link to={`/products/${p.id}`}>
+                            <Button variant="ghost" size="icon-sm" title="编辑">
+                              <Edit3 className="h-4 w-4" />
+                            </Button>
                           </Link>
-                          <button
+                          <Button
+                            variant="destructive-ghost"
+                            size="icon-sm"
                             onClick={() => handleDelete(p.id, p.product_translations?.[0]?.name || p.slug)}
-                            className="p-2 text-slate-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors"
                             title="删除"
                           >
                             <Trash2 className="h-4 w-4" />
-                          </button>
+                          </Button>
                         </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   );
                 })
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
