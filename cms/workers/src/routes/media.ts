@@ -13,6 +13,7 @@ app.get('/', async (c) => {
   const page = parseInt(c.req.query('page') || '1');
   const limit = parseInt(c.req.query('limit') || '20');
   const mimeType = c.req.query('type');
+  const search = c.req.query('search');
 
   let query = supabase
     .from('media')
@@ -20,6 +21,7 @@ app.get('/', async (c) => {
     .order('created_at', { ascending: false });
 
   if (mimeType) query = query.ilike('mime_type', `${mimeType}%`);
+  if (search) query = query.ilike('original_filename', `%${search}%`);
 
   const from = (page - 1) * limit;
   query = query.range(from, from + limit - 1);

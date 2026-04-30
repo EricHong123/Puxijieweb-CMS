@@ -1,8 +1,9 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/useAuth';
+import CommandPalette from '@/components/CommandPalette';
 import {
   LayoutDashboard, Package, Image, FileText, Newspaper,
-  HelpCircle, Scale, Settings, Rocket, LogOut,
+  HelpCircle, Scale, Settings, Rocket, LogOut, History,
   Menu, X, Globe,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -18,6 +19,7 @@ const navItems = [
   { to: '/legal', icon: Scale, label: '法律页面' },
   { to: '/settings', icon: Settings, label: '网站设置' },
   { to: '/deploy', icon: Rocket, label: '部署' },
+  { to: '/audit', icon: History, label: '操作日志' },
 ];
 
 export default function AdminLayout() {
@@ -118,6 +120,7 @@ export default function AdminLayout() {
           <Outlet />
         </main>
       </div>
+      <CommandPalette />
     </div>
   );
 }

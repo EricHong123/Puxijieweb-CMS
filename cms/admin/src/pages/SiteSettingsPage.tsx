@@ -5,6 +5,7 @@ import { Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardTitle } from '@/components/ui/card';
+import JsonFieldEditor from '@/components/JsonFieldEditor';
 
 const SETTINGS_KEYS = [
   { key: 'site_name', label: '网站名称', type: 'text' },
@@ -60,14 +61,10 @@ export default function SiteSettingsPage() {
               </Button>
             </div>
             {sk.type === 'json' ? (
-              <textarea
-                value={typeof settings[sk.key] === 'string' ? settings[sk.key] : JSON.stringify(settings[sk.key] || {}, null, 2)}
-                onChange={(e) => {
-                  try { setSettings({ ...settings, [sk.key]: JSON.parse(e.target.value) }); } catch {}
-                }}
-                rows={6}
-                className="w-full px-3 py-2 rounded-lg border text-sm font-mono bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))] transition-colors resize-y"
-                placeholder="{}"
+              <JsonFieldEditor
+                settingKey={sk.key}
+                value={settings[sk.key] || {}}
+                onChange={(v) => setSettings({ ...settings, [sk.key]: v })}
               />
             ) : (
               <Input

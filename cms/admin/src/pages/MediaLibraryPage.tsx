@@ -1,8 +1,9 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import api from '@/api/client';
 import { useToast } from '@/lib/toast';
-import { Upload, Trash2, Copy, Image } from 'lucide-react';
+import { Upload, Trash2, Copy, Image, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 
 interface MediaItem {
@@ -15,20 +16,33 @@ interface MediaItem {
   created_at: string;
 }
 
+const PAGE_SIZE = 20;
+
 export default function MediaLibraryPage() {
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [search, setSearch] = useState('');
   const toast = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const fetchMedia = async () => {
-    const { data } = await api.get('/media');
-    if (data.success) setItems(data.data.items);
-    setLoading(false);
-  };
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
-  useEffect(() => { fetchMedia(); }, []);
+  const fetchMedia = useCallback(async () => {
+    setLoading(true);
+    const { data } = await api.get('/media', {
+      params: { page, limit: PAGE_SIZE, search: search || undefined },
+    });
+    if (data.success) {
+      setItems(data.data.items);
+      setTotal(data.data.total || 0);
+    }
+    setLoading(false);
+  }, [page, search]);
+
+  useEffect(() => { fetchMedia(); }, [fetchMedia]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -40,6 +54,7 @@ export default function MediaLibraryPage() {
       await api.post('/media/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+      setPage(1);
       fetchMedia();
     } catch (err: any) {
       toast.error('上传失败');
@@ -65,9 +80,18 @@ export default function MediaLibraryPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">媒体库</h1>
-          <p className="text-sm text-slate-500 mt-1">{items.length} 个文件</p>
+          <p className="text-sm text-slate-500 mt-1">{total} 个文件</p>
         </div>
-        <div>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Input
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              placeholder="搜索文件名..."
+              className="pl-9 w-56"
+            />
+          </div>
           <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
           <Button onClick={() => fileRef.current?.click()} disabled={uploading}>
             <Upload className="h-4 w-4" />
@@ -114,6 +138,20 @@ export default function MediaLibraryPage() {
           ))
         )}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-4 pt-2">
+          <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1}>
+            <ChevronLeft className="h-4 w-4" />
+            上一页
+          </Button>
+          <span className="text-sm text-slate-500">{page} / {totalPages}</span>
+          <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages}>
+            下一页
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

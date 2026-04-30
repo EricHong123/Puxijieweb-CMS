@@ -11,6 +11,9 @@ import { legalRoutes } from './routes/legal';
 import { siteSettingsRoutes } from './routes/site-settings';
 import { analyticsRoutes } from './routes/analytics';
 import { deployRoutes } from './routes/deploy';
+import { searchRoutes } from './routes/search';
+import { auditRoutes } from './routes/audit';
+import { auditMiddleware } from './lib/audit';
 
 const app = new Hono();
 
@@ -23,6 +26,7 @@ app.use('*', cors({
 app.use('*', logger());
 
 const api = new Hono();
+api.use('*', auditMiddleware());
 api.route('/auth', authRoutes);
 api.route('/products', productRoutes);
 api.route('/media', mediaRoutes);
@@ -33,6 +37,8 @@ api.route('/legal', legalRoutes);
 api.route('/site-settings', siteSettingsRoutes);
 api.route('/analytics', analyticsRoutes);
 api.route('/deploy', deployRoutes);
+api.route('/search', searchRoutes);
+api.route('/audit-logs', auditRoutes);
 
 app.route('/api/v1', api);
 
