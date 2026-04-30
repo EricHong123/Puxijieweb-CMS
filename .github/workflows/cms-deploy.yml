@@ -46,6 +46,6 @@ jobs:
           username: ${{ secrets.HOSTINGER_SFTP_USER }}
           password: ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
           local-dir: apps/web/.out/
-          server-dir: public_html/
+          server-dir: ./
           protocol: ftps
           dangerous-clean-slate: true
