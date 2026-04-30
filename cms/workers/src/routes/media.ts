@@ -1,6 +1,10 @@
 import { Hono } from 'hono';
 import { getSupabase, type Env } from '../lib/supabase';
 import { requireAuth } from '../lib/auth';
+import { validateImage } from '../lib/image-processor';
+import { createRateLimiter } from '../lib/rate-limit';
+
+const uploadLimiter = createRateLimiter({ windowMs: 60_000, maxRequests: 30 });
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -37,6 +41,12 @@ app.get('/:id', async (c) => {
 });
 
 app.post('/upload', requireAuth(), async (c) => {
+  const clientIp = c.req.header('CF-Connecting-IP') || 'unknown';
+  const { allowed, retryAfter } = uploadLimiter(clientIp);
+  if (!allowed) {
+    return c.json({ success: false, error: `上传过于频繁，请 ${retryAfter} 秒后重试` }, 429);
+  }
+
   const supabase = getSupabase(c.env);
   const formData = await c.req.formData();
   const file = formData.get('file');
@@ -44,12 +54,15 @@ app.post('/upload', requireAuth(), async (c) => {
   if (!file || typeof file === 'string') {
     return c.json({ success: false, error: 'File required' }, 400);
   }
-  const fileObj = file as unknown as { name: string; type: string; arrayBuffer(): Promise<ArrayBuffer> };
+  const fileObj = file as unknown as { name: string; type: string; size: number; arrayBuffer(): Promise<ArrayBuffer> };
 
   const originalFilename = fileObj.name;
   const mimeType = fileObj.type;
   const buffer = await fileObj.arrayBuffer();
   const fileSize = buffer.byteLength;
+
+  const validationError = validateImage({ type: mimeType, size: fileSize, name: originalFilename });
+  if (validationError) return c.json({ success: false, error: validationError }, 400);
 
   const timestamp = Date.now();
   const safeFilename = originalFilename.replace(/[^a-zA-Z0-9._-]/g, '-');
@@ -92,7 +105,8 @@ app.delete('/:id', requireAuth(), async (c) => {
     .single();
 
   if (media) {
-    await supabase.storage.from('media').remove([media.storage_path]);
+    const { error: storageError } = await supabase.storage.from('media').remove([media.storage_path]);
+    if (storageError) return c.json({ success: false, error: storageError.message }, 500);
   }
 
   const { error } = await supabase.from('media').delete().eq('id', c.req.param('id'));

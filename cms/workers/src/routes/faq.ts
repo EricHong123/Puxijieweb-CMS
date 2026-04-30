@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { getSupabase, type Env } from '../lib/supabase';
 import { requireAuth } from '../lib/auth';
-import { createFaqSchema } from '../schemas/faq';
+import { createFaqSchema, updateFaqSchema } from '../schemas/faq';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -22,9 +22,12 @@ app.get('/', async (c) => {
 app.put('/:id', requireAuth(), async (c) => {
   const supabase = getSupabase(c.env);
   const body = await c.req.json();
+  const parsed = updateFaqSchema.safeParse(body);
+  if (!parsed.success) return c.json({ success: false, error: parsed.error.flatten() }, 400);
+
   const { error } = await supabase
     .from('faq_sections')
-    .update(body)
+    .update(parsed.data)
     .eq('id', c.req.param('id'));
   if (error) return c.json({ success: false, error: error.message }, 500);
   return c.json({ success: true, data: null });
@@ -43,7 +46,8 @@ app.post('/', requireAuth(), async (c) => {
 
 app.delete('/:id', requireAuth(), async (c) => {
   const supabase = getSupabase(c.env);
-  await supabase.from('faq_sections').delete().eq('id', c.req.param('id'));
+  const { error } = await supabase.from('faq_sections').delete().eq('id', c.req.param('id'));
+  if (error) return c.json({ success: false, error: error.message }, 500);
   return c.json({ success: true, data: null });
 });
 

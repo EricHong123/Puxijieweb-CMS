@@ -1,10 +1,19 @@
 import { Hono } from 'hono';
 import { getSupabase, type Env } from '../lib/supabase';
 import { createToken, type AuthUser } from '../lib/auth';
+import { createRateLimiter } from '../lib/rate-limit';
+
+const loginLimiter = createRateLimiter({ windowMs: 15_000, maxRequests: 5 });
 
 const app = new Hono<{ Bindings: Env }>();
 
 app.post('/login', async (c) => {
+  const clientIp = c.req.header('CF-Connecting-IP') || 'unknown';
+  const { allowed, retryAfter } = loginLimiter(clientIp);
+  if (!allowed) {
+    return c.json({ success: false, error: `请求过于频繁，请 ${retryAfter} 秒后重试` }, 429);
+  }
+
   const { email, password } = await c.req.json();
   if (!email || !password) {
     return c.json({ success: false, error: 'Email and password required' }, 400);

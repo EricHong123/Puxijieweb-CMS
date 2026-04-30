@@ -68,7 +68,8 @@ app.patch('/:id/publish', requireAuth(), async (c) => {
 
 app.delete('/:id', requireAuth(), async (c) => {
   const supabase = getSupabase(c.env);
-  await supabase.from('news_articles').delete().eq('id', c.req.param('id'));
+  const { error } = await supabase.from('news_articles').delete().eq('id', c.req.param('id'));
+  if (error) return c.json({ success: false, error: error.message }, 500);
   return c.json({ success: true, data: null });
 });
 
