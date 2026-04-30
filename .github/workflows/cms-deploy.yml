@@ -41,6 +41,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Track build output for incremental deploy
+        run: git add -f apps/web/.out/
+
       - name: Deploy to Hostinger via SFTP
         id: deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
@@ -51,43 +54,3 @@ jobs:
           local-dir: apps/web/.out/
           server-dir: ./
           protocol: ftps
-          dangerous-clean-slate: true
-
-      - name: Send success notification
-        if: success()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: ${{ secrets.SMTP_HOST }}
-          server_port: ${{ secrets.SMTP_PORT || '587' }}
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "[CMS] Deploy succeeded — puxijietech.com"
-          to: admin@puxijietech.com
-          from: CMS Deploy Bot
-          body: |
-            CMS deployment to Hostinger completed successfully at ${{ github.event.head_commit.timestamp || 'manual trigger' }}.
-
-            Commit: ${{ github.event.head_commit.message || 'manual dispatch' }}
-            Branch: ${{ github.ref_name }}
-            Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-      - name: Send failure notification
-        if: failure()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: ${{ secrets.SMTP_HOST }}
-          server_port: ${{ secrets.SMTP_PORT || '587' }}
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "[CMS] Deploy FAILED — puxijietech.com"
-          to: admin@puxijietech.com
-          from: CMS Deploy Bot
-          priority: high
-          body: |
-            CMS deployment to Hostinger FAILED.
-
-            Commit: ${{ github.event.head_commit.message || 'manual dispatch' }}
-            Branch: ${{ github.ref_name }}
-            Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-            Check the workflow logs for details.
