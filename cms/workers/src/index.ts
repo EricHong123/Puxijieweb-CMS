@@ -13,7 +13,10 @@ import { analyticsRoutes } from './routes/analytics';
 import { deployRoutes } from './routes/deploy';
 import { searchRoutes } from './routes/search';
 import { auditRoutes } from './routes/audit';
+import { versionRoutes } from './routes/versions';
 import { auditMiddleware } from './lib/audit';
+import type { Env } from './lib/supabase';
+import { handleScheduledPublish } from './cron/publish-scheduled';
 
 const app = new Hono();
 
@@ -39,9 +42,25 @@ api.route('/analytics', analyticsRoutes);
 api.route('/deploy', deployRoutes);
 api.route('/search', searchRoutes);
 api.route('/audit-logs', auditRoutes);
+api.route('/versions', versionRoutes);
 
 app.route('/api/v1', api);
 
 app.get('/health', (c) => c.json({ status: 'ok', timestamp: Date.now() }));
 
-export default app;
+// Cron endpoint for manual trigger or HTTP-based cron
+api.get('/cron/publish-scheduled', async (c) => {
+  try {
+    const result = await handleScheduledPublish(c.env as unknown as Env);
+    return c.json({ success: true, data: { result } });
+  } catch (err: any) {
+    return c.json({ success: false, error: err.message }, 500);
+  }
+});
+
+export default {
+  fetch: app.fetch,
+  scheduled: async (event: ScheduledEvent, env: Env) => {
+    await handleScheduledPublish(env);
+  },
+};

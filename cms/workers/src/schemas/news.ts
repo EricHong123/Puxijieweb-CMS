@@ -9,6 +9,7 @@ export const newsArticleSchema = z.object({
   date: z.string().optional(),
   keywords: z.array(z.string()).default([]),
   hero_image_url: z.string().max(500).optional(),
+  scheduled_publish_at: z.string().datetime().nullable().optional(),
 });
 
 export const createNewsSchema = newsArticleSchema;

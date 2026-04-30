@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '@/api/client';
 import { Plus, FileText, Edit3, Trash2, Eye, EyeOff } from 'lucide-react';
+import { SkeletonGrid } from '@/components/SkeletonCard';
 
 interface Page {
   id: string;
@@ -60,7 +61,7 @@ export default function PagesPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {loading ? (
-          <div className="col-span-full py-12 text-center text-muted-foreground">加载中...</div>
+          <SkeletonGrid count={6} />
         ) : pages.length === 0 ? (
           <div className="col-span-full py-12 text-center text-muted-foreground">
             暂无页面，点击"新建页面"开始

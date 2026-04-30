@@ -5,6 +5,7 @@ import { Upload, Trash2, Copy, Image, Search, ChevronLeft, ChevronRight } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
+import { SkeletonMediaGrid } from '@/components/SkeletonCard';
 
 interface MediaItem {
   id: string;
@@ -102,7 +103,7 @@ export default function MediaLibraryPage() {
 
       <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {loading ? (
-          <div className="col-span-full py-12 text-center text-slate-500">加载中...</div>
+          <SkeletonMediaGrid count={10} />
         ) : items.length === 0 ? (
           <div className="col-span-full py-12 text-center text-slate-500">
             <Image className="h-10 w-10 mx-auto mb-2 text-slate-300" />

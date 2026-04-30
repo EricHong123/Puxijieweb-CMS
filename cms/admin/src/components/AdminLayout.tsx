@@ -1,6 +1,7 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/useAuth';
 import CommandPalette from '@/components/CommandPalette';
+import ThemeToggle from '@/components/ThemeToggle';
 import {
   LayoutDashboard, Package, Image, FileText, Newspaper,
   HelpCircle, Scale, Settings, Rocket, LogOut, History,
@@ -105,6 +106,7 @@ export default function AdminLayout() {
             <Menu className="h-6 w-6" />
           </button>
           <div className="flex-1" />
+          <ThemeToggle />
           <a
             href="https://puxijietech.com"
             target="_blank"

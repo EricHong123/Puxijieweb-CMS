@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { getSupabase, type Env } from '../lib/supabase';
 import { requireAuth } from '../lib/auth';
 import { createPageSchema, updatePageSchema } from '../schemas/page';
+import { saveVersion } from '../lib/versioning';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -52,20 +53,32 @@ app.post('/', requireAuth(), async (c) => {
 
 app.put('/:id', requireAuth(), async (c) => {
   const supabase = getSupabase(c.env);
+  const entityId = c.req.param('id');
   const body = await c.req.json();
   const parsed = updatePageSchema.safeParse(body);
   if (!parsed.success) return c.json({ success: false, error: parsed.error.flatten() }, 400);
 
+  // Save version snapshot before update
+  const { data: prev } = await supabase
+    .from('pages')
+    .select(`*, page_translations(*)`)
+    .eq('id', entityId)
+    .single();
+  if (prev) {
+    const user = c.get('user');
+    await saveVersion(c.env, 'page', entityId, prev as Record<string, unknown>, user.id);
+  }
+
   const { translations, ...page } = parsed.data;
   if (Object.keys(page).length > 0) {
-    await supabase.from('pages').update({ ...page, updated_at: new Date().toISOString() }).eq('id', c.req.param('id'));
+    await supabase.from('pages').update({ ...page, updated_at: new Date().toISOString() }).eq('id', entityId);
   }
   if (translations) {
     for (const t of translations) {
-      await supabase.from('page_translations').upsert({ ...t, page_id: c.req.param('id') }, { onConflict: 'page_id,locale' });
+      await supabase.from('page_translations').upsert({ ...t, page_id: entityId }, { onConflict: 'page_id,locale' });
     }
   }
-  return c.json({ success: true, data: { id: c.req.param('id') } });
+  return c.json({ success: true, data: { id: entityId } });
 });
 
 app.patch('/:id/publish', requireAuth(), async (c) => {

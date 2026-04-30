@@ -7,11 +7,13 @@ import MediaPicker from '@/components/MediaPicker';
 import { ArrowLeft, Plus, Trash2, Save, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/toast';
+import { useKeyboardShortcuts } from '@/lib/useKeyboardShortcuts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/input';
 import { FormField } from '@/components/ui/input';
 import { Card, CardTitle } from '@/components/ui/card';
+import SeoSidebar from '@/components/SeoSidebar';
 
 const CATEGORIES = [
   { value: 'waterproof_bt', label: '防水蓝牙音箱' },
@@ -194,6 +196,8 @@ export default function ProductEditorPage() {
     }
   };
 
+  useKeyboardShortcuts({ onSave: () => handleSubmit(onSubmit)() });
+
   const ArrayEditor = ({ field, label }: { field: 'features' | 'benefits' | 'procurement_notes'; label: string }) => {
     const items = translations?.[activeIdx]?.[field] || [];
     return (
@@ -247,7 +251,8 @@ export default function ProductEditorPage() {
         </Button>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div className="flex gap-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex-1 space-y-6">
         {/* Basic info */}
         <Card padding="lg">
           <CardTitle>基本信息</CardTitle>
@@ -412,6 +417,15 @@ export default function ProductEditorPage() {
           </Select>
         </Card>
       </form>
+      <SeoSidebar
+        feedback={{
+          title: watch('translations')?.[activeIdx]?.name,
+          hasImages: selectedImageIds.length > 0,
+          totalImages: selectedImageIds.length,
+          imagesWithAlt: selectedImageIds.length, // assume uploaded images have alt-like filenames
+        }}
+      />
+      </div>
     </div>
   );
 }

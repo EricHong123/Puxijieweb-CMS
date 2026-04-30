@@ -10,6 +10,9 @@ JWT_SECRET = ""
 GITHUB_TOKEN = ""
 GITHUB_REPO = "EricHong123/Puxijieweb-CMS"
 
+[triggers]
+crons = ["*/5 * * * *"]
+
 [env.production]
 routes = [
   { pattern = "api.puxijietech.com/*", zone_id = "" }

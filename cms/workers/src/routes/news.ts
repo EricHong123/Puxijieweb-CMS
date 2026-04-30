@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { getSupabase, type Env } from '../lib/supabase';
 import { requireAuth } from '../lib/auth';
 import { createNewsSchema, updateNewsSchema } from '../schemas/news';
+import { saveVersion } from '../lib/versioning';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -47,16 +48,28 @@ app.post('/', requireAuth(), async (c) => {
 
 app.put('/:id', requireAuth(), async (c) => {
   const supabase = getSupabase(c.env);
+  const entityId = c.req.param('id');
   const body = await c.req.json();
   const parsed = updateNewsSchema.safeParse(body);
   if (!parsed.success) return c.json({ success: false, error: parsed.error.flatten() }, 400);
 
+  // Save version snapshot before update
+  const { data: prev } = await supabase
+    .from('news_articles')
+    .select('*')
+    .eq('id', entityId)
+    .single();
+  if (prev) {
+    const user = c.get('user');
+    await saveVersion(c.env, 'news', entityId, prev as Record<string, unknown>, user.id);
+  }
+
   const { error } = await supabase
     .from('news_articles')
     .update({ ...parsed.data, updated_at: new Date().toISOString() })
-    .eq('id', c.req.param('id'));
+    .eq('id', entityId);
   if (error) return c.json({ success: false, error: error.message }, 500);
-  return c.json({ success: true, data: { id: c.req.param('id') } });
+  return c.json({ success: true, data: { id: entityId } });
 });
 
 app.patch('/:id/publish', requireAuth(), async (c) => {

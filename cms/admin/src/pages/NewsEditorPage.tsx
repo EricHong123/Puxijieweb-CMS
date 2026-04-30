@@ -3,7 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import api from '@/api/client';
 import { useToast } from '@/lib/toast';
+import { useKeyboardShortcuts } from '@/lib/useKeyboardShortcuts';
 import { ArrowLeft, Save, Eye, Globe } from 'lucide-react';
+import SeoSidebar from '@/components/SeoSidebar';
 
 const LOCALES = [
   { key: 'en', label: 'English' },
@@ -33,6 +35,8 @@ export default function NewsEditorPage() {
   });
 
   const bodyMd = watch('body_markdown');
+
+  useKeyboardShortcuts({ onSave: () => handleSubmit(onSubmit)() });
 
   useEffect(() => {
     if (id) {
@@ -98,7 +102,8 @@ export default function NewsEditorPage() {
         </button>
       </div>
 
-      <form className="space-y-6">
+      <div className="flex gap-6">
+      <form className="flex-1 space-y-6">
         {/* Meta fields */}
         <section className="bg-white rounded-xl border p-6 space-y-4">
           <h2 className="font-semibold text-slate-900 text-lg">文章信息</h2>
@@ -159,6 +164,13 @@ export default function NewsEditorPage() {
           )}
         </section>
       </form>
+      <SeoSidebar
+        feedback={{
+          title: watch('title'),
+          metaDescription: watch('description'),
+        }}
+      />
+      </div>
     </div>
   );
 }

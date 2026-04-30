@@ -16,6 +16,7 @@ export const createPageSchema = z.object({
   slug: z.string().min(1).max(100),
   page_type: z.enum(['home', 'standard', 'contact']),
   translations: z.array(pageTranslationSchema).min(1).max(3),
+  scheduled_publish_at: z.string().datetime().nullable().optional(),
 });
 
 export const updatePageSchema = createPageSchema.partial();

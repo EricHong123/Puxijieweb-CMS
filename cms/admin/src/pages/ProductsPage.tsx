@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '@/components/ui/table';
+import { SkeletonTable } from '@/components/SkeletonCard';
 
 interface Product {
   id: string;
@@ -184,7 +185,7 @@ export default function ProductsPage() {
             </TableHeader>
             <TableBody>
               {loading ? (
-                <tr><td colSpan={6} className="px-4 py-16 text-center text-slate-500">加载中...</td></tr>
+                <tr><td colSpan={6} className="p-0"><SkeletonTable rows={5} cols={4} /></td></tr>
               ) : filtered.length === 0 ? (
                 <tr><td colSpan={6} className="px-4 py-16 text-center text-slate-500">
                   {search || category ? '没有匹配的产品' : '暂无产品，点击"添加产品"开始'}

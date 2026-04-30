@@ -45,6 +45,7 @@ export const createProductSchema = z.object({
   downloads: z.array(downloadSchema).default([]),
   translations: z.array(productTranslationSchema).min(1).max(3),
   specs: productSpecsSchema.optional(),
+  scheduled_publish_at: z.string().datetime().nullable().optional(),
 });
 
 export const updateProductSchema = createProductSchema.partial();

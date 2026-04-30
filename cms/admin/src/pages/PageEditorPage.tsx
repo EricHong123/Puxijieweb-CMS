@@ -3,8 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import api from '@/api/client';
 import { useToast } from '@/lib/toast';
+import { useKeyboardShortcuts } from '@/lib/useKeyboardShortcuts';
 import I18nTabs, { type Locale, LOCALES } from '@/components/I18nTabs';
 import { ArrowLeft, Save, Eye } from 'lucide-react';
+import SeoSidebar from '@/components/SeoSidebar';
 
 const PAGE_TYPES = [
   { value: 'home', label: '首页' },
@@ -43,6 +45,8 @@ export default function PageEditorPage() {
   });
 
   const activeIdx = LOCALES.findIndex((l) => l.key === activeLocale);
+
+  useKeyboardShortcuts({ onSave: () => handleSubmit(onSubmit)() });
 
   useEffect(() => {
     if (id) {
@@ -122,7 +126,8 @@ export default function PageEditorPage() {
         </button>
       </div>
 
-      <form className="space-y-6">
+      <div className="flex gap-6">
+      <form className="flex-1 space-y-6">
         {/* Basic */}
         <section className="bg-white rounded-xl border p-6 space-y-4">
           <h2 className="font-semibold text-slate-900 text-lg">基本信息</h2>
@@ -216,6 +221,13 @@ export default function PageEditorPage() {
           )}
         </section>
       </form>
+      <SeoSidebar
+        feedback={{
+          title: watch('translations')?.[activeIdx]?.title,
+          metaDescription: watch('translations')?.[activeIdx]?.meta_description,
+        }}
+      />
+      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '@/api/client';
 import { Plus, Edit3, Trash2, Eye, EyeOff, Globe } from 'lucide-react';
+import { SkeletonList } from '@/components/SkeletonCard';
 
 interface Article {
   id: string;
@@ -70,7 +71,7 @@ export default function NewsPage() {
 
       <div className="space-y-3">
         {loading ? (
-          <div className="py-12 text-center text-muted-foreground">加载中...</div>
+          <SkeletonList count={4} />
         ) : articles.length === 0 ? (
           <div className="py-12 text-center text-muted-foreground">
             暂无{locale.toUpperCase()}文章，点击"新建文章"添加

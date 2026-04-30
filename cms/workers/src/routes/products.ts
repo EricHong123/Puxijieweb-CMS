@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { getSupabase, type Env } from '../lib/supabase';
 import { requireAuth } from '../lib/auth';
 import { createProductSchema, updateProductSchema } from '../schemas/product';
+import { saveVersion } from '../lib/versioning';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -81,10 +82,22 @@ app.post('/', requireAuth(), async (c) => {
 
 app.put('/:id', requireAuth(), async (c) => {
   const supabase = getSupabase(c.env);
+  const entityId = c.req.param('id');
   const body = await c.req.json();
   const parsed = updateProductSchema.safeParse(body);
   if (!parsed.success) {
     return c.json({ success: false, error: parsed.error.flatten() }, 400);
+  }
+
+  // Save version snapshot before update
+  const { data: prev } = await supabase
+    .from('products')
+    .select(`*, product_translations(*), product_specs(*)`)
+    .eq('id', entityId)
+    .single();
+  if (prev) {
+    const user = c.get('user');
+    await saveVersion(c.env, 'product', entityId, prev as Record<string, unknown>, user.id);
   }
 
   const { translations, specs, downloads, ...product } = parsed.data;
@@ -96,7 +109,7 @@ app.put('/:id', requireAuth(), async (c) => {
     const { error } = await supabase
       .from('products')
       .update(updateData)
-      .eq('id', c.req.param('id'));
+      .eq('id', entityId);
     if (error) return c.json({ success: false, error: error.message }, 500);
   }
 
@@ -104,17 +117,17 @@ app.put('/:id', requireAuth(), async (c) => {
     for (const t of translations) {
       await supabase
         .from('product_translations')
-        .upsert({ ...t, product_id: c.req.param('id') }, { onConflict: 'product_id,locale' });
+        .upsert({ ...t, product_id: entityId }, { onConflict: 'product_id,locale' });
     }
   }
 
   if (specs) {
     await supabase
       .from('product_specs')
-      .upsert({ ...specs, product_id: c.req.param('id') }, { onConflict: 'product_id' });
+      .upsert({ ...specs, product_id: entityId }, { onConflict: 'product_id' });
   }
 
-  return c.json({ success: true, data: { id: c.req.param('id') } });
+  return c.json({ success: true, data: { id: entityId } });
 });
 
 app.delete('/:id', requireAuth(), async (c) => {
