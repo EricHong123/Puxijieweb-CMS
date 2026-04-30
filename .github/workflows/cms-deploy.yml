@@ -43,6 +43,7 @@ jobs:
 
       - name: Track build output for incremental deploy
         run: git add -f apps/web/.out/
+        working-directory: ./
 
       - name: Deploy to Hostinger via SFTP
         id: deploy
