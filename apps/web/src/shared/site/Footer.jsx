@@ -7,7 +7,7 @@ const FOOTER_LINK_GROUPS = [
   {
     title: 'Company',
     links: [
-      ['about', 'nav.about'],
+      ['about-us', 'nav.about'],
       ['contact', 'nav.contact'],
       ['faq', 'nav.faq'],
       ['sitemap', 'Sitemap'],
