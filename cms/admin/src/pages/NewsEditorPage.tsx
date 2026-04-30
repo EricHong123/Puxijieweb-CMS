@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import api from '@/api/client';
+import { useToast } from '@/lib/toast';
 import { ArrowLeft, Save, Eye, Globe } from 'lucide-react';
 
 const LOCALES = [
@@ -13,11 +14,12 @@ const LOCALES = [
 export default function NewsEditorPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const toast = useToast();
   const isNew = !id;
   const [saving, setSaving] = useState(false);
   const [preview, setPreview] = useState(false);
 
-  const { register, handleSubmit, reset, setValue, watch } = useForm({
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
     defaultValues: {
       slug: '',
       locale: 'en' as string,
@@ -64,7 +66,7 @@ export default function NewsEditorPage() {
         await api.put(`/news/${id}`, payload);
       }
     } catch (err: any) {
-      alert(err.response?.data?.error || '保存失败');
+      toast.error(err.response?.data?.error || '保存失败');
     } finally {
       setSaving(false);
     }
@@ -104,16 +106,19 @@ export default function NewsEditorPage() {
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Slug *</label>
               <input {...register('slug', { required: true })} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="my-article" />
+              {errors.slug && <p className="text-xs text-red-500 mt-1">必填</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">语言 *</label>
               <select {...register('locale', { required: true })} className="w-full px-3 py-2.5 rounded-lg border text-sm bg-white">
                 {LOCALES.map((l) => <option key={l.key} value={l.key}>{l.label} ({l.key})</option>)}
               </select>
+              {errors.locale && <p className="text-xs text-red-500 mt-1">必填</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">标题 *</label>
               <input {...register('title', { required: true })} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              {errors.title && <p className="text-xs text-red-500 mt-1">必填</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">发布日期</label>

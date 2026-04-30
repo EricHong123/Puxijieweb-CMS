@@ -6,6 +6,7 @@ import I18nTabs, { type Locale, LOCALES } from '@/components/I18nTabs';
 import MediaPicker from '@/components/MediaPicker';
 import { ArrowLeft, Plus, Trash2, Save, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/lib/toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/input';
@@ -63,6 +64,7 @@ function buildEmptySpecs() {
 export default function ProductEditorPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const toast = useToast();
   const isNew = !id;
   const [saving, setSaving] = useState(false);
   const [activeLocale, setActiveLocale] = useState<Locale>('en');
@@ -186,7 +188,7 @@ export default function ProductEditorPage() {
         await api.put(`/products/${id}`, payload);
       }
     } catch (err: any) {
-      alert(err.response?.data?.error || '保存失败');
+      toast.error(err.response?.data?.error || '保存失败');
     } finally {
       setSaving(false);
     }
@@ -250,7 +252,7 @@ export default function ProductEditorPage() {
         <Card padding="lg">
           <CardTitle>基本信息</CardTitle>
           <div className="grid gap-4 sm:grid-cols-3">
-            <FormField label="Slug *" htmlFor="slug">
+            <FormField label="Slug *" htmlFor="slug" error={errors.slug?.type === 'required' ? '必填' : errors.slug?.type === 'pattern' ? '仅限小写字母、数字和连字符' : undefined}>
               <Input
                 id="slug"
                 {...register('slug', { required: true, pattern: /^[a-z0-9-]+$/ })}
@@ -333,7 +335,7 @@ export default function ProductEditorPage() {
           {activeIdx >= 0 && (
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <FormField label={`产品名 (${activeLocale.toUpperCase()}) *`}>
+                <FormField label={`产品名 (${activeLocale.toUpperCase()}) *`} error={errors.translations?.[activeIdx]?.name ? '必填' : undefined}>
                   <Input {...register(`translations.${activeIdx}.name`, { required: true })} />
                 </FormField>
                 <FormField label={`副标题 (${activeLocale.toUpperCase()})`}>

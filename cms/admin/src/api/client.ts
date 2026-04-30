@@ -16,12 +16,21 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('cms_token');
       localStorage.removeItem('cms_user');
       window.location.href = '/login';
     }
+
+    // Retry GET requests once on network error or server error
+    const config = error.config;
+    if (config && config.method === 'get' && !config._retried && (!error.response || error.response.status >= 500)) {
+      config._retried = true;
+      await new Promise((r) => setTimeout(r, 1000));
+      return api(config);
+    }
+
     return Promise.reject(error);
   }
 );

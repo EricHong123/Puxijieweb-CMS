@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '@/api/client';
+import { useToast } from '@/lib/toast';
 import { Rocket, CheckCircle, XCircle, Clock, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardTitle } from '@/components/ui/card';
@@ -24,6 +25,7 @@ export default function DeployPage() {
   const [logs, setLogs] = useState<DeployLog[]>([]);
   const [latest, setLatest] = useState<DeployLog | null>(null);
   const [deploying, setDeploying] = useState(false);
+  const toast = useToast();
 
   const fetchStatus = async () => {
     const [statusRes, historyRes] = await Promise.all([
@@ -43,10 +45,10 @@ export default function DeployPage() {
       if (data.success) {
         fetchStatus();
       } else {
-        alert('部署触发失败: ' + data.error);
+        toast.error('部署触发失败: ' + data.error);
       }
     } catch (err: any) {
-      alert('部署触发失败');
+      toast.error('部署触发失败');
     } finally {
       setDeploying(false);
     }

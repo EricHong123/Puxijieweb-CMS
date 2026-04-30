@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '@/lib/useAuth';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import AdminLayout from '@/components/AdminLayout';
 import LoginPage from '@/pages/LoginPage';
 import DashboardPage from '@/pages/DashboardPage';
@@ -24,6 +25,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
+    <ErrorBoundary>
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
@@ -44,5 +46,6 @@ export default function App() {
         <Route path="deploy" element={<DeployPage />} />
       </Route>
     </Routes>
+    </ErrorBoundary>
   );
 }

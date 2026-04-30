@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import api from '@/api/client';
+import { useToast } from '@/lib/toast';
 import I18nTabs, { type Locale, LOCALES } from '@/components/I18nTabs';
 import { ArrowLeft, Save, Eye } from 'lucide-react';
 
@@ -28,11 +29,12 @@ function buildEmptyTranslations() {
 export default function PageEditorPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const toast = useToast();
   const isNew = !id;
   const [saving, setSaving] = useState(false);
   const [activeLocale, setActiveLocale] = useState<Locale>('en');
 
-  const { register, handleSubmit, reset, watch, setValue, getValues } = useForm({
+  const { register, handleSubmit, reset, watch, setValue, getValues, formState: { errors } } = useForm({
     defaultValues: {
       slug: '',
       page_type: 'standard',
@@ -94,7 +96,7 @@ export default function PageEditorPage() {
         await api.put(`/pages/${id}`, payload);
       }
     } catch (err: any) {
-      alert(err.response?.data?.error || '保存失败');
+      toast.error(err.response?.data?.error || '保存失败');
     } finally {
       setSaving(false);
     }
@@ -132,6 +134,7 @@ export default function PageEditorPage() {
                 className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                 placeholder="about-us"
               />
+              {errors.slug && <p className="text-xs text-red-500 mt-1">必填</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">页面类型</label>
@@ -159,6 +162,7 @@ export default function PageEditorPage() {
                   {...register(`translations.${activeIdx}.title`, { required: true })}
                   className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
+                {errors.translations?.[activeIdx]?.title && <p className="text-xs text-red-500 mt-1">必填</p>}
               </div>
 
               <div>

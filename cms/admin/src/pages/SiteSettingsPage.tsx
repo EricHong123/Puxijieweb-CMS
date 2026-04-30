@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '@/api/client';
+import { useToast } from '@/lib/toast';
 import { Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,6 +19,7 @@ const SETTINGS_KEYS = [
 export default function SiteSettingsPage() {
   const [settings, setSettings] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState<Record<string, boolean>>({});
+  const toast = useToast();
 
   useEffect(() => {
     api.get('/site-settings').then(({ data }) => {
@@ -34,7 +36,7 @@ export default function SiteSettingsPage() {
     try {
       await api.put(`/site-settings/${key}`, { value: settings[key] });
     } catch (err: any) {
-      alert('保存失败');
+      toast.error('保存失败');
     } finally {
       setSaving((prev) => ({ ...prev, [key]: false }));
     }

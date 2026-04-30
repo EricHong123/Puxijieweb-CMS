@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '@/api/client';
+import { useToast } from '@/lib/toast';
 import { Scale, Save, ChevronDown, Plus, Trash2, X } from 'lucide-react';
 
 const PAGE_TYPES = [
@@ -33,6 +34,7 @@ export default function LegalPagesPage() {
   const [expandedType, setExpandedType] = useState<string | null>(null);
   const [editData, setEditData] = useState<TranslationData | null>(null);
   const [saving, setSaving] = useState(false);
+  const toast = useToast();
 
   const fetchPages = async () => {
     const { data } = await api.get('/legal', { params: { locale } });
@@ -80,7 +82,7 @@ export default function LegalPagesPage() {
       setExpandedType(null);
       setEditData(null);
     } catch (err: any) {
-      alert('保存失败');
+      toast.error('保存失败');
     } finally {
       setSaving(false);
     }

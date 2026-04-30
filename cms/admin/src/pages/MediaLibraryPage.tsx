@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import api from '@/api/client';
+import { useToast } from '@/lib/toast';
 import { Upload, Trash2, Copy, Image } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -18,6 +19,7 @@ export default function MediaLibraryPage() {
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const toast = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const fetchMedia = async () => {
@@ -40,7 +42,7 @@ export default function MediaLibraryPage() {
       });
       fetchMedia();
     } catch (err: any) {
-      alert('上传失败');
+      toast.error('上传失败');
     } finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = '';
@@ -55,7 +57,7 @@ export default function MediaLibraryPage() {
 
   const copyUrl = (url: string) => {
     navigator.clipboard.writeText(url);
-    alert('URL 已复制');
+    toast.success('URL 已复制');
   };
 
   return (
