@@ -55,6 +55,16 @@ function FaqPage() {
           <link key={a.hrefLang} rel="alternate" hrefLang={a.hrefLang} href={a.href} />
         ))}
         <link rel="alternate" hrefLang="x-default" href={`${getSiteOrigin()}/en/faq`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Puxijie" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={faq.title} />
+        <meta property="og:description" content={faq.description} />
+        <meta property="og:image" content={`${getSiteOrigin()}/og-default.jpg`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={faq.title} />
+        <meta name="twitter:description" content={faq.description} />
+        <meta name="twitter:image" content={`${getSiteOrigin()}/og-default.jpg`} />
         <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
       </Helmet>
 

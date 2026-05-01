@@ -121,8 +121,14 @@ function NewsArticlePage() {
     mainEntityOfPage: canonicalUrl,
     image: post.heroImages?.[0]?.src ? `${getSiteOrigin()}${post.heroImages[0].src}` : post.image,
     author: {
-      '@type': 'Organization',
-      name: 'Puxijie',
+      '@type': 'Person',
+      name: 'Puxijie Editorial Team',
+      jobTitle: 'OEM/ODM Audio Manufacturing Insights',
+      affiliation: {
+        '@type': 'Organization',
+        name: 'Puxijie',
+        url: getSiteOrigin(),
+      },
     },
     publisher: {
       '@type': 'Organization',

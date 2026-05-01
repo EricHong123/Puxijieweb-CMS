@@ -127,6 +127,7 @@ const BASE_MESSAGES = {
       emptyCategory: 'No products found in this category.',
       ipxHeavy: 'Heavy splash',
       ipx1m: '1m',
+      schemaDescription: 'Puxijie product catalog for OEM/ODM Bluetooth speakers, waterproof portable speakers, private label audio products, wholesale earbuds, MOQ planning, packaging data, and RFQ-ready sourcing.',
     },
     categories: {
       all: 'All products',

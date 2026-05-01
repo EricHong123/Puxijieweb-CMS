@@ -190,6 +190,16 @@ function B2BPage() {
           <link key={l} rel="alternate" hrefLang={l} href={`${getSiteOrigin()}/${l}/b2b`} />
         ))}
         <link rel="alternate" hrefLang="x-default" href={`${getSiteOrigin()}/en/b2b`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Puxijie" />
+        <meta property="og:url" content={`${getSiteOrigin()}/${locale}/b2b`} />
+        <meta property="og:title" content={pageCopy.title} />
+        <meta property="og:description" content={pageCopy.metaDesc} />
+        <meta property="og:image" content={`${getSiteOrigin()}/og-default.jpg`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageCopy.title} />
+        <meta name="twitter:description" content={pageCopy.metaDesc} />
+        <meta name="twitter:image" content={`${getSiteOrigin()}/og-default.jpg`} />
         <script type="application/ld+json">{JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'Service',

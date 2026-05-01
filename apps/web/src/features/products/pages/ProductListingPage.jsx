@@ -230,7 +230,6 @@ function ProductListingPage() {
     selectedIpxRatings.length > 0;
 
   const collectionJsonLd = useMemo(() => {
-    if (!isEnglish) return null;
     const itemListProducts = (filteredProducts.length > 0 ? filteredProducts : verifiedProducts).slice(0, 24);
     return {
       '@context': 'https://schema.org',
@@ -239,11 +238,10 @@ function ProductListingPage() {
           '@type': 'CollectionPage',
           '@id': `${canonicalUrl}#webpage`,
           url: canonicalUrl,
-          name: 'OEM Bluetooth Speakers and Earbuds Manufacturer | Puxijie Products',
-          inLanguage: 'en',
+          name: t(locale, 'productsPage.title'),
+          inLanguage: locale,
           dateModified: '2026-04-28',
-          description:
-            'Puxijie product catalog for OEM/ODM Bluetooth speakers, waterproof portable speakers, private label audio products, wholesale earbuds, MOQ planning, packaging data, and RFQ-ready sourcing.',
+          description: t(locale, 'productsPage.schemaDescription'),
           about: [
             'outdoor waterproof Bluetooth speaker manufacturer',
             'portable wireless speaker OEM/ODM',
@@ -262,7 +260,7 @@ function ProductListingPage() {
           '@id': `${canonicalUrl}#breadcrumb`,
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'Home', item: `${getSiteOrigin()}/${locale}` },
-            { '@type': 'ListItem', position: 2, name: 'Products', item: canonicalUrl },
+            { '@type': 'ListItem', position: 2, name: t(locale, 'nav.products'), item: canonicalUrl },
           ],
         },
         {
@@ -303,7 +301,7 @@ function ProductListingPage() {
         },
       ],
     };
-  }, [canonicalUrl, filteredProducts, isEnglish, locale, verifiedProducts]);
+  }, [canonicalUrl, filteredProducts, locale, verifiedProducts]);
 
   return (
     <>

@@ -87,6 +87,16 @@ function CatalogDownloadsPage() {
           <link key={l} rel="alternate" hrefLang={l} href={`${getSiteOrigin()}/${l}/catalog-downloads`} />
         ))}
         <link rel="alternate" hrefLang="x-default" href={`${getSiteOrigin()}/en/catalog-downloads`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Puxijie" />
+        <meta property="og:url" content={`${getSiteOrigin()}/${locale}/catalog-downloads`} />
+        <meta property="og:title" content={t(locale, 'catalogPage.title')} />
+        <meta property="og:description" content={t(locale, 'catalogPage.heroDesc')} />
+        <meta property="og:image" content={`${getSiteOrigin()}/og-default.jpg`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={t(locale, 'catalogPage.title')} />
+        <meta name="twitter:description" content={t(locale, 'catalogPage.heroDesc')} />
+        <meta name="twitter:image" content={`${getSiteOrigin()}/og-default.jpg`} />
       </Helmet>
 
       <div className="min-h-screen bg-gray-50">
