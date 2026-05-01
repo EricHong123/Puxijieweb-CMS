@@ -45,20 +45,26 @@ jobs:
         run: git add -f apps/web/.out/
         working-directory: ./
 
-      # ── DEPLOY via lftp (FTPS) ────────────────────────────────
-      # lftp handles Hostinger's TLS negotiation better than FTP action.
-      # Revert comment above if this also fails.
-      - name: Deploy via lftp
+      # ── Network diag ──────────────────────────────────────────
+      - name: Test connectivity to Hostinger
+        run: |
+          echo "=== ping ==="
+          ping -c 3 -W 5 ${{ secrets.HOSTINGER_SFTP_HOST }} || true
+          echo "=== port 21 ==="
+          timeout 10 bash -c "echo >/dev/tcp/${{ secrets.HOSTINGER_SFTP_HOST }}/21" && echo "21 OPEN" || echo "21 TIMEOUT"
+          echo "=== port 22 ==="
+          timeout 10 bash -c "echo >/dev/tcp/${{ secrets.HOSTINGER_SFTP_HOST }}/22" && echo "22 OPEN" || echo "22 TIMEOUT"
+        working-directory: ./
+
+      # ── DEPLOY via lftp (plain FTP, no TLS) ──────────────────
+      - name: Deploy via lftp (plain FTP)
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq lftp
           lftp -c "
-            set ftp:ssl-allow on;
-            set ftp:ssl-force on;
-            set ftp:ssl-protect-data on;
-            set ssl:verify-certificate no;
+            set ftp:ssl-allow off;
             set net:timeout 30;
-            set net:max-retries 3;
-            open -u '${{ secrets.HOSTINGER_SFTP_USER }}','${{ secrets.HOSTINGER_SFTP_PASSWORD }}' ftps://${{ secrets.HOSTINGER_SFTP_HOST }};
-            mirror -R --delete --parallel=5 apps/web/.out/ /public_html/;
+            set net:max-retries 2;
+            open -u '${{ secrets.HOSTINGER_SFTP_USER }}','${{ secrets.HOSTINGER_SFTP_PASSWORD }}' ${{ secrets.HOSTINGER_SFTP_HOST }};
+            mirror -R --delete --parallel=3 apps/web/.out/ /public_html/;
           "
         working-directory: ./
