@@ -69,11 +69,11 @@ function ProductCard({ product, index = 0 }) {
 
             <div className="mt-4 grid grid-cols-2 gap-2 border-y border-gray-100 py-3">
               <div className="min-w-0">
-                <p className="text-[10px] font-semibold uppercase text-gray-400">MOQ</p>
+                <p className="text-[11px] font-semibold uppercase text-gray-500">MOQ</p>
                 <p className="mt-1 truncate text-xs font-semibold text-gray-900">{p.moq || 'Confirm'}</p>
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] font-semibold uppercase text-gray-400">Colors</p>
+                <p className="text-[11px] font-semibold uppercase text-gray-500">Colors</p>
                 <p className="mt-1 truncate text-xs font-semibold text-gray-900">{p.colorOptions || 'Custom'}</p>
               </div>
             </div>
@@ -81,15 +81,15 @@ function ProductCard({ product, index = 0 }) {
             <div className="mt-3 grid grid-cols-3 gap-2 text-center">
               <div className="rounded-md bg-gray-50 px-2 py-2">
                 <Radio className="mx-auto h-4 w-4 text-gray-500" />
-                <span className="mt-1 block truncate text-[10px] font-semibold text-gray-700">{p.bluetoothVersion || 'BT'}</span>
+                <span className="mt-1 block truncate text-[11px] font-semibold text-gray-800">{p.bluetoothVersion || 'BT'}</span>
               </div>
               <div className="rounded-md bg-gray-50 px-2 py-2">
                 <Cpu className="mx-auto h-4 w-4 text-gray-500" />
-                <span className="mt-1 block truncate text-[10px] font-semibold text-gray-700">{p.chipset || 'Chipset'}</span>
+                <span className="mt-1 block truncate text-[11px] font-semibold text-gray-800">{p.chipset || 'Chipset'}</span>
               </div>
               <div className="rounded-md bg-gray-50 px-2 py-2">
                 <Boxes className="mx-auto h-4 w-4 text-gray-500" />
-                <span className="mt-1 block truncate text-[10px] font-semibold text-gray-700">{p.cartonQuantity || p.caseBattery || p.batteryLife || 'Bulk'}</span>
+                <span className="mt-1 block truncate text-[11px] font-semibold text-gray-800">{p.cartonQuantity || p.caseBattery || p.batteryLife || 'Bulk'}</span>
               </div>
             </div>
 

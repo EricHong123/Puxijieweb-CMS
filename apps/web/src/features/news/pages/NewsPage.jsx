@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { m } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
@@ -107,8 +108,8 @@ function NewsPage() {
                   transition={{ duration: 0.5, delay: index * 0.05 }}
                   className="overflow-hidden border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                 >
-                  <a
-                    href={item.href ? item.href.replace(/^\/en\//, `/${locale}/`) : `/${locale}/news/`}
+                  <Link
+                    to={item.href ? item.href.replace(/^\/en\//, `/${locale}/`) : `/${locale}/news/`}
                     className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900/30"
                   >
                     <div className="aspect-[16/9] overflow-hidden bg-gray-100">
@@ -130,7 +131,7 @@ function NewsPage() {
                         {t(locale, 'newsPage.readNow')} <ArrowRight className="ml-1 h-4 w-4" />
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 </m.article>
               ))}
             </div>

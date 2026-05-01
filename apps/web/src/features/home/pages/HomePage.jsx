@@ -377,12 +377,10 @@ function HomePage() {
         >
           <div className="absolute inset-0 z-0">
             {heroSlides.map((slide, idx) => {
-              if (isMobileViewport && idx !== activeSlide) return null;
               return (
-                <picture key={`hero-${idx}`}>
+                <picture key={`hero-${idx}`} id={`hero-slide-${idx}`} className={isMobileViewport && idx !== activeSlide ? 'hidden' : ''}>
                   <source media="(max-width: 767px)" srcSet={getImageSrcSet(slide.mobileSrc)} />
                   <img
-                    id={`hero-slide-${idx}`}
                     src={getImageSrc(slide.src)}
                     srcSet={getImageSrcSet(slide.src)}
                     sizes="(max-width: 767px) 100vw, 100vw"
@@ -578,8 +576,8 @@ function HomePage() {
             </m.div>
 
             <div className="mb-3 flex items-center justify-between lg:hidden">
-              <p className="text-xs font-semibold uppercase tracking-wider text-[#6f776f]">{homeCopy.swipe}</p>
-              <p className="text-xs text-[#6f776f]">{featuredProducts.length} {homeCopy.items}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#505750]">{homeCopy.swipe}</p>
+              <p className="text-xs text-[#505750]">{featuredProducts.length} {homeCopy.items}</p>
             </div>
 
             <div
@@ -614,7 +612,7 @@ function HomePage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-wider text-[#6f776f]">{homeCopy.buyerIntro.eyebrow}</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-[#505750]">{homeCopy.buyerIntro.eyebrow}</p>
                 <h2 className="mt-2 text-3xl font-bold text-[#1f2a24] md:text-4xl">
                   {homeCopy.buyerIntro.title}
                 </h2>
@@ -630,7 +628,7 @@ function HomePage() {
                   to={path.href}
                   className="group border border-[#d8d0c2] bg-[#f3efe8] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#1f2a24] hover:bg-[#fcfaf6] hover:shadow-lg"
                 >
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#6f776f]">{path.label}</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#505750]">{path.label}</p>
                   <h3 className="mt-4 text-2xl font-bold leading-tight text-[#1f2a24]">{path.title}</h3>
                   <p className="mt-4 text-sm leading-relaxed text-[#5e675f]">{path.description}</p>
                   <span className="mt-6 inline-flex items-center text-sm font-semibold text-[#1f2a24]">

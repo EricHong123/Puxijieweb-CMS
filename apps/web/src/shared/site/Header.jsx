@@ -446,7 +446,7 @@ function Header() {
                       <div className="grid grid-cols-[1.1fr_0.9fr]">
                         <div className="p-4">
                           <div className="mb-2 flex items-center justify-between px-1">
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400">{labels.productFamilies}</p>
+                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-500">{labels.productFamilies}</p>
                             <Link to={withLocale('/products')} className="text-xs font-bold text-gray-950 hover:underline">
                               {labels.allProducts}
                             </Link>
@@ -467,7 +467,7 @@ function Header() {
                                   className="flex items-center justify-between rounded-xl bg-white px-3 py-2.5 text-sm font-bold text-gray-950 shadow-sm transition-transform hover:-translate-y-0.5"
                                 >
                                   <span>{model.name}</span>
-                                  <span className="rounded-full bg-gray-950 px-2 py-1 text-[10px] font-bold text-white">{model.meta}</span>
+                                  <span className="rounded-full bg-gray-950 px-2 py-1 text-[11px] font-bold text-white">{model.meta}</span>
                                 </Link>
                               </NavigationMenuLink>
                             ))}
@@ -583,7 +583,7 @@ function Header() {
                         <span className="text-sm leading-none">{opt.flag}</span>
                         <span className="leading-none">{opt.label}</span>
                       </span>
-                      {opt.code === locale ? <span className="text-[10px]">Active</span> : null}
+                      {opt.code === locale ? <span className="text-[11px]">Active</span> : null}
                     </a>
                   ))}
                 </div>
@@ -641,7 +641,7 @@ function Header() {
             <div className="lg:hidden">
               <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full border border-white/10 bg-white/[0.055] text-white hover:bg-white/10">
+                  <Button variant="ghost" size="icon" aria-label="Open navigation menu" className="h-10 w-10 rounded-full border border-white/10 bg-white/[0.055] text-white hover:bg-white/10">
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
@@ -720,7 +720,7 @@ function Header() {
                               <span>{opt.flag}</span>
                               <span>{opt.label}</span>
                             </span>
-                            {opt.code === locale ? <span className="text-[10px] uppercase tracking-wider">Active</span> : null}
+                            {opt.code === locale ? <span className="text-[11px] uppercase tracking-wider">Active</span> : null}
                           </a>
                         ))}
                       </div>

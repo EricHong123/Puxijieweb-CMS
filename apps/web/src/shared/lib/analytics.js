@@ -3,7 +3,7 @@
 // Uses sessionStorage for session_id persistence.
 
 const STORAGE_KEY = 'puxijie_session_id';
-const ANALYTICS_ENDPOINT = 'https://api.puxijietech.com/api/v1/analytics/track';
+const ANALYTICS_ENDPOINT = 'https://puxijie-cms-api.hzjeric2002.workers.dev/api/v1/analytics/track';
 
 function getSessionId() {
   let id = sessionStorage.getItem(STORAGE_KEY);

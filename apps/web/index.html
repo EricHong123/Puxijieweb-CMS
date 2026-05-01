@@ -5,16 +5,27 @@
 		<link rel="icon" type="image/png" href="/favicon.png" />
 		<meta name="generator" content="Puxijie" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<!-- Google tag (gtag.js) -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=G-S0VFEM88S0"></script>
+		<link rel="preconnect" href="https://auwfoqmctabstuhqlmtx.supabase.co" />
+		<!-- Google tag (gtag.js) — deferred to avoid competing with critical resources -->
 		<script>
 			window.dataLayer = window.dataLayer || [];
 			function gtag() {
 				dataLayer.push(arguments);
 			}
 			gtag("js", new Date());
-
 			gtag("config", "G-S0VFEM88S0");
+
+			function _loadGtag() {
+				var s = document.createElement('script');
+				s.async = true;
+				s.src = 'https://www.googletagmanager.com/gtag/js?id=G-S0VFEM88S0';
+				document.head.appendChild(s);
+			}
+			if (window.requestIdleCallback) {
+				requestIdleCallback(_loadGtag);
+			} else {
+				window.addEventListener('load', function () { setTimeout(_loadGtag, 100); });
+			}
 		</script>
 		<title>Puxijie — Outdoor Portable Wireless Waterproof Speaker OEM/ODM Manufacturer</title>
 		<link rel="alternate" hreflang="en" href="https://puxijietech.com/en" />
