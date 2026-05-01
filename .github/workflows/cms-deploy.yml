@@ -45,26 +45,15 @@ jobs:
         run: git add -f apps/web/.out/
         working-directory: ./
 
-      # ── Network diag ──────────────────────────────────────────
-      - name: Test connectivity to Hostinger
-        run: |
-          echo "=== ping ==="
-          ping -c 3 -W 5 ${{ secrets.HOSTINGER_SFTP_HOST }} || true
-          echo "=== port 21 ==="
-          timeout 10 bash -c "echo >/dev/tcp/${{ secrets.HOSTINGER_SFTP_HOST }}/21" && echo "21 OPEN" || echo "21 TIMEOUT"
-          echo "=== port 22 ==="
-          timeout 10 bash -c "echo >/dev/tcp/${{ secrets.HOSTINGER_SFTP_HOST }}/22" && echo "22 OPEN" || echo "22 TIMEOUT"
-        working-directory: ./
-
-      # ── DEPLOY via lftp (plain FTP, no TLS) ──────────────────
-      - name: Deploy via lftp (plain FTP)
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq lftp
-          lftp -c "
-            set ftp:ssl-allow off;
-            set net:timeout 30;
-            set net:max-retries 2;
-            open -u '${{ secrets.HOSTINGER_SFTP_USER }}','${{ secrets.HOSTINGER_SFTP_PASSWORD }}' ${{ secrets.HOSTINGER_SFTP_HOST }};
-            mirror -R --delete --parallel=3 apps/web/.out/ /public_html/;
-          "
-        working-directory: ./
+      - name: Deploy to Hostinger via FTP
+        id: deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.HOSTINGER_SFTP_HOST }}
+          username: ${{ secrets.HOSTINGER_SFTP_USER }}
+          password: ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
+          local-dir: apps/web/.out/
+          server-dir: /public_html/
+          protocol: ftps
+          port: 21
+          dangerous-clean-slate: true
