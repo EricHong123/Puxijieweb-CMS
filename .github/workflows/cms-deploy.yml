@@ -45,15 +45,20 @@ jobs:
         run: git add -f apps/web/.out/
         working-directory: ./
 
-      - name: Deploy to Hostinger via FTP
-        id: deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ secrets.HOSTINGER_SFTP_HOST }}
-          username: ${{ secrets.HOSTINGER_SFTP_USER }}
-          password: ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
-          local-dir: apps/web/.out/
-          server-dir: /public_html/
-          protocol: ftp
-          port: 21
-          dangerous-clean-slate: true
+      # ── DEPLOY via SSH rsync ──────────────────────────────────
+      # FTP fallback (revert if SSH fails):
+      #   uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+      #   server:     ${{ secrets.HOSTINGER_SFTP_HOST }}
+      #   username:   ${{ secrets.HOSTINGER_SFTP_USER }}
+      #   password:   ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
+      #   local-dir:  apps/web/.out/
+      #   server-dir: /public_html/
+      #   protocol:   ftp  /  port: 21  /  dangerous-clean-slate: true
+      - name: Deploy via SSH (rsync)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            apps/web/.out/ \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/public_html/"
+        working-directory: ./
