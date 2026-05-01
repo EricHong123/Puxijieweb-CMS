@@ -45,20 +45,20 @@ jobs:
         run: git add -f apps/web/.out/
         working-directory: ./
 
-      # ── DEPLOY via SSH rsync ──────────────────────────────────
-      # FTP fallback (revert if SSH fails):
-      #   uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-      #   server:     ${{ secrets.HOSTINGER_SFTP_HOST }}
-      #   username:   ${{ secrets.HOSTINGER_SFTP_USER }}
-      #   password:   ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
-      #   local-dir:  apps/web/.out/
-      #   server-dir: /public_html/
-      #   protocol:   ftp  /  port: 21  /  dangerous-clean-slate: true
-      - name: Deploy via SSH (rsync)
+      # ── DEPLOY via lftp (FTPS) ────────────────────────────────
+      # lftp handles Hostinger's TLS negotiation better than FTP action.
+      # Revert comment above if this also fails.
+      - name: Deploy via lftp
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz --delete \
-            -e "ssh -o StrictHostKeyChecking=no" \
-            apps/web/.out/ \
-            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/public_html/"
+          sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+          lftp -c "
+            set ftp:ssl-allow on;
+            set ftp:ssl-force on;
+            set ftp:ssl-protect-data on;
+            set ssl:verify-certificate no;
+            set net:timeout 30;
+            set net:max-retries 3;
+            open -u '${{ secrets.HOSTINGER_SFTP_USER }}','${{ secrets.HOSTINGER_SFTP_PASSWORD }}' ftps://${{ secrets.HOSTINGER_SFTP_HOST }};
+            mirror -R --delete --parallel=5 apps/web/.out/ /public_html/;
+          "
         working-directory: ./
