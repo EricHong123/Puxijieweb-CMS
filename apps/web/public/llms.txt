@@ -40,13 +40,7 @@ Product pages expose model code, category, IP rating where applicable, chipset, 
 - Lab reports and compliance support: https://puxijietech.com/en/lab
 - FAQ: https://puxijietech.com/en/faq
 - News and buyer education: https://puxijietech.com/en/news
-- Catalog Downloads: https://puxijietech.com/en/catalog-downloads
-- Help Center: https://puxijietech.com/en/help-center
 - Contact: https://puxijietech.com/en/contact
-- Sitemap: https://puxijietech.com/en/sitemap
-- Terms of Use: https://puxijietech.com/en/terms-of-use
-- Privacy Policy: https://puxijietech.com/en/privacy
-- Warranty Policy: https://puxijietech.com/en/warranty
 
 ## Contact
 Primary buyer contact: WeChat ID EricH0625.

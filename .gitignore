@@ -5,6 +5,7 @@ cms/**/node_modules/
 # build outputs
 apps/**/.out/
 apps/**/dist/
+apps/**/hostinger/
 cms/admin/dist/
 
 # Cloudflare Workers local state

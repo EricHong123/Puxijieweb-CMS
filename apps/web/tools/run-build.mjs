@@ -129,3 +129,4 @@ removeFinderDuplicateCopies(outDir);
 createOutterZip();
 removeMacMetadata(outDir);
 removeFinderDuplicateCopies(outDir);
+runNode('copy-hostinger.mjs', { ignoreFail: true });
