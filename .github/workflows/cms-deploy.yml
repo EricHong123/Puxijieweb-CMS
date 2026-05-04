@@ -45,7 +45,7 @@ jobs:
         run: git add -f apps/web/.out/
         working-directory: ./
 
-      - name: Deploy to Hostinger via FTP
+      - name: Deploy to Hostinger via SFTP
         id: deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
@@ -54,5 +54,5 @@ jobs:
           password: ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
           local-dir: apps/web/.out/
           server-dir: /public_html/
-          protocol: ftps
-          port: 21
+          protocol: sftp
+          port: 22
