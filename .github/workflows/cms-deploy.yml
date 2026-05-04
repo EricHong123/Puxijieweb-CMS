@@ -45,12 +45,14 @@ jobs:
         run: git add -f apps/web/.out/
         working-directory: ./
 
-      - name: Deploy to Hostinger via rsync
+      - name: Deploy to Hostinger via lftp SFTP
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
-          sshpass -p "${{ secrets.HOSTINGER_SFTP_PASSWORD }}" rsync -avz \
-            -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
-            --delete \
-            apps/web/.out/ \
-            ${{ secrets.HOSTINGER_SFTP_USER }}@${{ secrets.HOSTINGER_SFTP_HOST }}:/public_html/
+          sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+          lftp -c "
+          set sftp:auto-confirm yes
+          set net:timeout 30
+          set net:max-retries 3
+          open -u ${{ secrets.HOSTINGER_SFTP_USER }},'${{ secrets.HOSTINGER_SFTP_PASSWORD }}' sftp://${{ secrets.HOSTINGER_SFTP_HOST }}
+          mirror -R -e --delete --verbose apps/web/.out/ /public_html/
+          "
         working-directory: ./
