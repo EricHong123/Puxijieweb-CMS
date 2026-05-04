@@ -45,14 +45,12 @@ jobs:
         run: git add -f apps/web/.out/
         working-directory: ./
 
-      - name: Deploy to Hostinger via SFTP
-        id: deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ secrets.HOSTINGER_SFTP_HOST }}
-          username: ${{ secrets.HOSTINGER_SFTP_USER }}
-          password: ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
-          local-dir: apps/web/.out/
-          server-dir: /public_html/
-          protocol: sftp
-          port: 22
+      - name: Deploy to Hostinger via rsync
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+          sshpass -p "${{ secrets.HOSTINGER_SFTP_PASSWORD }}" rsync -avz \
+            -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+            --delete \
+            apps/web/.out/ \
+            ${{ secrets.HOSTINGER_SFTP_USER }}@${{ secrets.HOSTINGER_SFTP_HOST }}:/public_html/
+        working-directory: ./
