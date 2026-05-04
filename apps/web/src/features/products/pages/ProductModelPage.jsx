@@ -4,10 +4,12 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, BadgeCheck, Boxes, Cable, Cpu, Download, Factory, PackageCheck, Palette, Radio, Ruler, ShieldCheck, Weight } from 'lucide-react';
 import Header from '@/shared/site/Header.jsx';
 import Footer from '@/shared/site/Footer.jsx';
+import Breadcrumb from '@/shared/ui/breadcrumb.jsx';
 import { getProductById } from '@/features/products/data/products.js';
 import ProductGallery from '@/features/products/components/ProductGallery.jsx';
 import InquiryButton from '@/shared/site/InquiryButton.jsx';
 import { DEFAULT_LOCALE, getSiteOrigin, isSupportedLocale, t } from '@/shared/lib/i18n.js';
+import { useLocale } from '@/shared/lib/useLocale.js';
 import { getLocalizedProduct } from '@/features/products/utils/productI18n.js';
 import { MODEL_SLUG_TO_ID } from '@/features/products/utils/modelSlugs.js';
 import { getImageFallbackSrc, getImageSrc } from '@/shared/lib/resolveImage.js';
@@ -378,6 +380,17 @@ function ProductModelPage() {
         <Header />
 
         <main>
+          <div className="bg-[#f6f5f1] px-4 lg:px-6 pt-4">
+            <div className="max-w-7xl mx-auto">
+              <Breadcrumb
+                items={[
+                  { label: t(locale, 'nav.home'), href: `/${locale}/` },
+                  { label: t(locale, 'nav.products'), href: `/${locale}/products` },
+                  { label: p.name },
+                ]}
+              />
+            </div>
+          </div>
           <section className="relative overflow-hidden bg-[#111111] text-white">
             <div className="absolute inset-0 opacity-35">
               <img

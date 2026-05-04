@@ -66,7 +66,7 @@ export default function DashboardPage() {
   const stats = [
     { label: '访客数', value: overview?.total_visitors?.toLocaleString() || '-', icon: Users, color: 'text-[#0078D4]', bg: 'bg-fluent-50' },
     { label: '页面浏览', value: overview?.total_pageviews?.toLocaleString() || '-', icon: MousePointer, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: '停留时间', value: overview ? `${Math.round((overview.avg_time_on_site || 0) / 60)}分` : '-', icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { label: '停留时间', value: overview ? (overview.avg_time_on_site >= 60 ? `${Math.round(overview.avg_time_on_site / 60)}分` : `${overview.avg_time_on_site || 0}秒`) : '-', icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-50' },
     { label: '跳出率', value: overview?.bounce_rate != null ? `${overview.bounce_rate}%` : '-', icon: Share2, color: 'text-purple-600', bg: 'bg-purple-50' },
   ];
 

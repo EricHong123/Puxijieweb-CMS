@@ -29,16 +29,41 @@ app.get('/overview', async (c) => {
     });
   }
 
-  const totalPageviews = pageviews?.length || 0;
-  const uniqueSessions = new Set(pageviews?.map((p) => p.session_id)).size;
+  const rows = pageviews || [];
+  const totalPageviews = rows.length;
+
+  // Group by session_id
+  const sessions: Record<string, { count: number; first: number; last: number }> = {};
+  for (const pv of rows) {
+    const sid = pv.session_id || 'no-session';
+    const ts = new Date(pv.created_at).getTime();
+    if (!sessions[sid]) {
+      sessions[sid] = { count: 0, first: ts, last: ts };
+    }
+    sessions[sid].count++;
+    if (ts < sessions[sid].first) sessions[sid].first = ts;
+    if (ts > sessions[sid].last) sessions[sid].last = ts;
+  }
+
+  const sessionList = Object.values(sessions);
+  const uniqueSessions = sessionList.length;
+  const bouncedSessions = sessionList.filter((s) => s.count === 1).length;
+  const bounceRate = uniqueSessions > 0 ? Math.round((bouncedSessions / uniqueSessions) * 100) : 0;
+
+  // Avg time on site: mean of (last - first) for sessions with 2+ pageviews
+  const multiPageSessions = sessionList.filter((s) => s.count >= 2);
+  const totalSpanMs = multiPageSessions.reduce((sum, s) => sum + (s.last - s.first), 0);
+  const avgTimeSeconds = multiPageSessions.length > 0
+    ? Math.round(totalSpanMs / multiPageSessions.length / 1000)
+    : 0;
 
   return c.json({
     success: true,
     data: {
       total_visitors: uniqueSessions,
       total_pageviews: totalPageviews,
-      avg_time_on_site: 0,
-      bounce_rate: 0,
+      avg_time_on_site: avgTimeSeconds,
+      bounce_rate: bounceRate,
       period: 'last_30_days',
       source: 'self-hosted',
     },

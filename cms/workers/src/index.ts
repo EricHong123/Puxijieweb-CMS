@@ -14,6 +14,7 @@ import { deployRoutes } from './routes/deploy';
 import { searchRoutes } from './routes/search';
 import { auditRoutes } from './routes/audit';
 import { versionRoutes } from './routes/versions';
+import { aiRoutes } from './routes/ai';
 import { auditMiddleware } from './lib/audit';
 import type { Env } from './lib/supabase';
 import { handleScheduledPublish } from './cron/publish-scheduled';
@@ -43,6 +44,7 @@ api.route('/deploy', deployRoutes);
 api.route('/search', searchRoutes);
 api.route('/audit-logs', auditRoutes);
 api.route('/versions', versionRoutes);
+api.route('/ai', aiRoutes);
 
 app.route('/api/v1', api);
 

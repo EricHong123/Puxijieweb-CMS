@@ -6,6 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import Header from '@/shared/site/Header.jsx';
 import Footer from '@/shared/site/Footer.jsx';
 import { Button } from '@/shared/ui/button';
+import Breadcrumb from '@/shared/ui/breadcrumb.jsx';
 import { DEFAULT_LOCALE, getSiteOrigin, isSupportedLocale, t } from '@/shared/lib/i18n.js';
 import { PROCUREMENT_FAQ } from '@/features/faq/data/procurementFaq.js';
 import { getFaqExtendedSections } from '@/features/faq/data/faqExtendedSections.jsx';
@@ -70,6 +71,17 @@ function FaqPage() {
 
       <div className="min-h-screen bg-gray-50">
         <Header />
+
+        <div className="bg-gray-50 px-4 lg:px-6 pt-4">
+          <div className="max-w-7xl mx-auto">
+            <Breadcrumb
+              items={[
+                { label: t(locale, 'nav.home'), href: `/${locale}/` },
+                { label: t(locale, 'nav.faq') },
+              ]}
+            />
+          </div>
+        </div>
 
         <section className="py-24 bg-white border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

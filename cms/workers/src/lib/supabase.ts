@@ -7,6 +7,7 @@ export interface Env {
   JWT_SECRET: string;
   GITHUB_TOKEN: string;
   GITHUB_REPO: string;
+  DEEPSEEK_API_KEY: string;
 }
 
 export function getSupabase(env: Env) {

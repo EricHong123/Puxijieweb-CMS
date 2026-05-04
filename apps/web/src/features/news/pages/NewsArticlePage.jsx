@@ -4,8 +4,9 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, BookOpen, Clock3, Globe2, Tag } from 'lucide-react';
 import Header from '@/shared/site/Header.jsx';
 import Footer from '@/shared/site/Footer.jsx';
-import { getSiteOrigin } from '@/shared/lib/i18n.js';
+import { getSiteOrigin, t } from '@/shared/lib/i18n.js';
 import { useLocale } from '@/shared/lib/useLocale.js';
+import Breadcrumb from '@/shared/ui/breadcrumb.jsx';
 import { getNewsPost } from '@/features/news/lib/newsContent.js';
 import './NewsArticlePage.css';
 
@@ -170,6 +171,15 @@ function NewsArticlePage() {
         <Header />
 
         <main>
+          <div className="magazine-container px-4 lg:px-6 pt-4">
+            <Breadcrumb
+              items={[
+                { label: t(locale, 'nav.home'), href: `/${locale}/` },
+                { label: pageCopy.news, href: `/${locale}/news/` },
+                { label: post.title },
+              ]}
+            />
+          </div>
           <section className="magazine-cover">
             <div className="magazine-cover__topline">
               <Link to={`/${locale}/news/`} className="magazine-back">

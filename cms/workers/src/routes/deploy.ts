@@ -24,12 +24,21 @@ app.post('/trigger', requireAuth(), requireAdmin(), async (c) => {
   const repo = c.env.GITHUB_REPO;
   const token = c.env.GITHUB_TOKEN;
 
+  if (!token) {
+    await supabase
+      .from('deploy_logs')
+      .update({ status: 'failed', error_message: 'GITHUB_TOKEN not configured' })
+      .eq('id', log.id);
+    return c.json({ success: false, error: 'GITHUB_TOKEN not configured' }, 500);
+  }
+
   try {
     const response = await fetch(
       `https://api.github.com/repos/${repo}/actions/workflows/cms-deploy.yml/dispatches`,
       {
         method: 'POST',
         headers: {
+          'User-Agent': 'puxijie-cms',
           Authorization: `Bearer ${token}`,
           Accept: 'application/vnd.github+json',
           'X-GitHub-Api-Version': '2022-11-28',
@@ -40,9 +49,11 @@ app.post('/trigger', requireAuth(), requireAdmin(), async (c) => {
     );
 
     if (!response.ok) {
+      const errBody = await response.text().catch(() => '');
+      console.error('GitHub API error:', response.status, errBody.slice(0, 500));
       await supabase
         .from('deploy_logs')
-        .update({ status: 'failed', error_message: `GitHub API: ${response.status} ${response.statusText}` })
+        .update({ status: 'failed', error_message: `GitHub API ${response.status}: ${errBody.slice(0, 300)}` })
         .eq('id', log.id);
       return c.json({ success: false, error: 'Failed to trigger deploy' }, 500);
     }

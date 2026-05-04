@@ -12,6 +12,7 @@ import { getProductsByCategory, products } from '@/features/products/data/produc
 import { getSiteOrigin, t } from '@/shared/lib/i18n.js';
 import { getCategoryLabel } from '@/features/products/utils/productI18n.js';
 import { useLocale } from '@/shared/lib/useLocale.js';
+import Breadcrumb from '@/shared/ui/breadcrumb.jsx';
 import { getImageFallbackSrc, getImageSrc } from '@/shared/lib/resolveImage.js';
 import { getModelSlugById } from '@/features/products/utils/modelSlugs.js';
 
@@ -353,6 +354,17 @@ function ProductListingPage() {
 
       <div className="min-h-screen bg-[#f6f5f1]">
         <Header />
+
+        <div className="bg-[#f6f5f1] px-4 lg:px-6 pt-4">
+          <div className="max-w-7xl mx-auto">
+            <Breadcrumb
+              items={[
+                { label: t(locale, 'nav.home'), href: `/${locale}/` },
+                { label: t(locale, 'nav.products') },
+              ]}
+            />
+          </div>
+        </div>
 
         <section className="relative overflow-hidden border-b border-gray-200 bg-[#111111] text-white">
           <div className="absolute inset-0 opacity-35">
