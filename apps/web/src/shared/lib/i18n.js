@@ -261,14 +261,13 @@ const BASE_MESSAGES = {
       heroTagline: 'At the forefront of the convergence of technology and music.',
       heroDesc:
         'From product engineering to large-scale manufacturing, Puxijie builds practical speaker solutions for wholesale, OEM/ODM, and long-term business cooperation.',
-      heroImageAlt: 'Puxijie waterproof speaker manufacturer — company office reception and front desk',
       storyTitle: 'Brand story',
       story1:
         'Driven by a profound mission to redefine audio experiences, our company has built a legacy over 12 years of relentless innovation. In November 2024, we officially renamed to Puxijie, marking a new chapter in our commitment to delivering uncompromising sound quality in the most demanding environments.',
       story2:
         'Our strength lies in our R&D focus, powered by an elite team composed of seasoned acoustic engineers, electronic experts, and visionary industrial designers. Together, they push the boundaries of innovation, ensuring every product we create stands at the pinnacle of durability, design, and acoustic performance.',
       story3:
-        'Operating from our state-of-the-art production base in Wuxuan County, Laibin City, Guangxi Province, we maintain a robust manufacturing capacity exceeding 250,000 units monthly. This scale empowers our global sales network and strategic partnerships, allowing us to bring premium audio solutions to adventurers and professionals worldwide.',
+        'Operating from our state-of-the-art production base in Humen Town, Dongguan City, Guangdong Province, we maintain a robust manufacturing capacity exceeding 250,000 units monthly. This scale empowers our global sales network and strategic partnerships, allowing us to bring premium audio solutions to adventurers and professionals worldwide.',
       statYears: '12 Years',
       statYearsLabel: 'of Innovation',
       statCapacity: '250,000+',
@@ -295,7 +294,7 @@ const BASE_MESSAGES = {
         "Technology is meaningless if it doesn't serve the user. We design our interfaces to be intuitive, our form factors to be ergonomic, and our support to be responsive, ensuring a seamless experience from purchase to daily use.",
       productionTitle: 'Production & Capabilities',
       productionDesc:
-        'Located in the heart of Guangxi Province, our advanced manufacturing facility represents the pinnacle of modern audio production. With a monthly capacity exceeding 250,000 units, we maintain strict quality control at scale.',
+        'Located in the Dongguan-Shenzhen manufacturing corridor, our advanced manufacturing facility represents the pinnacle of modern audio production. With a monthly capacity exceeding 250,000 units, we maintain strict quality control at scale.',
       prodBullet1: 'State-of-the-art assembly lines',
       prodBullet2: 'Rigorous acoustic testing chambers',
       prodBullet3: 'Advanced waterproofing validation',
@@ -613,14 +612,13 @@ const BASE_MESSAGES = {
       heroTagline: 'À la croisée de la technologie et de la musique.',
       heroDesc:
         'De l’ingénierie à la fabrication à grande échelle, Puxijie fournit des solutions d’enceintes pour grossiste, OEM/ODM et partenariats long terme.',
-      heroImageAlt: 'Accueil et réception des bureaux Puxijie',
       storyTitle: 'Histoire de la marque',
       story1:
         "Portés par la mission de redéfinir l’expérience audio, nous avons bâti 12 ans d’innovation continue. En novembre 2024, nous avons officiellement pris le nom Puxijie, ouvrant un nouveau chapitre pour offrir un son exigeant dans les environnements les plus difficiles.",
       story2:
         "Notre force : la R&D. Une équipe d’ingénieurs acoustiques, d’experts électroniques et de designers industriels repousse les limites, afin que chaque produit atteigne un niveau élevé de durabilité, de design et de performance sonore.",
       story3:
-        "Depuis notre base de production à Wuxuan (Laibin, Guangxi), nous dépassons 250 000 unités par mois. Cette capacité soutient notre réseau mondial et nos partenariats, pour livrer des solutions audio premium aux aventuriers et professionnels.",
+        "Depuis notre base de production à Humen (Dongguan, Guangdong), nous dépassons 250 000 unités par mois. Cette capacité soutient notre réseau mondial et nos partenariats, pour livrer des solutions audio premium aux aventuriers et professionnels.",
       statYears: '12 ans',
       statYearsLabel: "d'innovation",
       statCapacity: '250 000+',
@@ -647,7 +645,7 @@ const BASE_MESSAGES = {
         'La technologie n’a de sens que si elle sert l’utilisateur. Nous visons des interfaces intuitives, des formes ergonomiques et un support réactif, pour une expérience fluide du premier contact à l’usage quotidien.',
       productionTitle: 'Production & capacités',
       productionDesc:
-        'Située au Guangxi, notre usine moderne incarne une production audio exigeante. Avec plus de 250 000 unités par mois, nous maîtrisons la qualité à grande échelle.',
+        'Située au Guangdong, notre usine moderne incarne une production audio exigeante. Avec plus de 250 000 unités par mois, nous maîtrisons la qualité à grande échelle.',
       prodBullet1: 'Lignes d’assemblage de pointe',
       prodBullet2: 'Chambres d’essais acoustiques rigoureuses',
       prodBullet3: 'Validation avancée de l’étanchéité',
@@ -965,14 +963,13 @@ const BASE_MESSAGES = {
       heroTagline: 'Giao thoa giữa công nghệ và âm nhạc.',
       heroDesc:
         'Từ R&D đến sản xuất quy mô lớn, Puxijie cung cấp giải pháp loa cho bán sỉ, OEM/ODM và hợp tác dài hạn.',
-      heroImageAlt: 'Lễ tân và khu văn phòng Puxijie',
       storyTitle: 'Câu chuyện thương hiệu',
       story1:
         'Với sứ mệnh nâng tầm trải nghiệm âm thanh, chúng tôi đã xây dựng 12 năm đổi mới liên tục. Tháng 11/2024, công ty chính thức đổi tên thành Puxijie, mở ra chương mới cho cam kết âm thanh chất lượng cao trong những môi trường khắc nghiệt.',
       story2:
         'Thế mạnh của chúng tôi là R&D, với đội ngũ kỹ sư âm học, chuyên gia điện tử và nhà thiết kế công nghiệp giàu kinh nghiệm. Họ liên tục cải tiến để mỗi sản phẩm đạt chuẩn bền bỉ, thiết kế đẹp và hiệu năng âm thanh tốt.',
       story3:
-        'Vận hành tại cơ sở sản xuất hiện đại ở huyện Wuxuan, thành phố Laibin, Quảng Tây, năng lực sản xuất vượt 250.000 chiếc/tháng. Quy mô này giúp chúng tôi phục vụ mạng lưới toàn cầu và đối tác chiến lược.',
+        'Vận hành tại cơ sở sản xuất hiện đại ở trấn Humen, thành phố Đông Quản, tỉnh Quảng Đông, năng lực sản xuất vượt 250.000 chiếc/tháng. Quy mô này giúp chúng tôi phục vụ mạng lưới toàn cầu và đối tác chiến lược.',
       statYears: '12 năm',
       statYearsLabel: 'Đổi mới',
       statCapacity: '250.000+',
@@ -999,7 +996,7 @@ const BASE_MESSAGES = {
         'Công nghệ chỉ có ý nghĩa khi phục vụ người dùng. Chúng tôi thiết kế giao diện trực quan, kiểu dáng cầm nắm thoải mái và hỗ trợ kịp thời, để trải nghiệm suôn sẻ từ lúc mua đến sử dụng hằng ngày.',
       productionTitle: 'Sản xuất & năng lực',
       productionDesc:
-        'Đặt tại Quảng Tây, nhà máy hiện đại của chúng tôi đại diện cho sản xuất âm thanh quy mô lớn. Với hơn 250.000 sản phẩm/tháng, chúng tôi duy trì kiểm soát chất lượng chặt chẽ.',
+        'Đặt tại Quảng Đông, nhà máy hiện đại của chúng tôi đại diện cho sản xuất âm thanh quy mô lớn. Với hơn 250.000 sản phẩm/tháng, chúng tôi duy trì kiểm soát chất lượng chặt chẽ.',
       prodBullet1: 'Dây chuyền lắp ráp hiện đại',
       prodBullet2: 'Buồng thử âm học nghiêm ngặt',
       prodBullet3: 'Kiểm định chống nước tiên tiến',

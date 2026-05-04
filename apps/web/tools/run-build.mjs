@@ -10,7 +10,6 @@ const root = path.dirname(fileURLToPath(import.meta.url));
 const webRoot = path.resolve(root, '..');
 const repoRoot = path.resolve(webRoot, '..', '..');
 const outDir = path.join(webRoot, '.out');
-const outterZip = path.join(webRoot, 'outter.zip');
 
 function findViteCli() {
   const candidates = [
@@ -49,19 +48,6 @@ function prepareOutputTargets() {
       sleep(250);
     }
   }
-  fs.rmSync(outterZip, { force: true });
-}
-
-function createOutterZip() {
-  // Zip the contents of .out at archive root so host uploads can extract directly.
-  const zip = spawnSync('zip', ['-qry', outterZip, '.', '-x', '*.DS_Store', '__MACOSX/*'], {
-    cwd: outDir,
-    stdio: 'inherit',
-  });
-  if ((zip.status ?? 1) !== 0) {
-    console.error('Failed to create outter.zip from .out contents.');
-    process.exit(zip.status ?? 1);
-  }
 }
 
 function removeMacMetadata(dir) {
@@ -97,6 +83,36 @@ prepareOutputTargets();
 runNode('generate-geo-files.mjs');
 runNode('generate-llms.js', { ignoreFail: true });
 
+// Pull latest CMS data from Worker API (non-fatal: skips if API is unreachable)
+function runCodegen() {
+  // Prefer the API-based codegen (no secrets needed), fall back to Supabase-based
+  const codegenApi = path.join(repoRoot, 'cms', 'scripts', 'codegen-from-api.mjs');
+  const codegenSupabase = path.join(repoRoot, 'cms', 'scripts', 'codegen.mjs');
+
+  const script = fs.existsSync(codegenApi) ? codegenApi : codegenSupabase;
+  if (!fs.existsSync(script)) {
+    console.log('[run-build] No codegen script found, skipping CMS data fetch');
+    return;
+  }
+
+  // API-based codegen needs no secrets; Supabase-based needs SUPABASE_URL+SERVICE_ROLE_KEY
+  if (script === codegenSupabase && (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY)) {
+    console.log('[run-build] SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY not set, skipping CMS data fetch');
+    return;
+  }
+
+  console.log('[run-build] Fetching CMS data...');
+  const r = spawnSync(process.execPath, [script], {
+    cwd: webRoot,
+    stdio: 'inherit',
+    env: process.env,
+  });
+  if ((r.status ?? 1) !== 0) {
+    console.warn('[run-build] codegen failed (non-fatal), continuing with existing .generated.js files');
+  }
+}
+runCodegen();
+
 if (!viteCli) {
   console.error('vite CLI not found. Run npm install in apps/web or repo root.');
   process.exit(1);
@@ -124,9 +140,6 @@ try {
 
 runNode('stamp-index-html.mjs');
 runNode('generate-static-route-pages.mjs');
-removeMacMetadata(outDir);
-removeFinderDuplicateCopies(outDir);
-createOutterZip();
 removeMacMetadata(outDir);
 removeFinderDuplicateCopies(outDir);
 runNode('copy-hostinger.mjs', { ignoreFail: true });

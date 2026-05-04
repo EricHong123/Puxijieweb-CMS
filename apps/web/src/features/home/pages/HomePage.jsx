@@ -266,12 +266,12 @@ function HomePage() {
       return {
         title: 'Waterproof Bluetooth Speaker OEM/ODM Manufacturer | Puxijie',
         desc:
-          'Puxijie manufactures waterproof Bluetooth speakers for procurement teams, brands, retailers, and distributors. OEM/ODM, private label, wholesale supply, IPX6/IPX7 options, and export compliance support.',
+          'Puxijie is a top-10 China OEM/ODM audio manufacturer since 2013. ISO 9001 & ISO 14001 certified, Six Sigma quality, 5,200 sqm facility. Waterproof Bluetooth speakers, portable speakers, and earbuds for procurement, private label, and wholesale across 45+ countries.',
         keywords:
-          'waterproof bluetooth speaker manufacturer, waterproof speaker OEM ODM, wholesale waterproof speakers, private label bluetooth speaker, outdoor portable wireless speaker factory, IPX7 waterproof speaker supplier, bluetooth speaker for retailers',
-        ogTitle: 'Waterproof Bluetooth Speakers for Brands, Retailers, and Wholesale Buyers',
+          'waterproof bluetooth speaker manufacturer, top 10 bluetooth speaker factory China, waterproof speaker OEM ODM, wholesale waterproof speakers, private label bluetooth speaker, IPX7 IPX8 waterproof speaker supplier, ISO 9001 speaker manufacturer Dongguan, bluetooth speaker for retailers',
+        ogTitle: 'Top-10 China Waterproof Bluetooth Speaker OEM/ODM Manufacturer | Puxijie',
         ogDesc:
-          'OEM/ODM waterproof speaker manufacturing for procurement teams, brand owners, retailers, and distributors. 12 years experience, 250,000+ monthly capacity, IPX6/IPX7 options.',
+          'One of China\'s top-10 OEM/ODM audio manufacturers. Since 2013 — ISO 9001 & ISO 14001 certified, Six Sigma quality, 5,200 sqm facility, 320+ employees, 250,000+ monthly capacity, exporting to 45+ countries. IPX6/IPX7/IPX8 waterproof speakers, portable wireless speakers, Bluetooth earbuds.',
         canonical: `${getSiteOrigin()}/en/`,
         ogImage: `${getSiteOrigin()}/images/og-image.svg`,
         ogLocale: 'en_US',
@@ -350,6 +350,78 @@ function HomePage() {
               }
             : {})}
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@graph': [
+              {
+                '@type': 'WebSite',
+                '@id': `${getSiteOrigin()}/#website`,
+                url: `${getSiteOrigin()}/${locale}/`,
+                name: 'Puxijie',
+                description: homeSeo.desc ?? homeDesc,
+                inLanguage: locale,
+                publisher: {
+                  '@type': 'Organization',
+                  '@id': `${getSiteOrigin()}/#organization`,
+                  name: 'Puxijie',
+                  url: `${getSiteOrigin()}/${locale}/`,
+                },
+                potentialAction: {
+                  '@type': 'SearchAction',
+                  target: {
+                    '@type': 'EntryPoint',
+                    urlTemplate: `${getSiteOrigin()}/${locale}/products?q={search_term_string}`,
+                  },
+                  'query-input': 'required name=search_term_string',
+                },
+              },
+              {
+                '@type': 'Organization',
+                '@id': `${getSiteOrigin()}/#organization`,
+                name: 'Puxijie',
+                alternateName: 'Puxijie Tech',
+                url: `${getSiteOrigin()}/${locale}/`,
+                foundingDate: '2013',
+                numberOfEmployees: { '@type': 'QuantitativeValue', value: 320 },
+                description: homeSeo.desc ?? homeDesc,
+                address: {
+                  '@type': 'PostalAddress',
+                  streetAddress: 'Building 6, No. 49, Fenghuang 2nd Road, Humen Town',
+                  addressLocality: 'Dongguan',
+                  addressRegion: 'Guangdong',
+                  postalCode: '523900',
+                  addressCountry: 'CN',
+                },
+                contactPoint: [
+                  {
+                    '@type': 'ContactPoint',
+                    contactType: 'Sales',
+                    email: 'inquiry@puxijietech.com',
+                    telephone: '+86-13532328175',
+                    availableLanguage: ['English', 'French', 'Vietnamese'],
+                  },
+                ],
+                areaServed: [
+                  { '@type': 'Continent', name: 'North America' },
+                  { '@type': 'Continent', name: 'Europe' },
+                  { '@type': 'Continent', name: 'Asia' },
+                  { '@type': 'Continent', name: 'Middle East' },
+                  { '@type': 'Continent', name: 'South America' },
+                  { '@type': 'Continent', name: 'Africa' },
+                ],
+                knowsAbout: [
+                  'OEM Bluetooth speaker manufacturing',
+                  'ODM waterproof speaker design',
+                  'Private label portable speakers',
+                  'Bluetooth earbuds wholesale',
+                  'IPX6/IPX7/IPX8 waterproof audio',
+                  'Consumer electronics supply chain',
+                ],
+              },
+            ],
+          })}
+        </script>
       </Helmet>
 
       <div
@@ -543,7 +615,7 @@ function HomePage() {
                       src={getImageSrc(g31NewLaunch)}
                       srcSet={getImageSrcSet(g31NewLaunch)}
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 92vw, min(700px, 55vw)"
-                      alt="G31 new launch product visual"
+                      alt="G31 IPX6 waterproof Bluetooth speaker — Puxijie OEM/ODM new launch product visual"
                       width={getImageWidth(g31NewLaunch, 1280)}
                       height={getImageHeight(g31NewLaunch, 900)}
                       loading="lazy"

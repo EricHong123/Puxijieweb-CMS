@@ -382,7 +382,7 @@ function ProductModelPage() {
             <div className="absolute inset-0 opacity-35">
               <img
                 src={getImageSrc(heroImage)}
-                alt=""
+                alt={`${p.name} ${p.ipxRating && p.ipxRating !== 'N/A' ? p.ipxRating + ' ' : ''}waterproof Bluetooth speaker — Puxijie OEM/ODM product hero`}
                 onError={(event) => {
                   event.currentTarget.src = getImageFallbackSrc();
                   event.currentTarget.srcset = '';

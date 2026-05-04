@@ -18,7 +18,7 @@ function getB2bCopy(locale) {
   const copy = {
     en: {
       title: 'B2B & Wholesale',
-      metaDesc: 'Request wholesale pricing for outdoor portable wireless waterproof speakers. OEM/ODM, private label, and bulk order sourcing for brands, distributors, and gift buyers. IPX6/IPX7 verified, 250,000+ monthly capacity.',
+      metaDesc: 'Request wholesale pricing for outdoor portable wireless waterproof speakers. OEM/ODM, private label, and bulk order sourcing for brands, distributors, and gift buyers. IPX6/IPX7/IPX8 verified, 250,000+ monthly capacity, ISO 9001 certified, 45+ countries.',
       desc: 'Partner with Puxijie to bring professional waterproof audio to your customers. Flexible terms, custom solutions, and dedicated support.',
       seoLine: 'Source outdoor portable wireless waterproof speakers with OEM/ODM, private label, and bulk order support — designed for brands, distributors, and project buyers.',
       benefits: [

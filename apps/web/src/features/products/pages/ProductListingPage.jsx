@@ -326,7 +326,7 @@ function ProductListingPage() {
           name="description"
           content={
             locale === 'en'
-              ? 'Browse outdoor portable wireless waterproof speakers for OEM/ODM, private label, and wholesale programs. Filter by IPX6/IPX7 ratings and model categories.'
+              ? 'Browse outdoor portable wireless waterproof speakers for OEM/ODM, private label, and wholesale programs. Filter by IPX6/IPX7/IPX8 ratings and model categories.'
               : t(locale, 'productsPage.tagline')
           }
         />
@@ -358,7 +358,7 @@ function ProductListingPage() {
           <div className="absolute inset-0 opacity-35">
             <img
               src={getImageSrc(heroImage)}
-              alt=""
+              alt={`${heroProduct?.name || 'Waterproof Bluetooth speakers'} — Puxijie OEM/ODM wholesale product lineup`}
               className="h-full w-full object-cover"
               onError={(event) => {
                 event.currentTarget.src = getImageFallbackSrc();

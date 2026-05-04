@@ -39,23 +39,25 @@ import { getImageHeight, getImageSrc, getImageSrcSet, getImageWidth } from '@/sh
 function getAboutCopy(locale) {
   const copy = {
     en: {
-      title: 'About Puxijie — Waterproof Bluetooth Speaker Manufacturer & OEM/ODM Factory',
+      title: 'About Puxijie — Top-10 China Waterproof Bluetooth Speaker OEM/ODM Manufacturer',
       description:
-        'Meet Puxijie, a China waterproof Bluetooth speaker manufacturer for OEM/ODM, private label audio, wholesale portable speakers, IPX6/IPX7 outdoor speaker programs, and B2B sourcing.',
-      badge: 'Waterproof audio factory for B2B buyers',
+        'Meet Puxijie — a top-10 China OEM/ODM audio manufacturer since 2013. ISO 9001 & ISO 14001 certified, Six Sigma quality, 5,200 sqm facility, 320 employees, exporting to 45+ countries. Waterproof Bluetooth speakers, portable wireless speakers, specialty speakers, and Bluetooth earbuds for OEM/ODM, private label, and wholesale B2B.',
+      badge: 'Top-10 China OEM/ODM Audio Factory — Since 2013',
       heroTitle: 'A sharper way to build your outdoor speaker line',
       heroDesc:
-        'Puxijie is a waterproof Bluetooth speaker manufacturer in China helping brands, distributors, retailers, and promotional buyers move from product idea to market-ready audio supply.',
+        'Puxijie is one of China\'s top-10 waterproof Bluetooth speaker OEM/ODM manufacturers. A vertically integrated, ISO 9001 & ISO 14001 certified, Six Sigma factory in Dongguan — helping brands, distributors, retailers, and procurement teams move from concept to market-ready audio supply across 45+ countries.',
       heroSupport:
         'Our work combines OEM/ODM engineering, private label branding, IPX waterproof validation, scalable production, and export-ready B2B support.',
       primaryCta: 'Discuss an OEM/ODM project',
       secondaryCta: 'View product platforms',
       chips: ['OEM/ODM speaker factory', 'Private label audio', 'Wholesale portable speakers', 'IPX6/IPX7 waterproof speaker'],
       stats: [
-        ['12+', 'years of audio manufacturing experience'],
+        ['Since 2013', '12+ years manufacturing'],
         ['250K+', 'monthly production capacity'],
-        ['IPX6/IPX7', 'waterproof speaker validation'],
-        ['Global', 'B2B wholesale supply support'],
+        ['5,200 sqm', '8 production lines'],
+        ['320+', 'employees & engineers'],
+        ['IPX6/IPX7/IPX8', 'waterproof validation'],
+        ['45+ Countries', '6 continents served'],
       ],
       trustTitle: 'Built for the questions professional buyers ask first',
       trustDesc:
@@ -68,11 +70,12 @@ function getAboutCopy(locale) {
       storyEyebrow: 'Who we are',
       storyTitle: 'From audio engineering to dependable supply',
       storyBody:
-        'Puxijie grew from a technology-led audio team into a focused outdoor waterproof speaker supplier. The company name changed in November 2024, but the operating idea stayed simple: make speaker programs easier for B2B buyers to evaluate, customize, and repeat.',
+        'Founded in 2013, Puxijie has grown from a tight audio engineering team into one of China\'s top-10 waterproof Bluetooth speaker OEM/ODM manufacturers. Operating from a 5,200 sqm Six Sigma facility in the Dongguan-Shenzhen manufacturing corridor, our 320-person team ships to 45+ countries across six continents. In November 2024, we unified under the Puxijie name to reflect our global ambition. The principle remains simple: give B2B buyers OEM/ODM programs that are easier to evaluate, faster to customize, and built to repeat at scale.',
       storyPoints: [
-        'Acoustic, electronic, and industrial design teams work together before sampling starts.',
-        'Existing product platforms reduce development risk for retailers and distributor programs.',
-        'Production planning is built around wholesale volume, documentation, and repeat orders.',
+        'Our 28-person R&D division — acoustic engineers, electronic specialists, and industrial designers — collaborates from concept sketch through golden sample in 7–14 business days.',
+        'ISO 9001, ISO 14001, and BSCI-audited (Rating B) production ensures every order meets international compliance standards.',
+        'Proven product platforms with 18,000,000+ cumulative units shipped reduce development risk for OEM/ODM, private label, and wholesale programs.',
+        'Production planning is built around wholesale volume, Six Sigma QC, full export documentation, and repeat-order consistency.',
       ],
       capabilityEyebrow: 'Manufacturing capability',
       capabilityTitle: 'Production that buyers can actually inspect',
@@ -123,10 +126,12 @@ function getAboutCopy(locale) {
       secondaryCta: 'Voir les plateformes produits',
       chips: ['Usine enceintes OEM/ODM', 'Audio private label', 'Enceintes portables wholesale', 'Enceinte étanche IPX6/IPX7'],
       stats: [
-        ['12+', 'ans d’expérience audio'],
+        ['Depuis 2013', "12+ ans d'expérience"],
         ['250K+', 'capacité mensuelle'],
-        ['IPX6/IPX7', 'validation étanchéité'],
-        ['Global', 'support wholesale B2B'],
+        ['5 200 m²', '8 lignes de production'],
+        ['320+', 'employés & ingénieurs'],
+        ['IPX6/IPX7/IPX8', 'validation étanchéité'],
+        ['45+ Pays', '6 continents desservis'],
       ],
       trustTitle: 'Conçu pour les premières questions des acheteurs professionnels',
       trustDesc:
@@ -194,10 +199,12 @@ function getAboutCopy(locale) {
       secondaryCta: 'Xem nền tảng sản phẩm',
       chips: ['Nhà máy loa OEM/ODM', 'Private label audio', 'Loa portable bán sỉ', 'Loa chống nước IPX6/IPX7'],
       stats: [
-        ['12+', 'năm kinh nghiệm audio'],
+        ['Từ 2013', '12+ năm sản xuất'],
         ['250K+', 'năng lực mỗi tháng'],
-        ['IPX6/IPX7', 'kiểm định chống nước'],
-        ['Global', 'hỗ trợ bán sỉ B2B'],
+        ['5.200 m²', '8 dây chuyền'],
+        ['320+', 'nhân viên & kỹ sư'],
+        ['IPX6/IPX7/IPX8', 'kiểm định chống nước'],
+        ['45+ Quốc gia', '6 lục địa'],
       ],
       trustTitle: 'Trả lời đúng câu hỏi đầu tiên của buyer chuyên nghiệp',
       trustDesc:
@@ -290,7 +297,7 @@ function AboutUsPage() {
 
   const aboutCanonical = `${getSiteOrigin()}/${locale}/about-us`;
   const aboutOgImage = `${getSiteOrigin()}${getImageSrc(companyFrontdeskImage)}`;
-  const proofIcons = [Award, Zap, Shield, Globe];
+  const proofIcons = [Award, Zap, Shield, Globe, Factory, Users];
   const trustIcons = [Factory, Microscope, PackageCheck];
 
   const fadeIn = {
@@ -303,18 +310,45 @@ function AboutUsPage() {
   const organizationJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': `${getSiteOrigin()}/${locale}/about-us#organization`,
     name: 'Puxijie',
+    alternateName: 'Puxijie Tech',
     url: getSiteOrigin(),
     logo: `${getSiteOrigin()}/images/puxijie-logo-dark.webp`,
+    foundingDate: '2013',
+    numberOfEmployees: { '@type': 'QuantitativeValue', value: 320, unitText: 'FTE' },
     description: pageCopy.description,
     knowsAbout: [
       'waterproof Bluetooth speaker manufacturer',
       'OEM/ODM speaker factory',
       'private label portable speakers',
       'wholesale Bluetooth speakers',
-      'IPX7 outdoor speaker manufacturing',
+      'IPX6/IPX7/IPX8 outdoor speaker manufacturing',
+      'Six Sigma audio manufacturing',
+      'Bluetooth earbuds OEM',
     ],
-    areaServed: ['North America', 'Europe', 'Asia-Pacific', 'Middle East'],
+    areaServed: [
+      { '@type': 'Continent', name: 'North America' },
+      { '@type': 'Continent', name: 'Europe' },
+      { '@type': 'Continent', name: 'Asia-Pacific' },
+      { '@type': 'Continent', name: 'Middle East' },
+      { '@type': 'Continent', name: 'South America' },
+      { '@type': 'Continent', name: 'Africa' },
+    ],
+    hasCredential: [
+      { '@type': 'EducationalOccupationalCredential', credentialCategory: 'ISO 9001:2015', about: 'Quality Management Systems', recognizedBy: { '@type': 'Organization', name: 'SGS' } },
+      { '@type': 'EducationalOccupationalCredential', credentialCategory: 'ISO 14001:2015', about: 'Environmental Management', recognizedBy: { '@type': 'Organization', name: 'SGS' } },
+      { '@type': 'EducationalOccupationalCredential', credentialCategory: 'BSCI', about: 'Social Compliance Audit — Rating B', recognizedBy: { '@type': 'Organization', name: 'Amfori' } },
+    ],
+    foundingLocation: {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Dongguan',
+        addressRegion: 'Guangdong',
+        addressCountry: 'CN',
+      },
+    },
   };
 
   return (

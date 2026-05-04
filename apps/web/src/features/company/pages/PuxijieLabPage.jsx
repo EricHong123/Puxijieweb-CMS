@@ -13,7 +13,7 @@ function getLabPageCopy(locale) {
   const copy = {
     en: {
       buyerValidation:
-        'Buyer-ready validation for outdoor waterproof speakers: IPX6/IPX7 water resistance, durability checks, and compliance references for OEM/ODM and wholesale sourcing.',
+        'Buyer-ready validation for outdoor waterproof speakers: IPX6/IPX7/IPX8 water resistance, durability checks, and compliance references for OEM/ODM and wholesale sourcing.',
       files: 'files',
       tip: 'Tip: PDFs open in a new tab. OFD files may require a compatible viewer.',
       pdfNote: 'PDF • Opens in a new tab',
@@ -92,7 +92,7 @@ function PuxijieLabPage() {
           name="description"
           content={
             locale === 'en'
-              ? 'View waterproof speaker lab testing and validation reports for B2B sourcing. IPX6/IPX7 water resistance, durability checks, and compliance support for OEM/ODM and wholesale programs.'
+              ? 'View waterproof speaker lab testing and validation reports for B2B sourcing. IPX6/IPX7/IPX8 water resistance, durability checks, Six Sigma QC, and compliance support for OEM/ODM and wholesale programs.'
               : t(locale, 'labPage.heroDesc')
           }
         />

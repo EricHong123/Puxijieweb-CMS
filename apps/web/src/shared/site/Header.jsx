@@ -651,7 +651,7 @@ function Header() {
                       src={getImageSrc(puxijieLogo)}
                       srcSet={getImageSrcSet(puxijieLogo)}
                       sizes="180px"
-                      alt="Puxijie"
+                      alt="Puxijie waterproof Bluetooth speaker OEM/ODM manufacturer logo"
                       width={200}
                       height={52}
                       className="h-11 w-auto rounded-xl bg-white px-3 py-1.5"

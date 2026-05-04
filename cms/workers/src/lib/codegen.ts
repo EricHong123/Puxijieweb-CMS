@@ -4,6 +4,13 @@
 
 import { createClient } from '@supabase/supabase-js';
 
+const CMS_CATEGORY_MAP: Record<string, string> = {
+  waterproof_bt: 'Waterproof Bluetooth Speaker',
+  normal_bt: 'Normal Bluetooth Speaker',
+  specialty: 'Specialty Speaker',
+  earbuds: 'Bluetooth Earbuds',
+};
+
 interface CodegenOptions {
   supabaseUrl: string;
   supabaseKey: string;
@@ -55,7 +62,7 @@ export async function generateAllProducts(opts: CodegenOptions): Promise<string>
     lines.push(`  {`);
     lines.push(`    id: '${p.slug}',`);
     lines.push(`    name: '${(en?.name || '').replace(/'/g, "\\'")}',`);
-    lines.push(`    category: '${p.category}',`);
+    lines.push(`    category: '${CMS_CATEGORY_MAP[p.category] || p.category}',`);
     lines.push(`    image: [${imageRefs.join(', ')}],`);
 
     // Translations
