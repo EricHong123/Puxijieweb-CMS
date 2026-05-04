@@ -45,14 +45,14 @@ jobs:
         run: git add -f apps/web/.out/
         working-directory: ./
 
-      - name: Deploy to Hostinger via lftp SFTP
+      - name: Deploy to Hostinger via lftp FTP
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq lftp
           lftp -c "
-          set sftp:auto-confirm yes
+          set ftp:ssl-allow no
           set net:timeout 30
           set net:max-retries 3
-          open -u ${{ secrets.HOSTINGER_SFTP_USER }},'${{ secrets.HOSTINGER_SFTP_PASSWORD }}' sftp://${{ secrets.HOSTINGER_SFTP_HOST }}
+          open -u ${{ secrets.HOSTINGER_SFTP_USER }},'${{ secrets.HOSTINGER_SFTP_PASSWORD }}' ftp://${{ secrets.HOSTINGER_SFTP_HOST }}
           mirror -R -e --delete --verbose apps/web/.out/ /public_html/
           "
         working-directory: ./

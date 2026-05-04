@@ -1,6 +1,7 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/useAuth';
 import CommandPalette from '@/components/CommandPalette';
+import ChatPanel from '@/components/ChatPanel';
 import ThemeToggle from '@/components/ThemeToggle';
 import {
   LayoutDashboard, Package, Image, FileText, Newspaper,
@@ -123,6 +124,7 @@ export default function AdminLayout() {
         </main>
       </div>
       <CommandPalette />
+      <ChatPanel />
     </div>
   );
 }
