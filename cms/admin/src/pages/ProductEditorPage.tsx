@@ -203,7 +203,7 @@ export default function ProductEditorPage() {
     return (
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-medium text-slate-700">{label}</label>
+          <label className="text-sm font-medium text-warm-charcoal">{label}</label>
           <Button variant="ghost" size="sm" type="button" onClick={() => addArrayItem(field)}>
             <Plus className="h-3 w-3" /> 添加
           </Button>
@@ -227,7 +227,7 @@ export default function ProductEditorPage() {
             </div>
           ))}
           {items.length === 0 && (
-            <div className="text-xs text-slate-500 py-2">暂无内容，点击"添加"按钮</div>
+            <div className="text-xs text-warm-charcoal-muted py-2">暂无内容，点击"添加"按钮</div>
           )}
         </div>
       </div>
@@ -242,8 +242,8 @@ export default function ProductEditorPage() {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-slate-800">{isNew ? '添加产品' : `编辑 ${watch('slug')}`}</h1>
-          <p className="text-sm text-slate-500 mt-1">{isNew ? '创建新产品' : '修改产品内容后点击保存'}</p>
+          <h1 className="text-2xl font-bold text-warm-charcoal">{isNew ? '添加产品' : `编辑 ${watch('slug')}`}</h1>
+          <p className="text-sm text-warm-charcoal-muted mt-1">{isNew ? '创建新产品' : '修改产品内容后点击保存'}</p>
         </div>
         <Button type="button" onClick={handleSubmit(onSubmit)} disabled={saving}>
           <Save className="h-4 w-4" />
@@ -294,12 +294,12 @@ export default function ProductEditorPage() {
             </Button>
           </div>
           {downloads.length === 0 ? (
-            <p className="text-sm text-slate-500 py-2">暂无下载文件。点击"添加下载"关联产品文档（如规格书 PDF、色卡 PDF 等）。</p>
+            <p className="text-sm text-warm-charcoal-muted py-2">暂无下载文件。点击"添加下载"关联产品文档（如规格书 PDF、色卡 PDF 等）。</p>
           ) : (
             <div className="space-y-3">
               {downloads.map((d, idx) => (
-                <div key={idx} className="flex gap-3 items-start p-3 bg-[#FAFAFA] rounded-lg border border-[#EBEBEB]">
-                  <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-[#EBEBEB] text-xs font-medium text-slate-600 mt-2">{idx + 1}</span>
+                <div key={idx} className="flex gap-3 items-start p-3 bg-[hsl(var(--secondary))] rounded-lg border border-[hsl(var(--border))]">
+                  <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-[hsl(var(--border))] text-xs font-medium text-warm-charcoal-muted mt-2">{idx + 1}</span>
                   <div className="flex-1 grid gap-2 sm:grid-cols-2">
                     <Input
                       value={d.title}
@@ -365,7 +365,7 @@ export default function ProductEditorPage() {
                 <textarea
                   {...register(`translations.${activeIdx}.description_html`)}
                   rows={5}
-                  className="w-full px-3 py-2.5 rounded-lg border text-sm font-mono bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))] transition-colors duration-150 resize-y"
+                  className="w-full px-3 py-2.5 rounded-lg border text-sm font-mono bg-[hsl(var(--card))] placeholder:text-warm-charcoal-muted/60 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))] transition-colors duration-150 resize-y"
                   placeholder="<p>产品描述...</p>"
                 />
               </FormField>

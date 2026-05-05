@@ -32,10 +32,10 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-300 transition-colors"
+      className="p-2 rounded-lg text-warm-charcoal-muted hover:text-warm-charcoal hover:bg-[hsl(var(--accent))] transition-all duration-paper"
       title={theme === 'light' ? '切换暗色模式' : '切换亮色模式'}
     >
-      {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+      {theme === 'light' ? <Moon className="h-4 w-4" strokeWidth={1.5} /> : <Sun className="h-4 w-4" strokeWidth={1.5} />}
     </button>
   );
 }

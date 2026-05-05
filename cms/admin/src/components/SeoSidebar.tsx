@@ -15,8 +15,8 @@ interface Props {
 function SeoLine({ ok, label }: { ok: boolean; label: string }) {
   return (
     <div className="flex items-center gap-2 text-xs">
-      <span className={cn('inline-block w-2 h-2 rounded-full shrink-0', ok ? 'bg-emerald-500' : 'bg-amber-500')} />
-      <span className={ok ? 'text-emerald-700' : 'text-amber-700'}>{label}</span>
+      <span className={cn('inline-block w-2 h-2 rounded-full shrink-0', ok ? 'bg-pastel-green' : 'bg-pastel-amber')} />
+      <span className={ok ? 'text-pastel-green' : 'text-pastel-amber'}>{label}</span>
     </div>
   );
 }
@@ -26,18 +26,18 @@ function CharGauge({ current, min, max, label }: { current: number; min: number;
   return (
     <div className="space-y-1">
       <div className="flex justify-between text-xs">
-        <span className="text-slate-500">{label}</span>
-        <span className={cn('font-medium', ok ? 'text-emerald-600' : current > max ? 'text-red-500' : 'text-amber-600')}>
+        <span className="text-warm-charcoal-muted">{label}</span>
+        <span className={cn('font-medium', ok ? 'text-pastel-green' : current > max ? 'text-pastel-rose' : 'text-pastel-amber')}>
           {current} 字
         </span>
       </div>
-      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+      <div className="h-1.5 bg-[hsl(var(--secondary))] rounded-full overflow-hidden">
         <div
-          className={cn('h-full rounded-full transition-all', ok ? 'bg-emerald-500' : current > max ? 'bg-red-400' : 'bg-amber-400')}
+          className={cn('h-full rounded-full transition-all', ok ? 'bg-pastel-green' : current > max ? 'bg-pastel-rose/60' : 'bg-pastel-amber')}
           style={{ width: `${Math.min(100, (current / max) * 100)}%` }}
         />
       </div>
-      <div className="text-[10px] text-slate-400">
+      <div className="text-[10px] text-warm-charcoal-muted/60">
         {current < min ? `建议至少 ${min} 字` : current > max ? `建议不超过 ${max} 字` : `${min}-${max} 字范围内 ✓`}
       </div>
     </div>
@@ -54,8 +54,8 @@ export default function SeoSidebar({ feedback }: Props) {
 
   return (
     <aside className="w-56 shrink-0 space-y-4">
-      <div className="bg-white rounded-xl border p-4 space-y-3">
-        <h3 className="font-semibold text-sm text-slate-800">SEO 检查</h3>
+      <div className="paper-card p-4 space-y-3">
+        <h3 className="font-semibold text-sm text-warm-charcoal">SEO 检查</h3>
         <div className="space-y-2">
           {checks.map((c, i) => (
             <SeoLine key={i} ok={c.ok} label={c.label} />
@@ -64,7 +64,7 @@ export default function SeoSidebar({ feedback }: Props) {
       </div>
 
       {feedback.metaDescription !== undefined && (
-        <div className="bg-white rounded-xl border p-4">
+        <div className="paper-card p-4">
           <CharGauge
             current={feedback.metaDescription?.length || 0}
             min={120}
@@ -75,17 +75,17 @@ export default function SeoSidebar({ feedback }: Props) {
       )}
 
       {feedback.hasImages && (
-        <div className="bg-white rounded-xl border p-4 space-y-2">
-          <h3 className="font-semibold text-sm text-slate-800">图片 SEO</h3>
-          <div className="text-xs text-slate-500">
+        <div className="paper-card p-4 space-y-2">
+          <h3 className="font-semibold text-sm text-warm-charcoal">图片 SEO</h3>
+          <div className="text-xs text-warm-charcoal-muted">
             {feedback.totalImages} 张图片，{feedback.imagesWithAlt} 张有 alt
           </div>
         </div>
       )}
 
-      <div className="bg-blue-50 rounded-xl border border-blue-200 p-4">
-        <h3 className="font-semibold text-sm text-blue-800 mb-1">SEO 提示</h3>
-        <ul className="text-xs text-blue-700 space-y-1 list-disc list-inside">
+      <div className="bg-pastel-blue/6 rounded-xl border border-pastel-blue/15 p-4">
+        <h3 className="font-semibold text-sm text-pastel-blue mb-1">SEO 提示</h3>
+        <ul className="text-xs text-warm-charcoal-muted space-y-1 list-disc list-inside">
           <li>标题 30-60 字效果最佳</li>
           <li>描述 120-160 字适合摘要</li>
           <li>每张图片应有 alt 文本</li>

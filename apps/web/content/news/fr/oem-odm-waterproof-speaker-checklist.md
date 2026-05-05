@@ -1,14 +1,11 @@
 ---
-title: Checklist OEM/ODM pour enceintes étanches (B2B) — Spécifications, conformité, packaging
-description: Checklist B2B pour cadrer un projet OEM/ODM d’enceinte étanche : IPX, conformité, packaging, MOQ et validation.
-date: 2026-04-26
-keywords:
-  - checklist enceinte étanche OEM ODM
-  - sourcing enceinte bluetooth en gros
-  - packaging private label enceinte
-  - CE FCC RoHS enceinte
+title: "OEM/ODM Waterproof Speaker Checklist for B2B Buyers (Specs, Compliance, Packaging)"
+description: "A B2B checklist to streamline OEM/ODM waterproof speaker sourcing—IPX targets, compliance, packaging, MOQ, and validation questions."
+date: "2026-04-26"
+keywords: []
+locale: "fr"
+heroImage: "/images/news/g21-portable.webp"
 ---
-
 Cette checklist aide les acheteurs B2B à aligner les exigences avec un **fabricant OEM/ODM d’enceintes étanches** avant l’échantillonnage.
 
 ## 1) Objectifs produit & performance
@@ -36,4 +33,3 @@ Cette checklist aide les acheteurs B2B à aligner les exigences avec un **fabric
 - Garantie et process SAV
 
 Avec votre marché de destination et votre quantité cible, le cycle de devis est souvent beaucoup plus rapide.
-

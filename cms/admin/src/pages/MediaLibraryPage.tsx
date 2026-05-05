@@ -80,12 +80,12 @@ export default function MediaLibraryPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">媒体库</h1>
-          <p className="text-sm text-slate-500 mt-1">{total} 个文件</p>
+          <h1 className="text-2xl font-bold text-warm-charcoal">媒体库</h1>
+          <p className="text-sm text-warm-charcoal-muted mt-1">{total} 个文件</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-warm-charcoal-muted/60" />
             <Input
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
@@ -105,33 +105,33 @@ export default function MediaLibraryPage() {
         {loading ? (
           <SkeletonMediaGrid count={10} />
         ) : items.length === 0 ? (
-          <div className="col-span-full py-12 text-center text-slate-500">
-            <Image className="h-10 w-10 mx-auto mb-2 text-slate-300" />
+          <div className="col-span-full py-12 text-center text-warm-charcoal-muted">
+            <Image className="h-10 w-10 mx-auto mb-2 text-warm-charcoal-muted/30" />
             暂无图片，点击上传
           </div>
         ) : (
           items.map((item) => (
             <Card key={item.id} padding="none" className="group relative overflow-hidden">
-              <div className="aspect-square bg-[#FAFAFA] flex items-center justify-center overflow-hidden">
+              <div className="aspect-square bg-[hsl(var(--secondary))] flex items-center justify-center overflow-hidden">
                 {item.variants?.publicUrl ? (
                   <img src={item.variants.publicUrl} alt={item.original_filename} className="w-full h-full object-cover" />
                 ) : (
-                  <Image className="h-8 w-8 text-slate-300" />
+                  <Image className="h-8 w-8 text-warm-charcoal-muted/30" />
                 )}
               </div>
               <div className="p-2">
-                <div className="text-xs font-medium text-slate-700 truncate" title={item.original_filename}>
+                <div className="text-xs font-medium text-warm-charcoal truncate" title={item.original_filename}>
                   {item.original_filename}
                 </div>
-                <div className="text-xs text-slate-500">{(item.file_size_bytes / 1024).toFixed(0)} KB</div>
+                <div className="text-xs text-warm-charcoal-muted">{(item.file_size_bytes / 1024).toFixed(0)} KB</div>
               </div>
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-fluent flex items-center justify-center gap-2">
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-paper flex items-center justify-center gap-2">
                 {item.variants?.publicUrl && (
-                  <button onClick={() => copyUrl(item.variants.publicUrl!)} className="p-2 bg-white rounded-lg hover:bg-slate-100" title="复制 URL">
-                    <Copy className="h-4 w-4 text-slate-700" />
+                  <button onClick={() => copyUrl(item.variants.publicUrl!)} className="p-2 bg-[hsl(var(--card))] rounded-lg hover:bg-[hsl(var(--secondary))]" title="复制 URL">
+                    <Copy className="h-4 w-4 text-warm-charcoal" />
                   </button>
                 )}
-                <button onClick={() => handleDelete(item.id, item.original_filename)} className="p-2 bg-white rounded-lg hover:bg-red-50" title="删除">
+                <button onClick={() => handleDelete(item.id, item.original_filename)} className="p-2 bg-[hsl(var(--card))] rounded-lg hover:bg-pastel-rose/8" title="删除">
                   <Trash2 className="h-4 w-4 text-red-500" />
                 </button>
               </div>
@@ -146,7 +146,7 @@ export default function MediaLibraryPage() {
             <ChevronLeft className="h-4 w-4" />
             上一页
           </Button>
-          <span className="text-sm text-slate-500">{page} / {totalPages}</span>
+          <span className="text-sm text-warm-charcoal-muted">{page} / {totalPages}</span>
           <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages}>
             下一页
             <ChevronRight className="h-4 w-4" />

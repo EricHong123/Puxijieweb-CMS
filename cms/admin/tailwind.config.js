@@ -33,14 +33,20 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        fluent: {
-          50: '#E8F4FD',
-          100: '#B3D9F7',
-          200: '#60B5F1',
-          400: '#2196E0',
-          DEFAULT: '#0078D4',
-          600: '#106EBE',
-          700: '#004D8C',
+        'warm-charcoal': {
+          DEFAULT: 'hsl(30 6% 18%)',
+          muted: 'hsl(28 5% 38%)',
+        },
+        ivory: {
+          DEFAULT: 'hsl(40 30% 98%)',
+          cream: 'hsl(38 25% 96%)',
+        },
+        pastel: {
+          blue: 'hsl(205 40% 48%)',
+          rose: 'hsl(4 55% 58%)',
+          green: 'hsl(140 25% 48%)',
+          amber: 'hsl(35 60% 55%)',
+          lavender: 'hsl(250 30% 65%)',
         },
       },
       borderRadius: {
@@ -48,31 +54,28 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
-      backdropBlur: {
-        'acrylic': '24px',
-        'acrylic-sm': '16px',
-      },
       boxShadow: {
-        'elevation-1': '0 1px 3px 0 rgb(0 0 0 / 0.04)',
-        'elevation-2': '0 2px 8px 0 rgb(0 0 0 / 0.06)',
-        'elevation-3': '0 4px 16px 0 rgb(0 0 0 / 0.08)',
-        'acrylic': '0 4px 24px 0 rgb(0 0 0 / 0.06)',
+        'paper-xs': 'var(--shadow-xs)',
+        'paper-sm': 'var(--shadow-sm)',
+        'paper': 'var(--shadow-sm)',
+        'paper-md': 'var(--shadow-md)',
+        'paper-lg': 'var(--shadow-lg)',
       },
       fontFamily: {
-        sans: ['"Segoe UI"', '"SF Pro Text"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['"Inter"', '"Segoe UI"', '"SF Pro Text"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        handwriting: ['"Caveat"', '"Comic Sans MS"', 'cursive'],
       },
       transitionDuration: {
-        'fluent': '200ms',
-        'fluent-slow': '300ms',
+        paper: '200ms',
       },
       keyframes: {
-        'fade-in-up': {
-          '0%': { opacity: '0', transform: 'translateY(4px)' },
+        'paper-in': {
+          '0%': { opacity: '0', transform: 'translateY(6px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
       animation: {
-        'fade-in-up': 'fade-in-up 0.25s ease-out',
+        'paper-in': 'paper-in 0.25s ease-out',
       },
     },
   },

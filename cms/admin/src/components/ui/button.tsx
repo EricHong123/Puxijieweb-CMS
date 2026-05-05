@@ -3,23 +3,23 @@ import { cn } from '@/lib/utils';
 import React from 'react';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 rounded-lg text-sm font-medium transition-all duration-fluent ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]/40 focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
+  'inline-flex items-center justify-center gap-2 rounded-lg text-sm font-medium transition-all duration-paper ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]/30 focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
   {
     variants: {
       variant: {
         default:
-          'bg-primary text-primary-foreground shadow-elevation-1 hover:shadow-elevation-2 hover:-translate-y-px active:translate-y-0',
+          'bg-pastel-blue text-white shadow-paper-sm hover:shadow-paper-md hover:-translate-y-px active:translate-y-0',
         secondary:
-          'bg-[#F5F5F5] text-slate-700 hover:bg-[#EBEBEB] shadow-elevation-1 hover:-translate-y-px',
+          'bg-[hsl(var(--secondary))] text-warm-charcoal hover:bg-[hsl(var(--accent))] shadow-paper-xs hover:shadow-paper-sm hover:-translate-y-px',
         outline:
-          'border border-[hsl(var(--border))] bg-white/60 backdrop-blur-sm text-slate-700 hover:bg-[hsl(var(--accent))] hover:border-primary/40 hover:-translate-y-px',
+          'border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-warm-charcoal hover:bg-[hsl(var(--accent))] hover:border-pastel-blue/40 hover:-translate-y-px shadow-paper-xs',
         ghost:
-          'text-slate-600 hover:bg-[hsl(var(--accent))] hover:text-primary',
+          'text-warm-charcoal-muted hover:bg-[hsl(var(--accent))] hover:text-pastel-blue',
         destructive:
-          'bg-red-500 text-white shadow-elevation-1 hover:bg-red-600 hover:-translate-y-px',
+          'bg-pastel-rose text-white shadow-paper-sm hover:shadow-paper-md hover:-translate-y-px',
         'destructive-ghost':
-          'text-slate-400 hover:text-red-500 hover:bg-red-50',
-        link: 'text-primary underline-offset-4 hover:underline',
+          'text-warm-charcoal-muted hover:text-pastel-rose hover:bg-pastel-rose/5',
+        link: 'text-pastel-blue underline-offset-4 hover:underline',
       },
       size: {
         sm: 'h-8 px-3 py-1.5 text-xs gap-1',

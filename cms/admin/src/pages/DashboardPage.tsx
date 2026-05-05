@@ -64,26 +64,26 @@ export default function DashboardPage() {
   }, []);
 
   const stats = [
-    { label: '访客数', value: overview?.total_visitors?.toLocaleString() || '-', icon: Users, color: 'text-[#0078D4]', bg: 'bg-fluent-50' },
-    { label: '页面浏览', value: overview?.total_pageviews?.toLocaleString() || '-', icon: MousePointer, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: '停留时间', value: overview ? (overview.avg_time_on_site >= 60 ? `${Math.round(overview.avg_time_on_site / 60)}分` : `${overview.avg_time_on_site || 0}秒`) : '-', icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-50' },
-    { label: '跳出率', value: overview?.bounce_rate != null ? `${overview.bounce_rate}%` : '-', icon: Share2, color: 'text-purple-600', bg: 'bg-purple-50' },
+    { label: '访客数', value: overview?.total_visitors?.toLocaleString() || '-', icon: Users, color: 'text-pastel-blue', bg: 'bg-pastel-blue/6' },
+    { label: '页面浏览', value: overview?.total_pageviews?.toLocaleString() || '-', icon: MousePointer, color: 'text-pastel-green', bg: 'bg-pastel-green/8' },
+    { label: '停留时间', value: overview ? (overview.avg_time_on_site >= 60 ? `${Math.round(overview.avg_time_on_site / 60)}分` : `${overview.avg_time_on_site || 0}秒`) : '-', icon: TrendingUp, color: 'text-pastel-amber', bg: 'bg-pastel-amber/8' },
+    { label: '跳出率', value: overview?.bounce_rate != null ? `${overview.bounce_rate}%` : '-', icon: Share2, color: 'text-purple-600', bg: 'bg-pastel-lavender/8' },
   ];
 
   const quickLinks = [
-    { label: '添加产品', href: '/products/new', icon: Package, color: 'text-[#0078D4]', bg: 'bg-[#E8F4FD]' },
-    { label: '媒体库', href: '/media', icon: ImageIcon, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: '编辑页面', href: '/pages', icon: FileText, color: 'text-amber-600', bg: 'bg-amber-50' },
-    { label: '发布新闻', href: '/news/new', icon: Newspaper, color: 'text-purple-600', bg: 'bg-purple-50' },
-    { label: '网站设置', href: '/settings', icon: Globe, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { label: '部署', href: '/deploy', icon: Rocket, color: 'text-rose-600', bg: 'bg-rose-50' },
+    { label: '添加产品', href: '/products/new', icon: Package, color: 'text-pastel-blue', bg: 'bg-pastel-blue/6' },
+    { label: '媒体库', href: '/media', icon: ImageIcon, color: 'text-pastel-green', bg: 'bg-pastel-green/8' },
+    { label: '编辑页面', href: '/pages', icon: FileText, color: 'text-pastel-amber', bg: 'bg-pastel-amber/8' },
+    { label: '发布新闻', href: '/news/new', icon: Newspaper, color: 'text-purple-600', bg: 'bg-pastel-lavender/8' },
+    { label: '网站设置', href: '/settings', icon: Globe, color: 'text-pastel-lavender', bg: 'bg-pastel-lavender/8' },
+    { label: '部署', href: '/deploy', icon: Rocket, color: 'text-pastel-rose', bg: 'bg-pastel-rose/8' },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-800">数据看板</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl font-bold text-warm-charcoal">数据看板</h1>
+        <p className="text-sm text-warm-charcoal-muted mt-1">
           {loading ? '加载中...' : overview?.source === 'self-hosted' ? '数据来源：自建追踪' : '网站流量概览'}
         </p>
       </div>
@@ -91,14 +91,14 @@ export default function DashboardPage() {
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
-          <Card key={s.label} variant="acrylic" padding="lg" hover>
+          <Card key={s.label} variant="paper" padding="lg" hover>
             <div className="flex items-center gap-3">
               <div className={`h-10 w-10 rounded-xl ${s.bg} flex items-center justify-center`}>
                 <s.icon className={`h-5 w-5 ${s.color}`} />
               </div>
               <div>
-                <div className="text-2xl font-bold text-slate-800">{s.value}</div>
-                <div className="text-xs text-slate-500">{s.label}</div>
+                <div className="text-2xl font-bold text-warm-charcoal">{s.value}</div>
+                <div className="text-xs text-warm-charcoal-muted">{s.label}</div>
               </div>
             </div>
           </Card>
@@ -132,7 +132,7 @@ export default function DashboardPage() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-64 flex items-center justify-center text-slate-500 text-sm">
+            <div className="h-64 flex items-center justify-center text-warm-charcoal-muted text-sm">
               暂无数据。部署 tracking script 到网站以开始收集数据。
             </div>
           )}
@@ -169,14 +169,14 @@ export default function DashboardPage() {
                 {referrers.slice(0, 6).map((r, idx) => (
                   <div key={r.source} className="flex items-center gap-2 text-xs">
                     <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
-                    <span className="text-slate-600 truncate max-w-[120px]">{r.source}</span>
-                    <span className="text-slate-400 ml-auto">{r.count}</span>
+                    <span className="text-warm-charcoal-muted truncate max-w-[120px]">{r.source}</span>
+                    <span className="text-warm-charcoal-muted/60 ml-auto">{r.count}</span>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <div className="h-64 flex items-center justify-center text-slate-500 text-sm">
+            <div className="h-64 flex items-center justify-center text-warm-charcoal-muted text-sm">
               暂无数据
             </div>
           )}
@@ -192,16 +192,16 @@ export default function DashboardPage() {
             <div className="space-y-2">
               {topPages.map((p, idx) => (
                 <div key={p.path} className="flex items-center gap-3 py-2">
-                  <span className="w-6 h-6 rounded-full bg-[#FAFAFA] border border-[#EBEBEB] flex items-center justify-center text-xs font-medium text-slate-500 shrink-0">
+                  <span className="w-6 h-6 rounded-full bg-[hsl(var(--secondary))] border border-[hsl(var(--border))] flex items-center justify-center text-xs font-medium text-warm-charcoal-muted shrink-0">
                     {idx + 1}
                   </span>
-                  <span className="text-sm text-slate-700 truncate flex-1 font-mono text-xs">{p.path}</span>
+                  <span className="text-sm text-warm-charcoal truncate flex-1 font-mono text-xs">{p.path}</span>
                   <Badge variant="secondary">{p.views}</Badge>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="py-12 text-center text-slate-500 text-sm">暂无数据</div>
+            <div className="py-12 text-center text-warm-charcoal-muted text-sm">暂无数据</div>
           )}
         </Card>
 
@@ -213,12 +213,12 @@ export default function DashboardPage() {
               <a
                 key={link.label}
                 href={link.href}
-                className="flex items-center gap-2.5 px-4 py-3 rounded-lg border border-[#EBEBEB] hover:bg-[hsl(var(--accent))] hover:border-primary/30 transition-all duration-fluent hover:-translate-y-px group"
+                className="flex items-center gap-2.5 px-4 py-3 rounded-lg border border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))] hover:border-primary/30 transition-all duration-paper hover:-translate-y-px group"
               >
                 <div className={`h-8 w-8 rounded-lg ${link.bg} flex items-center justify-center`}>
                   <link.icon className={`h-4 w-4 ${link.color}`} />
                 </div>
-                <span className="text-sm font-medium text-slate-700 group-hover:text-primary transition-colors">
+                <span className="text-sm font-medium text-warm-charcoal group-hover:text-primary transition-colors">
                   {link.label}
                 </span>
               </a>

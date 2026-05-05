@@ -73,25 +73,25 @@ export default function ChatPanel() {
   return (
     <>
       <div
-        className="fixed inset-0 z-[9996] bg-black/20 backdrop-blur-sm"
+        className="fixed inset-0 z-[9996] bg-warm-charcoal/10 backdrop-blur-sm"
         onClick={() => setIsOpen(false)}
       />
 
-      <div className="fixed bottom-20 right-6 z-[9997] w-[400px] max-w-[calc(100vw-2rem)] h-[560px] max-h-[calc(100vh-7rem)] bg-white dark:bg-slate-900 rounded-2xl shadow-elevation-3 border border-[#EBEBEB] dark:border-slate-700 flex flex-col overflow-hidden animate-fade-in-up">
+      <div className="fixed bottom-20 right-6 z-[9997] w-[400px] max-w-[calc(100vw-2rem)] h-[560px] max-h-[calc(100vh-7rem)] bg-[hsl(var(--card))] rounded-2xl shadow-paper-lg border border-[hsl(var(--border))] flex flex-col overflow-hidden animate-paper-in">
         {/* Header */}
-        <div className="shrink-0 flex items-center justify-between px-4 py-3 border-b border-[#EBEBEB] dark:border-slate-700">
+        <div className="shrink-0 flex items-center justify-between px-4 py-3 border-b border-[hsl(var(--border))]">
           <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
+            <div className="h-7 w-7 rounded-lg bg-pastel-blue/10 flex items-center justify-center ring-1 ring-pastel-blue/15">
+              <Sparkles className="h-3.5 w-3.5 text-pastel-blue" strokeWidth={1.5} />
             </div>
             <div>
-              <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">AI 助手</div>
-              <div className="text-[10px] text-slate-400">Powered by DeepSeek</div>
+              <div className="text-sm font-semibold text-warm-charcoal">AI 助手</div>
+              <div className="font-handwriting text-sm text-warm-charcoal-muted">Powered by DeepSeek</div>
             </div>
           </div>
           <button
             onClick={clearChat}
-            className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="text-xs text-warm-charcoal-muted hover:text-warm-charcoal px-2 py-1 rounded-md hover:bg-[hsl(var(--accent))] transition-colors"
           >
             清空
           </button>
@@ -111,8 +111,8 @@ export default function ChatPanel() {
                 className={cn(
                   'shrink-0 h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-semibold mt-0.5',
                   msg.role === 'user'
-                    ? 'bg-primary/10 text-primary'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                    ? 'bg-pastel-blue/10 text-pastel-blue ring-1 ring-pastel-blue/15'
+                    : 'bg-[hsl(var(--accent))] text-warm-charcoal-muted'
                 )}
               >
                 {msg.role === 'user' ? '我' : 'AI'}
@@ -122,8 +122,8 @@ export default function ChatPanel() {
                 className={cn(
                   'rounded-2xl px-3.5 py-2.5',
                   msg.role === 'user'
-                    ? 'bg-primary text-white rounded-tr-md'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-md'
+                    ? 'bg-pastel-blue text-white rounded-tr-md'
+                    : 'bg-[hsl(var(--secondary))] text-warm-charcoal rounded-tl-md'
                 )}
               >
                 <div className="whitespace-pre-wrap">{msg.content}</div>
@@ -133,22 +133,22 @@ export default function ChatPanel() {
 
           {loading && (
             <div className="flex gap-2.5 items-center">
-              <div className="h-6 w-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                <span className="text-[10px] font-semibold text-slate-500">AI</span>
+              <div className="h-6 w-6 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center">
+                <span className="text-[10px] font-semibold text-warm-charcoal-muted">AI</span>
               </div>
-              <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tl-md px-4 py-3">
+              <div className="bg-[hsl(var(--secondary))] rounded-2xl rounded-tl-md px-4 py-3">
                 <div className="flex gap-1.5">
-                  <span className="h-1.5 w-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="h-1.5 w-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="h-1.5 w-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <span className="h-1.5 w-1.5 bg-warm-charcoal-muted/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="h-1.5 w-1.5 bg-warm-charcoal-muted/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="h-1.5 w-1.5 bg-warm-charcoal-muted/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               </div>
             </div>
           )}
 
           {error && (
-            <div className="flex items-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-xs text-red-700 dark:text-red-400">
-              <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+            <div className="flex items-center gap-2 px-3 py-2 bg-pastel-rose/8 border border-pastel-rose/20 rounded-lg text-xs text-pastel-rose">
+              <AlertCircle className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
               <span>{error}</span>
             </div>
           )}
@@ -156,9 +156,9 @@ export default function ChatPanel() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
-        <div className="shrink-0 border-t border-[#EBEBEB] dark:border-slate-700 p-3">
-          <div className="flex items-end gap-2 bg-slate-50 dark:bg-slate-800 rounded-xl px-3 py-2 border border-[#EBEBEB] dark:border-slate-700 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all">
+        {/* Input — paper field */}
+        <div className="shrink-0 border-t border-[hsl(var(--border))] p-3">
+          <div className="flex items-end gap-2 bg-[hsl(var(--secondary))] rounded-xl px-3 py-2 border border-[hsl(var(--border))] focus-within:ring-2 focus-within:ring-pastel-blue/20 focus-within:border-pastel-blue/40 transition-all duration-paper shadow-paper-xs">
             <textarea
               ref={inputRef}
               value={input}
@@ -166,7 +166,7 @@ export default function ChatPanel() {
               onKeyDown={handleKeyDown}
               placeholder="问 CMS 相关问题..."
               rows={1}
-              className="flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-800 dark:text-slate-200 max-h-32"
+              className="flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-warm-charcoal-muted/60 text-warm-charcoal max-h-32"
               style={{ minHeight: '24px' }}
               onInput={(e) => {
                 const el = e.currentTarget;
@@ -177,14 +177,14 @@ export default function ChatPanel() {
             <button
               onClick={handleSend}
               disabled={!input.trim() || loading}
-              className="shrink-0 h-8 w-8 rounded-lg bg-primary text-white flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/90 transition-colors"
+              className="shrink-0 h-8 w-8 rounded-lg bg-pastel-blue text-white flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed hover:bg-pastel-blue/90 transition-colors shadow-paper-xs"
             >
-              <Send className="h-3.5 w-3.5" />
+              <Send className="h-3.5 w-3.5" strokeWidth={1.5} />
             </button>
           </div>
           <div className="flex items-center justify-between mt-1.5 px-1">
-            <span className="text-[10px] text-slate-400">Cmd+J 切换</span>
-            <span className="text-[10px] text-slate-400">Enter 发送，Shift+Enter 换行</span>
+            <span className="text-[10px] text-warm-charcoal-muted/60">Cmd+J 切换</span>
+            <span className="text-[10px] text-warm-charcoal-muted/60">Enter 发送，Shift+Enter 换行</span>
           </div>
         </div>
       </div>

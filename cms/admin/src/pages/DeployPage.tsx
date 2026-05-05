@@ -60,8 +60,8 @@ export default function DeployPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">部署管理</h1>
-          <p className="text-sm text-slate-500 mt-1">触发网站构建和发布</p>
+          <h1 className="text-2xl font-bold text-warm-charcoal">部署管理</h1>
+          <p className="text-sm text-warm-charcoal-muted mt-1">触发网站构建和发布</p>
         </div>
         <Button size="lg" onClick={handleDeploy} disabled={deploying || isRunning} className="shadow-lg shadow-primary/20">
           <Rocket className="h-5 w-5" />
@@ -74,8 +74,8 @@ export default function DeployPage() {
         <Card
           padding="lg"
           className={
-            latest.status === 'failed' ? 'border-red-200' :
-            latest.status === 'success' ? 'border-emerald-200' : ''
+            latest.status === 'failed' ? 'border-pastel-rose/20' :
+            latest.status === 'success' ? 'border-pastel-green/20' : ''
           }
         >
           <div className="flex items-center gap-3">
@@ -85,39 +85,39 @@ export default function DeployPage() {
               return <Icon className={`h-8 w-8 ${cfg.color}`} />;
             })()}
             <div>
-              <div className="text-lg font-semibold text-slate-800">
+              <div className="text-lg font-semibold text-warm-charcoal">
                 {statusConfig[latest.status]?.label || latest.status}
               </div>
-              <div className="text-sm text-slate-500">
+              <div className="text-sm text-warm-charcoal-muted">
                 {latest.started_at ? new Date(latest.started_at).toLocaleString('zh-CN') : '-'}
               </div>
             </div>
           </div>
           {latest.error_message && (
-            <div className="mt-3 p-3 bg-red-50 text-red-700 rounded-lg text-sm">{latest.error_message}</div>
+            <div className="mt-3 p-3 bg-pastel-rose/8 text-red-700 rounded-lg text-sm">{latest.error_message}</div>
           )}
         </Card>
       )}
 
       {/* History */}
       <Card padding="none">
-        <div className="px-5 py-4 border-b border-[#EBEBEB]">
+        <div className="px-5 py-4 border-b border-[hsl(var(--border))]">
           <CardTitle>部署历史</CardTitle>
         </div>
-        <div className="divide-y divide-[#EBEBEB]">
+        <div className="divide-y divide-[hsl(var(--border))]">
           {logs.length === 0 ? (
-            <div className="p-8 text-center text-slate-500 text-sm">暂无部署记录</div>
+            <div className="p-8 text-center text-warm-charcoal-muted text-sm">暂无部署记录</div>
           ) : (
             logs.map((log) => {
               const cfg = statusConfig[log.status] || statusConfig.pending;
               const Icon = cfg.icon;
               return (
-                <div key={log.id} className="px-5 py-3 flex items-center gap-3 hover:bg-[#FAFAFA]/80 transition-colors">
+                <div key={log.id} className="px-5 py-3 flex items-center gap-3 hover:bg-[hsl(var(--secondary))]/80 transition-colors">
                   <Icon className={`h-4 w-4 ${cfg.color}`} />
                   <div className="flex-1">
-                    <span className="text-sm font-medium text-slate-700">{cfg.label}</span>
+                    <span className="text-sm font-medium text-warm-charcoal">{cfg.label}</span>
                   </div>
-                  <div className="text-xs text-slate-500">
+                  <div className="text-xs text-warm-charcoal-muted">
                     {log.started_at ? new Date(log.started_at).toLocaleString('zh-CN') : '-'}
                   </div>
                 </div>

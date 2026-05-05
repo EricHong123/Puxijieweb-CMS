@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { m } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import Header from '@/shared/site/Header.jsx';
 import Footer from '@/shared/site/Footer.jsx';
-import { getNewsPosts } from '@/features/news/lib/newsContent.js';
+import { getPaginatedNewsPosts } from '@/features/news/lib/newsContent.js';
 import { getSiteOrigin, t } from '@/shared/lib/i18n.js';
 import { useLocale } from '@/shared/lib/useLocale.js';
+
+const PER_PAGE = 20;
 
 function getNewsPageCopy(locale) {
   const copy = {
@@ -33,7 +35,14 @@ function getNewsPageCopy(locale) {
 function NewsPage() {
   const locale = useLocale();
   const pageCopy = getNewsPageCopy(locale);
-  const localizedItems = getNewsPosts(locale).map((post) => ({
+  const [page, setPage] = useState(1);
+
+  const { items: rawItems, total, totalPages } = getPaginatedNewsPosts(locale, {
+    page,
+    limit: PER_PAGE,
+  });
+
+  const localizedItems = rawItems.map((post) => ({
     ...post,
     date: post.displayDate || post.date,
     image: post.heroImages?.[0]?.src || post.image,
@@ -145,6 +154,58 @@ function NewsPage() {
                 </m.article>
               ))}
             </div>
+
+            {totalPages > 1 && (
+              <nav className="mt-12 flex items-center justify-center gap-2" aria-label="Pagination">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-40"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  {t(locale, 'newsPage.prev')}
+                </button>
+
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((n) => {
+                      if (totalPages <= 7) return true;
+                      if (n === 1 || n === totalPages) return true;
+                      if (n >= page - 1 && n <= page + 1) return true;
+                      return false;
+                    })
+                    .map((n, idx, arr) => {
+                      const showEllipsis = idx > 0 && n - arr[idx - 1] > 1;
+                      return (
+                        <React.Fragment key={n}>
+                          {showEllipsis && (
+                            <span className="px-1 text-gray-400 select-none">...</span>
+                          )}
+                          <button
+                            onClick={() => setPage(n)}
+                            className={`inline-flex h-9 w-9 items-center justify-center rounded-lg text-sm font-medium transition-colors ${
+                              n === page
+                                ? 'bg-gray-900 text-white'
+                                : 'text-gray-700 hover:bg-gray-100'
+                            }`}
+                          >
+                            {n}
+                          </button>
+                        </React.Fragment>
+                      );
+                    })}
+                </div>
+
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages}
+                  className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-40"
+                >
+                  {t(locale, 'newsPage.next')}
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </nav>
+            )}
           </div>
         </section>
 

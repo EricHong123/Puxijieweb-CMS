@@ -5,6 +5,11 @@
 import { createClient } from '@supabase/supabase-js';
 import { writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
+const PROJECT_ROOT = join(SCRIPT_DIR, '../..');
+const WEB_ROOT = join(PROJECT_ROOT, 'apps/web');
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -16,7 +21,7 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const OUTPUT_DIR = join(process.cwd(), 'src');
+const OUTPUT_DIR = join(WEB_ROOT, 'src');
 
 const CMS_CATEGORY_MAP = {
   waterproof_bt: 'Waterproof Bluetooth Speaker',
@@ -126,7 +131,7 @@ async function generateNews() {
       a.body_markdown || '',
     ].filter(Boolean).join('\n');
 
-    const outPath = join(process.cwd(), 'content/news', a.locale, `${a.slug}.md`);
+    const outPath = join(WEB_ROOT, 'content/news', a.locale, `${a.slug}.md`);
     mkdirSync(dirname(outPath), { recursive: true });
     writeFileSync(outPath, frontmatter);
   }

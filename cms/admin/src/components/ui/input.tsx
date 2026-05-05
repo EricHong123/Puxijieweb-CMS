@@ -10,11 +10,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     <input
       ref={ref}
       className={cn(
-        'w-full px-3 py-2.5 rounded-lg border text-sm bg-white',
-        'placeholder:text-slate-400',
+        'w-full px-3 py-2.5 rounded-lg border text-sm bg-[hsl(var(--card))]',
+        'placeholder:text-[hsl(var(--muted-foreground))]',
         'focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))]',
-        'transition-colors duration-150',
-        error && 'border-red-300 focus:ring-red-200 focus:border-red-400',
+        'transition-all duration-paper shadow-paper-xs',
+        error && 'border-pastel-rose/50 focus:ring-pastel-rose/20 focus:border-pastel-rose/50',
         className
       )}
       {...props}
@@ -30,10 +30,10 @@ const Textarea = React.forwardRef<
   <textarea
     ref={ref}
     className={cn(
-      'w-full px-3 py-2.5 rounded-lg border text-sm bg-white',
-      'placeholder:text-slate-400',
+      'w-full px-3 py-2.5 rounded-lg border text-sm bg-[hsl(var(--card))]',
+      'placeholder:text-[hsl(var(--muted-foreground))]',
       'focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))]',
-      'transition-colors duration-150 resize-y',
+      'transition-all duration-paper resize-y shadow-paper-xs',
       className
     )}
     {...props}
@@ -48,9 +48,9 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     <select
       ref={ref}
       className={cn(
-        'w-full px-3 py-2.5 rounded-lg border text-sm bg-white',
+        'w-full px-3 py-2.5 rounded-lg border text-sm bg-[hsl(var(--card))]',
         'focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))]',
-        'transition-colors duration-150',
+        'transition-all duration-paper shadow-paper-xs',
         className
       )}
       {...props}
@@ -73,12 +73,12 @@ interface FormFieldProps {
 function FormField({ label, error, required, htmlFor, children, className }: FormFieldProps) {
   return (
     <div className={cn(className)}>
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-slate-700 mb-1.5">
+      <label htmlFor={htmlFor} className="block text-sm font-medium text-warm-charcoal mb-1.5">
         {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+        {required && <span className="text-pastel-rose ml-0.5">*</span>}
       </label>
       {children}
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {error && <p className="text-xs text-pastel-rose mt-1">{error}</p>}
     </div>
   );
 }

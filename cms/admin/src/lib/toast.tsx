@@ -34,9 +34,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   };
 
   const colors: Record<Toast['type'], string> = {
-    success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
-    error: 'bg-red-50 border-red-200 text-red-800',
-    info: 'bg-blue-50 border-blue-200 text-blue-800',
+    success: 'bg-pastel-green/8 border-pastel-green/20 text-pastel-green',
+    error: 'bg-pastel-rose/8 border-pastel-rose/20 text-pastel-rose',
+    info: 'bg-pastel-blue/8 border-pastel-blue/15 text-pastel-blue',
   };
 
   const icons: Record<Toast['type'], string> = {

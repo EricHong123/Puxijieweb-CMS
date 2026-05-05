@@ -1,14 +1,11 @@
 ---
-title: Comment choisir une enceinte Bluetooth étanche pour la vente en gros (IPX6 vs IPX7)
-description: Guide B2B pour sélectionner des enceintes Bluetooth étanches selon l’indice IPX, avec OEM/ODM, wholesale et private label.
-date: 2026-04-26
-keywords:
-  - enceinte bluetooth étanche en gros
-  - IPX6 vs IPX7 enceinte
-  - fabricant enceinte OEM ODM
-  - enceinte private label
+title: "How to Choose a Waterproof Bluetooth Speaker for Wholesale: IPX6 vs IPX7, OEM/ODM, and Private Label"
+description: "A B2B buying guide to match IPX6 or IPX7 waterproof Bluetooth speakers with wholesale, OEM/ODM, and private label requirements before sampling."
+date: "2026-04-26"
+keywords: []
+locale: "fr"
+heroImage: "/images/news/g31-outdoor.webp"
 ---
-
 Si vous sourcez des **enceintes Bluetooth étanches** pour la vente en gros ou le private label, la meilleure façon de réduire les retours est d’aligner l’**indice IPX** avec l’usage réel.
 
 ## IPX6 vs IPX7 : ce que cela change pour les acheteurs
@@ -32,4 +29,3 @@ Pour la distribution B2B, alignez :
 - MOQ et délai
 
 Pour accélérer le devis, partagez votre quantité cible, vos exigences de branding et le marché de destination.
-

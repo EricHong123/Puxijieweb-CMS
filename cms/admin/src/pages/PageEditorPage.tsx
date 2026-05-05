@@ -109,11 +109,11 @@ export default function PageEditorPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate('/pages')} className="p-2 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100">
+        <button onClick={() => navigate('/pages')} className="p-2 text-warm-charcoal-muted hover:text-warm-charcoal rounded-lg hover:bg-[hsl(var(--secondary))]">
           <ArrowLeft className="h-5 w-5" />
         </button>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-slate-900">{isNew ? '新建页面' : `编辑: ${watch('slug')}`}</h1>
+          <h1 className="text-2xl font-bold text-warm-charcoal">{isNew ? '新建页面' : `编辑: ${watch('slug')}`}</h1>
           <p className="text-sm text-muted-foreground mt-1">编辑页面内容和 SEO 信息</p>
         </div>
         <button
@@ -129,11 +129,11 @@ export default function PageEditorPage() {
       <div className="flex gap-6">
       <form className="flex-1 space-y-6">
         {/* Basic */}
-        <section className="bg-white rounded-xl border p-6 space-y-4">
-          <h2 className="font-semibold text-slate-900 text-lg">基本信息</h2>
+        <section className="bg-[hsl(var(--card))] rounded-xl border p-6 space-y-4">
+          <h2 className="font-semibold text-warm-charcoal text-lg">基本信息</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Slug *</label>
+              <label className="block text-sm font-medium text-warm-charcoal mb-1.5">Slug *</label>
               <input
                 {...register('slug', { required: true })}
                 className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
@@ -142,7 +142,7 @@ export default function PageEditorPage() {
               {errors.slug && <p className="text-xs text-red-500 mt-1">必填</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">页面类型</label>
+              <label className="block text-sm font-medium text-warm-charcoal mb-1.5">页面类型</label>
               <select {...register('page_type')} className="w-full px-3 py-2.5 rounded-lg border text-sm bg-white">
                 {PAGE_TYPES.map((pt) => <option key={pt.value} value={pt.value}>{pt.label}</option>)}
               </select>
@@ -151,16 +151,16 @@ export default function PageEditorPage() {
         </section>
 
         {/* Translations */}
-        <section className="bg-white rounded-xl border p-6 space-y-5">
+        <section className="bg-[hsl(var(--card))] rounded-xl border p-6 space-y-5">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-slate-900 text-lg">多语言内容</h2>
+            <h2 className="font-semibold text-warm-charcoal text-lg">多语言内容</h2>
             <I18nTabs active={activeLocale} onChange={setActiveLocale} />
           </div>
 
           {activeIdx >= 0 && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-warm-charcoal mb-1.5">
                   页面标题 ({activeLocale.toUpperCase()}) *
                 </label>
                 <input
@@ -171,7 +171,7 @@ export default function PageEditorPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Meta 描述</label>
+                <label className="block text-sm font-medium text-warm-charcoal mb-1.5">Meta 描述</label>
                 <textarea
                   {...register(`translations.${activeIdx}.meta_description`)}
                   rows={2}
@@ -179,7 +179,7 @@ export default function PageEditorPage() {
                 />
               </div>
 
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-3">
+              <div className="bg-pastel-amber/8 border border-amber-200 rounded-lg p-4 space-y-3">
                 <h3 className="text-sm font-semibold text-amber-800">Hero 区域</h3>
                 <div>
                   <label className="block text-xs font-medium text-amber-700 mb-1">Badge</label>
@@ -206,7 +206,7 @@ export default function PageEditorPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-warm-charcoal mb-1.5">
                   正文内容 (JSON / HTML)
                 </label>
                 <textarea

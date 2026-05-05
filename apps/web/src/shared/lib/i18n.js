@@ -253,6 +253,8 @@ const BASE_MESSAGES = {
       heroDesc:
         'Explore company updates, product presentation news, and progress related to OEM/ODM and wholesale support.',
       readNow: 'Read now',
+      prev: 'Prev',
+      next: 'Next',
     },
     aboutPage: {
       title: 'About us',
@@ -604,6 +606,8 @@ const BASE_MESSAGES = {
       heroDesc:
         'Actualités entreprise, présentations produits et avancées OEM/ODM & grossiste.',
       readNow: 'Lire',
+      prev: 'Précédent',
+      next: 'Suivant',
     },
     aboutPage: {
       title: 'À propos',
@@ -955,6 +959,8 @@ const BASE_MESSAGES = {
       heroDesc:
         'Tin doanh nghiệp, trình bày sản phẩm và tiến độ liên quan OEM/ODM & bán sỉ.',
       readNow: 'Xem',
+      prev: 'Trước',
+      next: 'Sau',
     },
     aboutPage: {
       title: 'Về chúng tôi',

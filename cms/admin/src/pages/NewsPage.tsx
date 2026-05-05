@@ -43,7 +43,7 @@ export default function NewsPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">新闻管理</h1>
+          <h1 className="text-2xl font-bold text-warm-charcoal">新闻管理</h1>
           <p className="text-sm text-muted-foreground mt-1">{articles.length} 篇文章</p>
         </div>
         <Link
@@ -55,13 +55,13 @@ export default function NewsPage() {
         </Link>
       </div>
 
-      <div className="flex gap-1 bg-slate-100 p-1 rounded-lg w-fit">
+      <div className="flex gap-1 bg-[hsl(var(--secondary))] p-1 rounded-lg w-fit">
         {[{ key: 'en', label: 'English' }, { key: 'fr', label: 'Français' }, { key: 'vi', label: 'Tiếng Việt' }].map((l) => (
           <button
             key={l.key}
             onClick={() => setLocale(l.key)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-              locale === l.key ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+              locale === l.key ? 'bg-[hsl(var(--card))] text-warm-charcoal shadow-sm' : 'text-warm-charcoal-muted hover:text-warm-charcoal'
             }`}
           >
             {l.label}
@@ -78,9 +78,9 @@ export default function NewsPage() {
           </div>
         ) : (
           articles.map((a) => (
-            <div key={a.id} className="bg-white rounded-xl border p-5 hover:shadow-sm transition-shadow group flex items-center gap-4">
+            <div key={a.id} className="bg-[hsl(var(--card))] rounded-xl border p-5 hover:shadow-sm transition-shadow group flex items-center gap-4">
               <div className="flex-1 min-w-0">
-                <Link to={`/news/${a.id}`} className="font-semibold text-slate-900 hover:text-primary transition-colors">
+                <Link to={`/news/${a.id}`} className="font-semibold text-warm-charcoal hover:text-primary transition-colors">
                   {a.title}
                 </Link>
                 {a.description && (
@@ -97,17 +97,17 @@ export default function NewsPage() {
               <button
                 onClick={() => togglePublish(a.id, a.is_published)}
                 className={`px-2.5 py-1 rounded-full text-xs font-medium shrink-0 ${
-                  a.is_published ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                  a.is_published ? 'bg-pastel-green/8 text-emerald-700' : 'bg-pastel-amber/8 text-amber-700'
                 }`}
               >
                 {a.is_published ? '已发布' : '草稿'}
               </button>
 
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                <Link to={`/news/${a.id}`} className="p-2 text-slate-400 hover:text-primary rounded-lg hover:bg-slate-100">
+                <Link to={`/news/${a.id}`} className="p-2 text-warm-charcoal-muted/60 hover:text-primary rounded-lg hover:bg-[hsl(var(--secondary))]">
                   <Edit3 className="h-4 w-4" />
                 </Link>
-                <button onClick={() => handleDelete(a.id, a.title)} className="p-2 text-slate-400 hover:text-red-500 rounded-lg hover:bg-red-50">
+                <button onClick={() => handleDelete(a.id, a.title)} className="p-2 text-warm-charcoal-muted/60 hover:text-red-500 rounded-lg hover:bg-pastel-rose/8">
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>

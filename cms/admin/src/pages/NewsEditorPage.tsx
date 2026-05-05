@@ -79,15 +79,15 @@ export default function NewsEditorPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate('/news')} className="p-2 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100">
+        <button onClick={() => navigate('/news')} className="p-2 text-warm-charcoal-muted hover:text-warm-charcoal rounded-lg hover:bg-[hsl(var(--secondary))]">
           <ArrowLeft className="h-5 w-5" />
         </button>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-slate-900">{isNew ? '新建文章' : '编辑文章'}</h1>
+          <h1 className="text-2xl font-bold text-warm-charcoal">{isNew ? '新建文章' : '编辑文章'}</h1>
         </div>
         <button
           onClick={() => setPreview(!preview)}
-          className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border ${preview ? 'bg-primary text-primary-foreground border-primary' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+          className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border ${preview ? 'bg-primary text-primary-foreground border-primary' : 'bg-[hsl(var(--card))] text-warm-charcoal-muted border-[hsl(var(--border))] hover:bg-[hsl(var(--secondary))]'}`}
         >
           <Eye className="h-4 w-4" />
           {preview ? '编辑' : '预览'}
@@ -105,54 +105,54 @@ export default function NewsEditorPage() {
       <div className="flex gap-6">
       <form className="flex-1 space-y-6">
         {/* Meta fields */}
-        <section className="bg-white rounded-xl border p-6 space-y-4">
-          <h2 className="font-semibold text-slate-900 text-lg">文章信息</h2>
+        <section className="bg-[hsl(var(--card))] rounded-xl border p-6 space-y-4">
+          <h2 className="font-semibold text-warm-charcoal text-lg">文章信息</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Slug *</label>
+              <label className="block text-sm font-medium text-warm-charcoal mb-1.5">Slug *</label>
               <input {...register('slug', { required: true })} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="my-article" />
               {errors.slug && <p className="text-xs text-red-500 mt-1">必填</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">语言 *</label>
+              <label className="block text-sm font-medium text-warm-charcoal mb-1.5">语言 *</label>
               <select {...register('locale', { required: true })} className="w-full px-3 py-2.5 rounded-lg border text-sm bg-white">
                 {LOCALES.map((l) => <option key={l.key} value={l.key}>{l.label} ({l.key})</option>)}
               </select>
               {errors.locale && <p className="text-xs text-red-500 mt-1">必填</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">标题 *</label>
+              <label className="block text-sm font-medium text-warm-charcoal mb-1.5">标题 *</label>
               <input {...register('title', { required: true })} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
               {errors.title && <p className="text-xs text-red-500 mt-1">必填</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">发布日期</label>
+              <label className="block text-sm font-medium text-warm-charcoal mb-1.5">发布日期</label>
               <input type="date" {...register('date')} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">描述</label>
+              <label className="block text-sm font-medium text-warm-charcoal mb-1.5">描述</label>
               <textarea {...register('description')} rows={2} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">关键词 (逗号分隔)</label>
+              <label className="block text-sm font-medium text-warm-charcoal mb-1.5">关键词 (逗号分隔)</label>
               <input {...register('keywords')} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="speaker, bluetooth, oem" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">头图 URL</label>
+              <label className="block text-sm font-medium text-warm-charcoal mb-1.5">头图 URL</label>
               <input {...register('hero_image_url')} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="https://..." />
             </div>
           </div>
         </section>
 
         {/* Content */}
-        <section className="bg-white rounded-xl border overflow-hidden">
-          <div className="px-6 py-4 border-b bg-slate-50 flex items-center gap-3">
-            <h2 className="font-semibold text-slate-900 text-lg">正文 (Markdown)</h2>
+        <section className="bg-[hsl(var(--card))] rounded-xl border overflow-hidden">
+          <div className="px-6 py-4 border-b bg-[hsl(var(--secondary))] flex items-center gap-3">
+            <h2 className="font-semibold text-warm-charcoal text-lg">正文 (Markdown)</h2>
             <span className="text-xs text-muted-foreground">支持 Markdown 语法</span>
           </div>
           {preview ? (
             <div className="p-6 prose prose-sm max-w-none min-h-[400px] bg-white">
-              <pre className="whitespace-pre-wrap font-sans text-sm text-slate-700">{bodyMd || '(无内容)'}</pre>
+              <pre className="whitespace-pre-wrap font-sans text-sm text-warm-charcoal">{bodyMd || '(无内容)'}</pre>
             </div>
           ) : (
             <textarea

@@ -11,16 +11,16 @@ export default function ChatButton({ isOpen, onClick }: ChatButtonProps) {
     <button
       onClick={onClick}
       className={cn(
-        'fixed bottom-6 right-6 z-[9998] w-12 h-12 rounded-full shadow-elevation-3',
-        'flex items-center justify-center transition-all duration-fluent',
+        'fixed bottom-6 right-6 z-[9998] w-12 h-12 rounded-full shadow-paper-md',
+        'flex items-center justify-center transition-all duration-paper',
         'hover:scale-105 active:scale-95',
         isOpen
-          ? 'bg-slate-700 text-white rotate-90'
-          : 'bg-primary text-primary-foreground'
+          ? 'bg-warm-charcoal text-white rotate-90'
+          : 'bg-pastel-blue text-white'
       )}
       title={isOpen ? '关闭 AI 助手' : '打开 AI 助手 (Cmd+J)'}
     >
-      {isOpen ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
+      {isOpen ? <X className="h-5 w-5" strokeWidth={1.5} /> : <MessageCircle className="h-5 w-5" strokeWidth={1.5} />}
     </button>
   );
 }

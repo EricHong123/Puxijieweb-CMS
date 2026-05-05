@@ -47,7 +47,6 @@ export default function JsonFieldEditor({ settingKey, value, onChange }: Props) 
   const fields = SCHEMAS[settingKey];
 
   if (!fields) {
-    // Unknown JSON key — fallback to raw textarea
     return (
       <div>
         <textarea
@@ -56,9 +55,9 @@ export default function JsonFieldEditor({ settingKey, value, onChange }: Props) 
             try { onChange(JSON.parse(e.target.value)); setParseError(''); } catch { setParseError('JSON 格式错误'); }
           }}
           rows={6}
-          className="w-full px-3 py-2 rounded-lg border text-sm font-mono bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))] transition-colors resize-y"
+          className="w-full px-3 py-2 rounded-lg border text-sm font-mono bg-[hsl(var(--card))] placeholder:text-warm-charcoal-muted/60 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))] transition-all duration-paper resize-y shadow-paper-xs"
         />
-        {parseError && <p className="text-xs text-red-500 mt-1">{parseError}</p>}
+        {parseError && <p className="text-xs text-pastel-rose mt-1">{parseError}</p>}
       </div>
     );
   }
@@ -73,10 +72,10 @@ export default function JsonFieldEditor({ settingKey, value, onChange }: Props) 
             try { onChange(JSON.parse(e.target.value)); setParseError(''); } catch { setParseError('JSON 格式错误'); }
           }}
           rows={8}
-          className="w-full px-3 py-2 rounded-lg border text-sm font-mono bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))] transition-colors resize-y"
+          className="w-full px-3 py-2 rounded-lg border text-sm font-mono bg-[hsl(var(--card))] placeholder:text-warm-charcoal-muted/60 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))] transition-all duration-paper resize-y shadow-paper-xs"
         />
-        {parseError && <p className="text-xs text-red-500">{parseError}</p>}
-        <button type="button" onClick={() => { setRawMode(false); setRawText(JSON.stringify(value || {}, null, 2)); }} className="text-xs text-primary hover:underline">
+        {parseError && <p className="text-xs text-pastel-rose">{parseError}</p>}
+        <button type="button" onClick={() => { setRawMode(false); setRawText(JSON.stringify(value || {}, null, 2)); }} className="text-xs text-pastel-blue hover:underline">
           切换到结构化编辑
         </button>
       </div>
@@ -88,7 +87,7 @@ export default function JsonFieldEditor({ settingKey, value, onChange }: Props) 
       <div className="grid gap-3 sm:grid-cols-2">
         {fields.map((f) => (
           <div key={f.key}>
-            <label className="block text-xs font-medium text-slate-600 mb-1">{f.label}</label>
+            <label className="block text-xs font-medium text-warm-charcoal-muted mb-1">{f.label}</label>
             <input
               type="text"
               value={value?.[f.key] || ''}
@@ -98,12 +97,12 @@ export default function JsonFieldEditor({ settingKey, value, onChange }: Props) 
                 onChange(next);
               }}
               placeholder={f.placeholder}
-              className="w-full px-3 py-2 rounded-lg border text-sm bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))] transition-colors"
+              className="w-full px-3 py-2 rounded-lg border text-sm bg-[hsl(var(--card))] placeholder:text-warm-charcoal-muted/60 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))] transition-all duration-paper shadow-paper-xs"
             />
           </div>
         ))}
       </div>
-      <button type="button" onClick={() => { setRawText(JSON.stringify(value || {}, null, 2)); setRawMode(true); }} className="text-xs text-slate-400 hover:text-slate-600">
+      <button type="button" onClick={() => { setRawText(JSON.stringify(value || {}, null, 2)); setRawMode(true); }} className="text-xs text-warm-charcoal-muted hover:text-warm-charcoal">
         切换到 JSON 编辑
       </button>
     </div>

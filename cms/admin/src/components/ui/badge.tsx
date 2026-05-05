@@ -6,13 +6,13 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary/10 text-primary',
-        secondary: 'bg-slate-100 text-slate-600',
-        success: 'bg-emerald-50 text-emerald-700',
-        warning: 'bg-amber-50 text-amber-700',
-        danger: 'bg-red-50 text-red-600',
-        purple: 'bg-purple-50 text-purple-700',
-        blue: 'bg-[#E8F4FD] text-[#0078D4]',
+        default: 'bg-pastel-blue/10 text-pastel-blue ring-1 ring-pastel-blue/15',
+        secondary: 'bg-[hsl(var(--secondary))] text-warm-charcoal-muted',
+        success: 'bg-pastel-green/10 text-pastel-green ring-1 ring-pastel-green/15',
+        warning: 'bg-pastel-amber/10 text-pastel-amber ring-1 ring-pastel-amber/15',
+        danger: 'bg-pastel-rose/10 text-pastel-rose ring-1 ring-pastel-rose/15',
+        purple: 'bg-pastel-lavender/10 text-pastel-lavender ring-1 ring-pastel-lavender/15',
+        blue: 'bg-pastel-blue/10 text-pastel-blue ring-1 ring-pastel-blue/15',
       },
       interactive: {
         true: 'cursor-pointer hover:opacity-80',

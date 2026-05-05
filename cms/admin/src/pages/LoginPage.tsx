@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/useAuth';
-import { Globe, Eye, EyeOff } from 'lucide-react';
+import { Globe, Eye, EyeOff, PenLine } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FormField } from '@/components/ui/input';
@@ -32,27 +32,34 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Decorative blur orbs */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-blue-200/30 blur-3xl" />
+      {/* Paper texture + grid are on body */}
+
+      {/* Soft pastel blobs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-[0]">
+        <div className="absolute -top-32 -right-32 w-72 h-72 rounded-full bg-pastel-blue/8 blur-3xl" />
+        <div className="absolute -bottom-32 -left-32 w-72 h-72 rounded-full bg-pastel-amber/10 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-pastel-lavender/5 blur-3xl" />
       </div>
 
-      <div className="w-full max-w-sm relative z-10 animate-fade-in-up">
-        {/* Brand */}
+      <div className="w-full max-w-sm relative z-[1] animate-paper-in">
+        {/* Brand — notebook style */}
         <div className="text-center mb-8">
-          <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 shadow-elevation-1">
-            <Globe className="h-8 w-8 text-primary" />
+          <div className="h-16 w-16 rounded-2xl bg-pastel-blue/8 flex items-center justify-center mx-auto mb-4 ring-1 ring-pastel-blue/15 shadow-paper-sm">
+            <PenLine className="h-8 w-8 text-pastel-blue" strokeWidth={1.5} />
           </div>
-          <h1 className="text-2xl font-semibold text-slate-800">Puxijie CMS</h1>
-          <p className="text-sm text-slate-500 mt-1">登录以管理网站内容</p>
+          <h1 className="text-2xl font-semibold text-warm-charcoal tracking-tight">
+            Puxijie CMS
+          </h1>
+          <p className="font-handwriting text-lg text-warm-charcoal-muted mt-0.5">
+            content notebook
+          </p>
         </div>
 
-        {/* Acrylic card */}
-        <Card variant="acrylic" padding="lg">
+        {/* Paper card */}
+        <Card variant="paper" padding="lg" className="paper-tape">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-lg border border-red-200">
+              <div className="bg-pastel-rose/8 text-pastel-rose text-sm px-4 py-3 rounded-lg border border-pastel-rose/20">
                 {error}
               </div>
             )}
@@ -82,9 +89,9 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPwd(!showPwd)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-warm-charcoal-muted hover:text-warm-charcoal"
                 >
-                  {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPwd ? <EyeOff className="h-4 w-4" strokeWidth={1.5} /> : <Eye className="h-4 w-4" strokeWidth={1.5} />}
                 </button>
               </div>
             </FormField>
@@ -94,6 +101,10 @@ export default function LoginPage() {
             </Button>
           </form>
         </Card>
+
+        <p className="text-center mt-6 font-handwriting text-base text-warm-charcoal-muted/70">
+          puxijietech.com
+        </p>
       </div>
     </div>
   );

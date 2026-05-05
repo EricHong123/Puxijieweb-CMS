@@ -87,7 +87,7 @@ export default function FaqPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">FAQ 管理</h1>
+          <h1 className="text-2xl font-bold text-warm-charcoal">FAQ 管理</h1>
           <p className="text-sm text-muted-foreground mt-1">{sections.length} 个分区</p>
         </div>
         <button
@@ -98,13 +98,13 @@ export default function FaqPage() {
         </button>
       </div>
 
-      <div className="flex gap-1 bg-slate-100 p-1 rounded-lg w-fit">
+      <div className="flex gap-1 bg-[hsl(var(--secondary))] p-1 rounded-lg w-fit">
         {LOCALES.map((l) => (
           <button
             key={l.key}
             onClick={() => setLocale(l.key)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-              locale === l.key ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+              locale === l.key ? 'bg-[hsl(var(--card))] text-warm-charcoal shadow-sm' : 'text-warm-charcoal-muted hover:text-warm-charcoal'
             }`}
           >
             {l.label}
@@ -114,15 +114,15 @@ export default function FaqPage() {
 
       {/* New section form */}
       {showNew && (
-        <div className="bg-white rounded-xl border border-primary/30 p-5 space-y-3">
-          <h3 className="font-semibold text-slate-900">新建 FAQ 分区</h3>
+        <div className="bg-[hsl(var(--card))] rounded-xl border border-primary/30 p-5 space-y-3">
+          <h3 className="font-semibold text-warm-charcoal">新建 FAQ 分区</h3>
           <div className="grid gap-3 sm:grid-cols-3">
             <input value={newData.section_key} onChange={(e) => setNewData({ ...newData, section_key: e.target.value })} placeholder="Key (e.g. shipping)" className="px-3 py-2 rounded-lg border text-sm" />
             <input value={newData.short_title} onChange={(e) => setNewData({ ...newData, short_title: e.target.value })} placeholder="短标题" className="px-3 py-2 rounded-lg border text-sm" />
             <input value={newData.title} onChange={(e) => setNewData({ ...newData, title: e.target.value })} placeholder="完整标题" className="px-3 py-2 rounded-lg border text-sm" />
           </div>
           <div className="flex gap-2 justify-end">
-            <button onClick={() => setShowNew(false)} className="px-4 py-2 rounded-lg text-sm border text-slate-600">取消</button>
+            <button onClick={() => setShowNew(false)} className="px-4 py-2 rounded-lg text-sm border text-warm-charcoal-muted">取消</button>
             <button onClick={createSection} className="px-4 py-2 rounded-lg text-sm bg-primary text-primary-foreground">创建</button>
           </div>
         </div>
@@ -133,7 +133,7 @@ export default function FaqPage() {
           <div className="py-12 text-center text-muted-foreground text-sm">暂无 {locale.toUpperCase()} FAQ 内容</div>
         )}
         {sections.map((section) => (
-          <div key={section.id} className="bg-white rounded-xl border overflow-hidden">
+          <div key={section.id} className="bg-[hsl(var(--card))] rounded-xl border overflow-hidden">
             {editingId === section.id && editData ? (
               <div className="p-5 space-y-4">
                 <div className="grid gap-3 sm:grid-cols-3">
@@ -150,7 +150,7 @@ export default function FaqPage() {
                         <input value={item.q} onChange={(e) => updateItem(idx, 'q', e.target.value)} placeholder="问题" className="w-full px-3 py-2 rounded-lg border text-sm" />
                         <textarea value={item.a} onChange={(e) => updateItem(idx, 'a', e.target.value)} placeholder="回答" rows={2} className="w-full px-3 py-2 rounded-lg border text-sm" />
                       </div>
-                      <button onClick={() => removeItem(idx)} className="p-2 text-slate-400 hover:text-red-500 shrink-0">
+                      <button onClick={() => removeItem(idx)} className="p-2 text-warm-charcoal-muted/60 hover:text-red-500 shrink-0">
                         <X className="h-4 w-4" />
                       </button>
                     </div>
@@ -162,23 +162,23 @@ export default function FaqPage() {
                     <Plus className="h-3 w-3" /> 添加问答
                   </button>
                   <div className="flex-1" />
-                  <button onClick={cancelEdit} className="px-4 py-2 rounded-lg text-sm border text-slate-600">取消</button>
+                  <button onClick={cancelEdit} className="px-4 py-2 rounded-lg text-sm border text-warm-charcoal-muted">取消</button>
                   <button onClick={saveEdit} disabled={savingId === section.id} className="px-4 py-2 rounded-lg text-sm bg-primary text-primary-foreground disabled:opacity-50">
                     {savingId === section.id ? '保存中...' : '保存'}
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="p-5 cursor-pointer hover:bg-slate-50" onClick={() => startEdit(section)}>
+              <div className="p-5 cursor-pointer hover:bg-[hsl(var(--secondary))]" onClick={() => startEdit(section)}>
                 <div className="flex items-center gap-3">
                   <HelpCircle className="h-5 w-5 text-primary shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-slate-900">{section.title}</div>
+                    <div className="font-medium text-warm-charcoal">{section.title}</div>
                     <div className="text-xs text-muted-foreground mt-0.5">
                       key: {section.section_key} · {section.items.length} 个问答
                     </div>
                   </div>
-                  <span className="text-xs text-slate-400">点击编辑</span>
+                  <span className="text-xs text-warm-charcoal-muted/60">点击编辑</span>
                 </div>
               </div>
             )}

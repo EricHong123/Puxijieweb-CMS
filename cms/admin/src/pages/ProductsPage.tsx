@@ -105,8 +105,8 @@ export default function ProductsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">产品管理</h1>
-          <p className="text-sm text-slate-500 mt-1">{products.length} 个产品</p>
+          <h1 className="text-2xl font-bold text-warm-charcoal">产品管理</h1>
+          <p className="text-sm text-warm-charcoal-muted mt-1">{products.length} 个产品</p>
         </div>
         <Link to="/products/new">
           <Button>
@@ -119,7 +119,7 @@ export default function ProductsPage() {
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-warm-charcoal-muted/60" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -128,14 +128,14 @@ export default function ProductsPage() {
           />
         </div>
 
-        <div className="flex gap-1 bg-[#F5F5F5] p-1 rounded-lg">
+        <div className="flex gap-1 bg-[hsl(var(--secondary))] p-1 rounded-lg">
           {Object.entries({ '': '全部', ...categoryLabels }).map(([k, v]) => (
             <button
               key={k}
               onClick={() => setCategory(k)}
               className={cn(
-                'px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-fluent',
-                category === k ? 'bg-white text-slate-800 shadow-elevation-1' : 'text-slate-500 hover:text-slate-700'
+                'px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-paper',
+                category === k ? 'bg-[hsl(var(--card))] text-warm-charcoal shadow-paper-xs' : 'text-warm-charcoal-muted hover:text-warm-charcoal'
               )}
             >
               {v}
@@ -146,7 +146,7 @@ export default function ProductsPage() {
         {/* Bulk actions */}
         {selected.size > 0 && (
           <div className="flex items-center gap-2 ml-auto">
-            <span className="text-sm text-slate-500">{selected.size} 个已选</span>
+            <span className="text-sm text-warm-charcoal-muted">{selected.size} 个已选</span>
             <Button variant="outline" size="sm" onClick={() => bulkPublish(true)} disabled={bulkActioning}>
               <Eye className="h-3 w-3" /> 批量发布
             </Button>
@@ -170,7 +170,7 @@ export default function ProductsPage() {
                       'w-4 h-4 rounded border-2 flex items-center justify-center transition-colors',
                       selected.size === filtered.length && filtered.length > 0
                         ? 'bg-primary border-primary text-white'
-                        : 'border-slate-300 hover:border-primary'
+                        : 'border-[hsl(var(--border))] hover:border-primary'
                     )}
                   >
                     {selected.size === filtered.length && filtered.length > 0 && <Check className="h-3 w-3" />}
@@ -180,14 +180,14 @@ export default function ProductsPage() {
                 <TableHead>分类</TableHead>
                 <TableHead>排序</TableHead>
                 <TableHead>状态</TableHead>
-                <th className="text-right px-4 py-3 font-medium text-slate-600 text-xs">操作</th>
+                <th className="text-right px-4 py-3 font-medium text-warm-charcoal-muted text-xs">操作</th>
               </tr>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <tr><td colSpan={6} className="p-0"><SkeletonTable rows={5} cols={4} /></td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={6} className="px-4 py-16 text-center text-slate-500">
+                <tr><td colSpan={6} className="px-4 py-16 text-center text-warm-charcoal-muted">
                   {search || category ? '没有匹配的产品' : '暂无产品，点击"添加产品"开始'}
                 </td></tr>
               ) : (
@@ -201,7 +201,7 @@ export default function ProductsPage() {
                           onClick={() => toggleSelect(p.id)}
                           className={cn(
                             'w-4 h-4 rounded border-2 flex items-center justify-center transition-colors',
-                            isSel ? 'bg-primary border-primary text-white' : 'border-slate-300 hover:border-primary'
+                            isSel ? 'bg-primary border-primary text-white' : 'border-[hsl(var(--border))] hover:border-primary'
                           )}
                         >
                           {isSel && <Check className="h-3 w-3" />}
@@ -209,18 +209,18 @@ export default function ProductsPage() {
                       </TableCell>
                       <TableCell>
                         <Link to={`/products/${p.id}`} className="flex items-center gap-3 hover:opacity-80">
-                          <div className="w-10 h-10 rounded-lg bg-[#FAFAFA] flex items-center justify-center overflow-hidden shrink-0 border border-[#EBEBEB]">
+                          <div className="w-10 h-10 rounded-lg bg-[hsl(var(--secondary))] flex items-center justify-center overflow-hidden shrink-0 border border-[hsl(var(--border))]">
                             {firstImg ? (
                               <img src={firstImg} alt="" className="w-full h-full object-cover" />
                             ) : (
-                              <div className="w-5 h-5 bg-[#EBEBEB] rounded" />
+                              <div className="w-5 h-5 bg-[hsl(var(--border))] rounded" />
                             )}
                           </div>
                           <div>
-                            <div className="font-medium text-slate-800">
+                            <div className="font-medium text-warm-charcoal">
                               {p.product_translations?.[0]?.name || p.slug}
                             </div>
-                            <div className="text-xs text-slate-400 font-mono">{p.slug}</div>
+                            <div className="text-xs text-warm-charcoal-muted/60 font-mono">{p.slug}</div>
                           </div>
                         </Link>
                       </TableCell>
@@ -229,7 +229,7 @@ export default function ProductsPage() {
                           {categoryLabels[p.category] || p.category}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-slate-500">{p.sort_order}</TableCell>
+                      <TableCell className="text-warm-charcoal-muted">{p.sort_order}</TableCell>
                       <TableCell>
                         <Badge
                           variant={p.is_published ? 'success' : 'warning'}

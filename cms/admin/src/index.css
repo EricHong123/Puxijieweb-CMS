@@ -4,40 +4,97 @@
 
 @layer base {
   :root {
-    /* Fluent 2 Blue primary */
-    --primary: 210 100% 40%;
+    /* Paper-morphism palette */
+    --paper-ivory: 40 30% 98%;
+    --paper-cream: 38 25% 96%;
+    --warm-charcoal: 30 6% 18%;
+    --warm-charcoal-muted: 28 5% 38%;
+
+    /* Primary — soft pastel blue */
+    --primary: 205 40% 48%;
     --primary-foreground: 0 0% 100%;
 
-    /* Background - soft blue-tinted */
-    --background: 216 40% 97%;
-    --foreground: 215 28% 17%;
+    /* Background */
+    --background: 40 25% 97%;
+    --foreground: 30 6% 18%;
 
-    /* Cards */
-    --card: 0 0% 100%;
-    --card-foreground: 215 28% 17%;
+    /* Cards — ivory white with paper feel */
+    --card: 40 30% 99%;
+    --card-foreground: 30 6% 18%;
 
-    /* Neutral grays */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 215 25% 27%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 100% 97%;
-    --accent-foreground: 215 25% 27%;
-    --destructive: 0 72% 51%;
+    /* Secondary surfaces */
+    --secondary: 38 20% 94%;
+    --secondary-foreground: 30 6% 22%;
+
+    /* Muted */
+    --muted: 38 18% 93%;
+    --muted-foreground: 28 5% 46%;
+
+    /* Accent — warm pastel */
+    --accent: 35 35% 92%;
+    --accent-foreground: 30 8% 22%;
+
+    /* Destructive */
+    --destructive: 4 55% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders and inputs */
-    --border: 216 12% 84%;
-    --input: 216 12% 84%;
-    --ring: 210 100% 40%;
+    /* Success pastel */
+    --success: 140 25% 48%;
+    --success-foreground: 0 0% 100%;
 
-    /* Radius */
-    --radius: 0.5rem;
+    /* Borders */
+    --border: 35 12% 82%;
+    --input: 35 12% 82%;
+    --ring: 205 40% 48%;
 
-    /* Acrylic material */
-    --acrylic-bg: 220 20% 98%;
-    --acrylic-border: 220 14% 92%;
-    --acrylic-blur: 24px;
+    /* Radius — slightly rounded, notebook feel */
+    --radius: 0.625rem;
+
+    /* Paper shadows — soft and distinct */
+    --shadow-xs: 0 1px 2px 0 rgb(45 43 40 / 0.04);
+    --shadow-sm: 0 1px 3px 0 rgb(45 43 40 / 0.06), 0 1px 2px -1px rgb(45 43 40 / 0.04);
+    --shadow-md: 0 4px 6px -1px rgb(45 43 40 / 0.06), 0 2px 4px -2px rgb(45 43 40 / 0.04);
+    --shadow-lg: 0 8px 16px -4px rgb(45 43 40 / 0.08), 0 4px 8px -4px rgb(45 43 40 / 0.04);
+  }
+
+  [data-theme="dark"] {
+    --paper-ivory: 30 8% 14%;
+    --paper-cream: 28 6% 16%;
+    --warm-charcoal: 36 10% 88%;
+    --warm-charcoal-muted: 32 8% 62%;
+
+    --primary: 205 45% 58%;
+    --primary-foreground: 30 6% 10%;
+
+    --background: 30 6% 10%;
+    --foreground: 36 10% 88%;
+
+    --card: 30 8% 14%;
+    --card-foreground: 36 10% 88%;
+
+    --secondary: 28 6% 18%;
+    --secondary-foreground: 36 10% 84%;
+
+    --muted: 28 6% 20%;
+    --muted-foreground: 32 8% 56%;
+
+    --accent: 28 6% 22%;
+    --accent-foreground: 36 10% 84%;
+
+    --destructive: 4 45% 52%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 140 20% 48%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 28 6% 24%;
+    --input: 28 6% 24%;
+    --ring: 205 45% 58%;
+
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.15);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.12);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.22), 0 2px 4px -2px rgb(0 0 0 / 0.12);
+    --shadow-lg: 0 8px 16px -4px rgb(0 0 0 / 0.25), 0 4px 8px -4px rgb(0 0 0 / 0.15);
   }
 }
 
@@ -45,55 +102,197 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply text-foreground antialiased;
-    background: linear-gradient(135deg, hsl(216, 40%, 96%), hsl(220, 33%, 95%), hsl(222, 40%, 94%));
-    background-attachment: fixed;
-    font-family: "Segoe UI", "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: hsl(var(--background));
+    font-family: 'Inter', 'Segoe UI', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    position: relative;
   }
 
-  [data-theme="dark"] body,
-  body:has([data-theme="dark"]) {
-    background: linear-gradient(135deg, hsl(215, 28%, 8%), hsl(215, 25%, 10%), hsl(220, 28%, 7%));
+  /* Paper texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    background-image:
+      /* Subtle paper fiber noise */
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
   }
 
-  [data-theme="dark"] {
-    --primary: 210 100% 60%;
-    --primary-foreground: 0 0% 100%;
-    --background: 215 28% 10%;
-    --foreground: 210 20% 85%;
-    --card: 215 25% 14%;
-    --card-foreground: 210 20% 85%;
-    --secondary: 215 20% 20%;
-    --secondary-foreground: 210 20% 85%;
-    --muted: 215 20% 20%;
-    --muted-foreground: 215 16% 65%;
-    --accent: 210 80% 15%;
-    --accent-foreground: 210 20% 85%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 215 20% 25%;
-    --input: 215 20% 25%;
-    --ring: 210 100% 60%;
-    --acrylic-bg: 215 25% 12%;
-    --acrylic-border: 215 20% 28%;
+  /* Light grid pattern */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.12;
+    background-image:
+      linear-gradient(rgba(45, 43, 40, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(45, 43, 40, 0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  [data-theme="dark"] body::before {
+    opacity: 0.15;
+  }
+
+  [data-theme="dark"] body::after {
+    opacity: 0.08;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  }
+
+  /* Handwriting font utility */
+  .font-handwriting {
+    font-family: 'Caveat', 'Comic Sans MS', cursive;
+    letter-spacing: 0.01em;
   }
 }
 
 @layer components {
-  .acrylic {
-    background: hsl(var(--acrylic-bg) / 0.7);
-    backdrop-filter: blur(var(--acrylic-blur));
-    -webkit-backdrop-filter: blur(var(--acrylic-blur));
-    border: 1px solid hsl(var(--acrylic-border) / 0.5);
+  /* Paper card — the core surface */
+  .paper-card {
+    @apply rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))];
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    z-index: 1;
   }
 
-  .acrylic-strong {
-    background: hsl(var(--acrylic-bg) / 0.85);
-    backdrop-filter: blur(var(--acrylic-blur));
-    -webkit-backdrop-filter: blur(var(--acrylic-blur));
-    border: 1px solid hsl(var(--acrylic-border) / 0.6);
+  .paper-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Lined paper variant */
+  .paper-lined {
+    background-image:
+      repeating-linear-gradient(
+        transparent,
+        transparent 31px,
+        hsl(var(--border)) 31px,
+        hsl(var(--border)) 32px
+      );
+    background-size: 100% 32px;
+  }
+
+  /* Notebook margin variant */
+  .paper-margin {
+    border-left: 2px solid hsl(4 55% 78% / 0.5);
+    padding-left: 2rem;
+  }
+
+  /* Hand-drawn sketch style borders */
+  .sketch-border {
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    border-width: 2px;
+  }
+
+  /* Sticky note */
+  .sticky-note {
+    @apply rounded-md border border-[hsl(var(--border))];
+    background: linear-gradient(135deg, hsl(48 40% 96%), hsl(45 35% 94%));
+    box-shadow: var(--shadow-md);
+    transform: rotate(-1deg);
+    position: relative;
+    z-index: 1;
+  }
+
+  .sticky-note:nth-child(even) {
+    transform: rotate(1.5deg);
+  }
+
+  /* Paper tape/ribbon accent */
+  .paper-tape {
+    position: relative;
+  }
+
+  .paper-tape::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 60px;
+    height: 14px;
+    background: hsl(205 40% 88% / 0.7);
+    border-radius: 2px;
+    box-shadow: var(--shadow-xs);
+    z-index: 2;
+  }
+
+  /* Sketch underline */
+  .sketch-underline {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='8' viewBox='0 0 100 8'%3E%3Cpath d='M2 6 Q 25 2, 50 6 T 98 5' fill='none' stroke='%23d4a574' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: bottom;
+    background-size: 100px 8px;
+    padding-bottom: 6px;
+  }
+
+  /* Sidebar paper aesthetic */
+  .sidebar-paper {
+    background: hsl(var(--card));
+    border-right: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-md);
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Input fields — paper feel */
+  .input-paper {
+    @apply rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))]
+           px-3 py-2 text-sm text-[hsl(var(--foreground))]
+           placeholder:text-[hsl(var(--muted-foreground))]
+           focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]/30 focus:border-[hsl(var(--ring))]/50
+           transition-all duration-200;
+    box-shadow: var(--shadow-xs);
+  }
+
+  .input-paper:focus {
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Badge */
+  .badge-paper {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+    border: 1px solid hsl(var(--border));
+  }
+
+  /* Divider — hand-drawn style */
+  .divider-sketch {
+    height: 1px;
+    background: repeating-linear-gradient(
+      to right,
+      hsl(var(--border)) 0px,
+      hsl(var(--border)) 6px,
+      transparent 6px,
+      transparent 10px
+    );
+  }
+
+  /* Animations */
+  @keyframes paper-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-paper-in {
+    animation: paper-slide-up 0.3s ease-out;
   }
 }

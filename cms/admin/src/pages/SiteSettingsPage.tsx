@@ -46,8 +46,8 @@ export default function SiteSettingsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-bold text-slate-800">网站设置</h1>
-        <p className="text-sm text-slate-500 mt-1">管理全局网站配置</p>
+        <h1 className="text-2xl font-bold text-warm-charcoal">网站设置</h1>
+        <p className="text-sm text-warm-charcoal-muted mt-1">管理全局网站配置</p>
       </div>
 
       <div className="space-y-4">
@@ -73,7 +73,7 @@ export default function SiteSettingsPage() {
                 onChange={(e) => setSettings({ ...settings, [sk.key]: e.target.value })}
               />
             )}
-            <div className="text-xs text-slate-400 mt-1.5">key: {sk.key}</div>
+            <div className="text-xs text-warm-charcoal-muted/60 mt-1.5">key: {sk.key}</div>
           </Card>
         ))}
       </div>

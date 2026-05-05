@@ -240,3 +240,18 @@ export function getNewsPost(locale, slug) {
 export function getNewsPosts(locale) {
   return allPosts.filter((post) => post.locale === locale);
 }
+
+export function getPaginatedNewsPosts(locale, { page = 1, limit = 20 } = {}) {
+  const localePosts = allPosts.filter((post) => post.locale === locale);
+  const total = localePosts.length;
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const start = (safePage - 1) * limit;
+  return {
+    items: localePosts.slice(start, start + limit),
+    total,
+    page: safePage,
+    totalPages,
+    limit,
+  };
+}

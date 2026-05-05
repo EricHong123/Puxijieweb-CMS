@@ -6,7 +6,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import {
   LayoutDashboard, Package, Image, FileText, Newspaper,
   HelpCircle, Scale, Settings, Rocket, LogOut, History,
-  Menu, X, Globe,
+  Menu, X, Globe, PenLine,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -35,33 +35,33 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden relative z-[1]">
       {sidebarOpen && (
-        <div className="fixed inset-0 z-40 bg-black/60 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 z-40 bg-warm-charcoal/20 backdrop-blur-sm lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      {/* Acrylic Sidebar */}
+      {/* Notebook Sidebar */}
       <aside className={cn(
         'fixed inset-y-0 left-0 z-50 w-64 flex flex-col transition-transform lg:translate-x-0 lg:static lg:z-auto',
-        'acrylic-strong border-r border-white/20',
+        'sidebar-paper',
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       )}>
-        {/* Brand */}
-        <div className="h-16 flex items-center gap-3 px-6 border-b border-[#EBEBEB]/50">
-          <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center">
-            <Globe className="h-5 w-5 text-primary" />
+        {/* Brand — handwritten style */}
+        <div className="h-16 flex items-center gap-3 px-5 border-b border-[hsl(var(--border))]">
+          <div className="h-9 w-9 rounded-lg bg-pastel-blue/10 flex items-center justify-center ring-1 ring-pastel-blue/20">
+            <PenLine className="h-5 w-5 text-pastel-blue" strokeWidth={1.5} />
           </div>
           <div>
-            <div className="font-semibold text-sm text-slate-800">Puxijie CMS</div>
-            <div className="text-xs text-slate-500">内容管理后台</div>
+            <div className="font-semibold text-sm text-warm-charcoal leading-tight">Puxijie CMS</div>
+            <div className="font-handwriting text-base text-warm-charcoal-muted leading-tight">notebook</div>
           </div>
-          <button className="ml-auto lg:hidden text-slate-500 hover:text-slate-800" onClick={() => setSidebarOpen(false)}>
+          <button className="ml-auto lg:hidden text-warm-charcoal-muted hover:text-warm-charcoal" onClick={() => setSidebarOpen(false)}>
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
+        {/* Nav — paper-tab style */}
+        <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-0.5">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -70,57 +70,61 @@ export default function AdminLayout() {
               onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-fluent',
+                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-paper',
                   isActive
-                    ? 'bg-primary/10 text-primary shadow-sm'
-                    : 'text-slate-600 hover:bg-[#FAFAFA]/80 hover:text-slate-800'
+                    ? 'bg-pastel-blue/10 text-pastel-blue shadow-paper-xs border border-pastel-blue/15'
+                    : 'text-warm-charcoal-muted hover:bg-[hsl(var(--accent))]/60 hover:text-warm-charcoal'
                 )
               }
             >
-              <item.icon className="h-4.5 w-4.5" />
+              <item.icon className="h-[18px] w-[18px]" strokeWidth={1.5} />
               {item.label}
             </NavLink>
           ))}
         </nav>
 
-        {/* User */}
-        <div className="border-t border-[#EBEBEB]/50 p-3">
-          <div className="flex items-center gap-3 px-3 py-2">
-            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
+        {/* User — paper footer */}
+        <div className="border-t border-[hsl(var(--border))] p-3">
+          <div className="flex items-center gap-3 px-2 py-1.5">
+            <div className="h-8 w-8 rounded-full bg-pastel-blue/10 flex items-center justify-center ring-1 ring-pastel-blue/20 text-pastel-blue font-semibold text-sm">
               {user?.email?.[0]?.toUpperCase() || 'A'}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium truncate text-slate-700">{user?.email}</div>
-              <div className="text-xs text-slate-500">{user?.role === 'admin' ? '管理员' : '编辑'}</div>
+              <div className="text-sm font-medium truncate text-warm-charcoal">{user?.email}</div>
+              <div className="font-handwriting text-sm text-warm-charcoal-muted">{user?.role === 'admin' ? 'admin' : 'editor'}</div>
             </div>
-            <button onClick={handleLogout} className="text-slate-400 hover:text-red-500 transition-colors" title="退出登录">
-              <LogOut className="h-4 w-4" />
+            <button onClick={handleLogout} className="text-warm-charcoal-muted hover:text-pastel-rose transition-colors p-1" title="退出登录">
+              <LogOut className="h-4 w-4" strokeWidth={1.5} />
             </button>
           </div>
         </div>
       </aside>
 
       {/* Main */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-16 border-b border-[#EBEBEB]/50 bg-white/50 backdrop-blur-md flex items-center px-4 lg:px-6">
-          <button className="lg:hidden mr-3 text-slate-600" onClick={() => setSidebarOpen(true)}>
-            <Menu className="h-6 w-6" />
+      <div className="flex-1 flex flex-col overflow-hidden relative z-[1]">
+        <header className="h-16 border-b border-[hsl(var(--border))] bg-[hsl(var(--card))]/70 backdrop-blur-md flex items-center px-4 lg:px-6 shadow-paper-xs">
+          <button className="lg:hidden mr-3 text-warm-charcoal-muted hover:text-warm-charcoal" onClick={() => setSidebarOpen(true)}>
+            <Menu className="h-6 w-6" strokeWidth={1.5} />
           </button>
           <div className="flex-1" />
-          <ThemeToggle />
-          <a
-            href="https://puxijietech.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-slate-500 hover:text-primary flex items-center gap-1.5 transition-colors"
-          >
-            <Globe className="h-3.5 w-3.5" />
-            查看网站
-          </a>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <a
+              href="https://puxijietech.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-warm-charcoal-muted hover:text-pastel-blue flex items-center gap-1.5 transition-colors font-medium"
+            >
+              <Globe className="h-3.5 w-3.5" strokeWidth={1.5} />
+              <span className="hidden sm:inline">查看网站</span>
+            </a>
+          </div>
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 lg:p-6">
-          <Outlet />
+          <div className="animate-paper-in">
+            <Outlet />
+          </div>
         </main>
       </div>
       <CommandPalette />
