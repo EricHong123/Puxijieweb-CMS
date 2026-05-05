@@ -73,8 +73,8 @@ export default function DashboardPage() {
   const quickLinks = [
     { label: '添加产品', href: '/products/new', icon: Package, color: 'text-pastel-blue', bg: 'bg-pastel-blue/6' },
     { label: '媒体库', href: '/media', icon: ImageIcon, color: 'text-pastel-green', bg: 'bg-pastel-green/8' },
-    { label: '编辑页面', href: '/pages', icon: FileText, color: 'text-pastel-amber', bg: 'bg-pastel-amber/8' },
-    { label: '发布新闻', href: '/news/new', icon: Newspaper, color: 'text-purple-600', bg: 'bg-pastel-lavender/8' },
+    { label: '页面管理', href: '/pages', icon: FileText, color: 'text-pastel-amber', bg: 'bg-pastel-amber/8' },
+    { label: '新闻文章', href: '/news/new', icon: Newspaper, color: 'text-purple-600', bg: 'bg-pastel-lavender/8' },
     { label: '网站设置', href: '/settings', icon: Globe, color: 'text-pastel-lavender', bg: 'bg-pastel-lavender/8' },
     { label: '部署', href: '/deploy', icon: Rocket, color: 'text-pastel-rose', bg: 'bg-pastel-rose/8' },
   ];
