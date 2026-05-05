@@ -15,14 +15,14 @@ import { useLocale } from '@/shared/lib/useLocale.js';
 import { getImageHeight, getImageSrc, getImageSrcSet, getImageWidth } from '@/shared/lib/resolveImage.js';
 import seriesBanner1New from '@/features/home/assets/series-banner-1-new.webp?w=480;560;640;720;768;840;960;1080;1280&format=webp&quality=72&as=img';
 import seriesBanner2New from '@/features/home/assets/series-banner-2-new.webp?w=400;480;560;640;720;768;840;960;1080&format=webp&quality=72&as=img';
-import heroBanner1 from '@/features/home/assets/hero-banner-new-1.webp?w=480;640;768;960;1120;1280&format=webp&quality=68&as=img';
-import heroBanner2 from '@/features/home/assets/hero-banner-new-2.webp?w=480;640;768;960;1120;1280&format=webp&quality=68&as=img';
-import heroBanner3 from '@/features/home/assets/hero-banner-new-3.webp?w=480;640;768;960;1120;1280&format=webp&quality=68&as=img';
-import heroBanner1Mobile from '@/features/home/assets/hero-banner-new-1.webp?w=320;360;400;440;480;520;560;640;720&format=webp&quality=58&as=img';
-import heroBanner2Mobile from '@/features/home/assets/hero-banner-new-2.webp?w=320;360;400;440;480;520;560;640;720&format=webp&quality=58&as=img';
-import heroBanner3Mobile from '@/features/home/assets/hero-banner-new-3.webp?w=320;360;400;440;480;520;560;640;720&format=webp&quality=58&as=img';
-import g31NewLaunch from '@/features/home/assets/g31-new-launch.webp?w=480;640;768;960;1120;1280&format=webp&quality=70&as=img';
-import g31NewLaunchMobile from '@/features/home/assets/g31-new-launch.webp?w=320;360;400;440;480;520;560;640;720&format=webp&quality=58&as=img';
+import heroBanner1 from '@/features/home/assets/hero-banner-new-1.webp?w=480;640;768;960;1120;1280&format=webp&quality=60&as=img';
+import heroBanner2 from '@/features/home/assets/hero-banner-new-2.webp?w=480;640;768;960;1120;1280&format=webp&quality=60&as=img';
+import heroBanner3 from '@/features/home/assets/hero-banner-new-3.webp?w=480;640;768;960;1120;1280&format=webp&quality=60&as=img';
+import heroBanner1Mobile from '@/features/home/assets/hero-banner-new-1.webp?w=320;360;400;440;480;520;560;640;720&format=webp&quality=50&as=img';
+import heroBanner2Mobile from '@/features/home/assets/hero-banner-new-2.webp?w=320;360;400;440;480;520;560;640;720&format=webp&quality=50&as=img';
+import heroBanner3Mobile from '@/features/home/assets/hero-banner-new-3.webp?w=320;360;400;440;480;520;560;640;720&format=webp&quality=50&as=img';
+import g31NewLaunch from '@/features/home/assets/g31-new-launch.webp?w=480;640;768;960;1120;1280&format=webp&quality=62&as=img';
+import g31NewLaunchMobile from '@/features/home/assets/g31-new-launch.webp?w=320;360;400;440;480;520;560;640;720&format=webp&quality=50&as=img';
 import aboutFactoryBuilding from '@/features/home/assets/about-factory-building.webp?w=400;480;560;640;720;800;960;1080&format=webp&quality=72&as=img';
 import patent01 from '@/features/home/assets/patents/patent-01.webp?w=320;480;640;800&format=webp&quality=78&as=img';
 import patent02 from '@/features/home/assets/patents/patent-02.webp?w=320;480;640;800&format=webp&quality=78&as=img';
@@ -219,21 +219,15 @@ function HomePage() {
     const onScroll = () => {
       if (raf) cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        // Avoid forced reflow: rely on scroll geometry instead of getBoundingClientRect().
+        // Compute active index from scrollLeft + known card geometry to avoid forced reflow.
+        // Cards: w-[220px] sm:w-[260px], gap-4 (16px). Container: px-4 (16px).
+        const isMobile = el.clientWidth < 640;
+        const cardWidth = isMobile ? 220 : 260;
+        const stride = cardWidth + 16; // gap-4
+        const paddingLeft = 16; // px-4
         const centerX = el.scrollLeft + el.clientWidth / 2;
-        let bestIdx = 0;
-        let bestDist = Number.POSITIVE_INFINITY;
-
-        for (let i = 0; i < patentItemRefs.current.length; i++) {
-          const node = patentItemRefs.current[i];
-          if (!node) continue;
-          const c = node.offsetLeft + node.offsetWidth / 2;
-          const d = Math.abs(c - centerX);
-          if (d < bestDist) {
-            bestDist = d;
-            bestIdx = i;
-          }
-        }
+        const idx = Math.round((centerX - paddingLeft - cardWidth / 2) / stride);
+        const bestIdx = Math.max(0, Math.min(idx, patents.length - 1));
 
         setActivePatentIndex((prev) => (prev === bestIdx ? prev : bestIdx));
       });
@@ -247,7 +241,7 @@ function HomePage() {
       el.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
     };
-  }, []);
+  }, [patents.length]);
 
   const scrollToPatent = (idx) => {
     const el = patentScrollerRef.current;
@@ -733,14 +727,10 @@ function HomePage() {
               style={{ WebkitOverflowScrolling: 'touch' }}
             >
               <div className="flex gap-4 pb-2 pr-6">
-                {patents.map((p) => (
+                {patents.map((p, idx) => (
                   <div
                     key={p.id}
-                    ref={(node) => {
-                      // Avoid O(n) indexOf on every render; preserve stable indices.
-                      const idx = patents.findIndex((x) => x.id === p.id);
-                      if (idx !== -1) patentItemRefs.current[idx] = node;
-                    }}
+                    ref={(node) => { patentItemRefs.current[idx] = node; }}
                     className="snap-center flex-none w-[220px] sm:w-[260px]"
                   >
                     <div className="group rounded-3xl border border-[#d8d0c2] bg-[#fcfaf6] overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">

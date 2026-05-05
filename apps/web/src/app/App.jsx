@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, Route, Routes, BrowserRouter as Router, useParams } from 'react-router-dom';
 import ScrollToTop from '@/shared/site/ScrollToTop.jsx';
 import { DEFAULT_LOCALE, isSupportedLocale, t } from '@/shared/lib/i18n.js';
-import OrganizationJsonLd from '@/shared/seo/OrganizationJsonLd.jsx';
+const OrganizationJsonLd = React.lazy(() => import('@/shared/seo/OrganizationJsonLd.jsx'));
 import { useLocale } from '@/shared/lib/useLocale.js';
 import { useAnalytics } from '@/shared/lib/useAnalytics.js';
 
@@ -40,7 +40,9 @@ function AppShell() {
   return (
     <>
       <ScrollToTop />
-      <OrganizationJsonLd />
+      <React.Suspense fallback={null}>
+        <OrganizationJsonLd />
+      </React.Suspense>
       <React.Suspense
         fallback={
           <div className="min-h-screen bg-background flex items-center justify-center">

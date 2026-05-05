@@ -140,6 +140,7 @@ try {
 
 runNode('stamp-index-html.mjs');
 runNode('generate-static-route-pages.mjs');
+runNode('inject-preloads.mjs');
 removeMacMetadata(outDir);
 removeFinderDuplicateCopies(outDir);
 runNode('copy-hostinger.mjs', { ignoreFail: true });
