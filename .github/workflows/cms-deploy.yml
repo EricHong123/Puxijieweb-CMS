@@ -49,6 +49,6 @@ jobs:
           set net:timeout 30
           set net:max-retries 3
           open -u ${{ secrets.HOSTINGER_SFTP_USER }},'${{ secrets.HOSTINGER_SFTP_PASSWORD }}' ftp://${{ secrets.HOSTINGER_SFTP_HOST }}
-          mirror -R --ignore-time --verbose --parallel=4 apps/web/.out/ /public_html/
+          mirror -R --verbose --parallel=4 apps/web/.out/ /public_html/
           "
         working-directory: ./
