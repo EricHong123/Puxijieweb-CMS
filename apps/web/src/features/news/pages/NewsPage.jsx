@@ -2,39 +2,142 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { m } from 'framer-motion';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Clock3 } from 'lucide-react';
 import Header from '@/shared/site/Header.jsx';
 import Footer from '@/shared/site/Footer.jsx';
+import Breadcrumb from '@/shared/ui/breadcrumb.jsx';
 import { getPaginatedNewsPosts } from '@/features/news/lib/newsContent.js';
 import { getSiteOrigin, t } from '@/shared/lib/i18n.js';
 import { useLocale } from '@/shared/lib/useLocale.js';
 
 const PER_PAGE = 20;
 
-function getNewsPageCopy(locale) {
-  const copy = {
-    en: {
-      intro:
-        'Updates for B2B sourcing of outdoor portable waterproof speakers. OEM/ODM manufacturing, compliance, and wholesale market insights.',
-      altSuffix: 'Puxijie waterproof speaker manufacturer news',
-    },
-    fr: {
-      intro:
-        'Actualités pour le sourcing B2B d’enceintes portables étanches : fabrication OEM/ODM, conformité et tendances wholesale.',
-      altSuffix: 'actualités fabricant d’enceintes étanches Puxijie',
-    },
-    vi: {
-      intro:
-        'Cập nhật cho sourcing B2B loa portable chống nước: sản xuất OEM/ODM, tuân thủ và insight thị trường bán sỉ.',
-      altSuffix: 'tin tức nhà sản xuất loa chống nước Puxijie',
-    },
+const COPY = {
+  en: {
+    breadcrumb: 'News',
+    badge: 'B2B Sourcing Updates',
+    heroTitle: 'OEM/ODM insights for waterproof speaker buyers',
+    heroDesc:
+      'Product updates, compliance guides, and sourcing strategies for distributors, importers, and private-label brands.',
+    altSuffix: 'Puxijie waterproof speaker manufacturer news',
+    showing: 'Showing',
+    of: 'of',
+    articles: 'articles',
+    readNow: 'Read now',
+    minRead: 'min read',
+    noArticles: 'No news articles yet.',
+    prev: 'Prev',
+    next: 'Next',
+  },
+  fr: {
+    breadcrumb: 'Actualités',
+    badge: 'Actualités sourcing B2B',
+    heroTitle: 'Insights OEM/ODM pour acheteurs d\'enceintes étanches',
+    heroDesc:
+      'Mises à jour produits, guides de conformité et stratégies de sourcing pour distributeurs, importateurs et marques.',
+    altSuffix: 'actualités fabricant d\'enceintes étanches Puxijie',
+    showing: 'Affichage',
+    of: 'sur',
+    articles: 'articles',
+    readNow: 'Lire',
+    minRead: 'min de lecture',
+    noArticles: 'Aucun article pour le moment.',
+    prev: 'Précédent',
+    next: 'Suivant',
+  },
+  vi: {
+    breadcrumb: 'Tin tức',
+    badge: 'Cập nhật sourcing B2B',
+    heroTitle: 'Insights OEM/ODM cho người mua loa chống nước',
+    heroDesc:
+      'Cập nhật sản phẩm, hướng dẫn tuân thủ và chiến lược sourcing cho nhà phân phối, nhập khẩu và thương hiệu.',
+    altSuffix: 'tin tức nhà sản xuất loa chống nước Puxijie',
+    showing: 'Hiển thị',
+    of: 'trên',
+    articles: 'bài viết',
+    readNow: 'Xem',
+    minRead: 'phút đọc',
+    noArticles: 'Chưa có bài viết nào.',
+    prev: 'Trước',
+    next: 'Sau',
+  },
+};
+
+function Pagination({ page, totalPages, copy, onPageChange }) {
+  if (totalPages <= 1) return null;
+
+  const goTo = (n) => {
+    onPageChange(n);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  return copy[locale] || copy.en;
+
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= page - 1 && i <= page + 1)) {
+      pageNumbers.push(i);
+    } else if (pageNumbers[pageNumbers.length - 1] !== '...') {
+      pageNumbers.push('...');
+    }
+  }
+
+  return (
+    <nav className="mt-16 flex items-center justify-between border-t border-gray-200 pt-8" aria-label="Pagination">
+      <button
+        onClick={() => goTo(page - 1)}
+        disabled={page <= 1}
+        className={`inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+          page <= 1
+            ? 'pointer-events-none text-gray-300'
+            : 'text-gray-700 hover:bg-gray-100'
+        }`}
+      >
+        <ChevronLeft className="h-4 w-4" />
+        {copy.prev}
+      </button>
+
+      <div className="hidden sm:flex items-center gap-1">
+        {pageNumbers.map((n, i) =>
+          n === '...' ? (
+            <span key={`dots-${i}`} className="px-2 text-gray-400 select-none">...</span>
+          ) : (
+            <button
+              key={n}
+              onClick={() => goTo(n)}
+              className={`inline-flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium transition-colors ${
+                n === page
+                  ? 'bg-gray-900 text-white'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              {n}
+            </button>
+          )
+        )}
+      </div>
+
+      <span className="sm:hidden text-sm font-medium text-gray-600">
+        {page} / {totalPages}
+      </span>
+
+      <button
+        onClick={() => goTo(page + 1)}
+        disabled={page >= totalPages}
+        className={`inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+          page >= totalPages
+            ? 'pointer-events-none text-gray-300'
+            : 'text-gray-700 hover:bg-gray-100'
+        }`}
+      >
+        {copy.next}
+        <ChevronRight className="h-4 w-4" />
+      </button>
+    </nav>
+  );
 }
 
 function NewsPage() {
   const locale = useLocale();
-  const pageCopy = getNewsPageCopy(locale);
+  const copy = COPY[locale] || COPY.en;
   const [page, setPage] = useState(1);
 
   const { items: rawItems, total, totalPages } = getPaginatedNewsPosts(locale, {
@@ -42,11 +145,15 @@ function NewsPage() {
     limit: PER_PAGE,
   });
 
-  const localizedItems = rawItems.map((post) => ({
+  const posts = rawItems.map((post) => ({
     ...post,
     date: post.displayDate || post.date,
     image: post.heroImages?.[0]?.src || post.image,
+    readingMinutes: post.readingMinutes || 1,
   }));
+
+  const startItem = total === 0 ? 0 : (page - 1) * PER_PAGE + 1;
+  const endItem = Math.min(page * PER_PAGE, total);
 
   return (
     <>
@@ -91,120 +198,119 @@ function NewsPage() {
       <div className="min-h-screen bg-gray-50">
         <Header />
 
-        <section className="border-b border-gray-200 bg-white py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Hero */}
+        <section className="bg-white border-b border-gray-200">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+            <Breadcrumb
+              items={[
+                { label: 'Home', href: `/${locale}/` },
+                { label: copy.breadcrumb },
+              ]}
+            />
             <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.5 }}
               className="max-w-3xl"
             >
-              <div className="inline-flex items-center rounded-full border border-gray-200 bg-white px-4 py-1.5 text-sm font-medium text-gray-900">
-                {t(locale, 'newsPage.title')}
-              </div>
-              <h1 className="mt-5 text-4xl font-bold text-gray-900 md:text-5xl" style={{ letterSpacing: '-0.02em' }}>
-                {t(locale, 'newsPage.heroTitle')}
+              <span className="inline-block rounded-full bg-sky-50 px-4 py-1.5 text-xs font-semibold tracking-wide text-sky-700 uppercase">
+                {copy.badge}
+              </span>
+              <h1 className="mt-5 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                {copy.heroTitle}
               </h1>
-              <p className="mt-4 text-lg leading-relaxed text-gray-600">
-                {t(locale, 'newsPage.heroDesc')}
-              </p>
-              <p className="mt-3 text-sm sm:text-base leading-relaxed text-gray-600">
-                {pageCopy.intro}
+              <p className="mt-4 text-lg leading-relaxed text-gray-500">
+                {copy.heroDesc}
               </p>
             </m.div>
           </div>
         </section>
 
-        <section className="py-20">
+        {/* Content */}
+        <section className="py-16 sm:py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
-              {localizedItems.map((item, index) => (
-                <m.article
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                  className="overflow-hidden border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-                >
-                  <Link
-                    to={item.href ? item.href.replace(/^\/en\//, `/${locale}/`) : `/${locale}/news/`}
-                    className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900/30"
-                  >
-                    <div className="aspect-[16/9] overflow-hidden bg-gray-100">
-                      <img
-                        src={item.image}
-                        alt={`${item.title} — ${pageCopy.altSuffix}`}
-                        width={1600}
-                        height={900}
-                        className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                      />
-                    </div>
-                    <div className="px-5 py-5 text-center">
-                      <p className="text-xs font-medium text-gray-400">{item.date}</p>
-                      <h2 className="mt-3 min-h-[4.5rem] text-[1.05rem] font-bold leading-snug text-gray-900">
-                        {item.title}
-                      </h2>
-                      <p className="mt-3 text-sm leading-relaxed text-gray-600">{item.excerpt}</p>
-                      <div className="mt-4 inline-flex items-center text-sm font-medium text-sky-700">
-                        {t(locale, 'newsPage.readNow')} <ArrowRight className="ml-1 h-4 w-4" />
-                      </div>
-                    </div>
-                  </Link>
-                </m.article>
-              ))}
+            {/* Results bar */}
+            <div className="mb-10 flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                {total > 0
+                  ? `${copy.showing} ${startItem}–${endItem} ${copy.of} ${total} ${copy.articles}`
+                  : copy.noArticles}
+              </p>
             </div>
 
-            {totalPages > 1 && (
-              <nav className="mt-12 flex items-center justify-center gap-2" aria-label="Pagination">
-                <button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page <= 1}
-                  className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-40"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                  {t(locale, 'newsPage.prev')}
-                </button>
+            {posts.length === 0 ? (
+              <div className="py-20 text-center">
+                <p className="text-gray-400">{copy.noArticles}</p>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {posts.map((post, index) => (
+                    <m.article
+                      key={post.id}
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: (index % PER_PAGE) * 0.04 }}
+                    >
+                      <Link
+                        to={
+                          post.href
+                            ? post.href.replace(/^\/en\//, `/${locale}/`)
+                            : `/${locale}/news/`
+                        }
+                        className="group block overflow-hidden rounded-2xl bg-white border border-gray-200/60 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900/20"
+                      >
+                        {/* Image */}
+                        <div className="aspect-[16/9] overflow-hidden bg-gray-100">
+                          <img
+                            src={post.image}
+                            alt={`${post.title} — ${copy.altSuffix}`}
+                            width={800}
+                            height={450}
+                            loading={index < 6 ? 'eager' : 'lazy'}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </div>
 
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1)
-                    .filter((n) => {
-                      if (totalPages <= 7) return true;
-                      if (n === 1 || n === totalPages) return true;
-                      if (n >= page - 1 && n <= page + 1) return true;
-                      return false;
-                    })
-                    .map((n, idx, arr) => {
-                      const showEllipsis = idx > 0 && n - arr[idx - 1] > 1;
-                      return (
-                        <React.Fragment key={n}>
-                          {showEllipsis && (
-                            <span className="px-1 text-gray-400 select-none">...</span>
+                        {/* Body */}
+                        <div className="p-5 sm:p-6">
+                          {/* Meta row */}
+                          <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
+                            <time dateTime={post.date}>{post.date}</time>
+                            <span className="inline-flex items-center gap-1">
+                              <Clock3 className="h-3 w-3" />
+                              {post.readingMinutes} {copy.minRead}
+                            </span>
+                          </div>
+
+                          <h2 className="text-[1.05rem] font-semibold leading-snug text-gray-900 group-hover:text-sky-700 transition-colors line-clamp-2">
+                            {post.title}
+                          </h2>
+
+                          {post.excerpt && (
+                            <p className="mt-2 text-sm leading-relaxed text-gray-500 line-clamp-2">
+                              {post.excerpt}
+                            </p>
                           )}
-                          <button
-                            onClick={() => setPage(n)}
-                            className={`inline-flex h-9 w-9 items-center justify-center rounded-lg text-sm font-medium transition-colors ${
-                              n === page
-                                ? 'bg-gray-900 text-white'
-                                : 'text-gray-700 hover:bg-gray-100'
-                            }`}
-                          >
-                            {n}
-                          </button>
-                        </React.Fragment>
-                      );
-                    })}
+
+                          <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-sky-700 group-hover:gap-2 transition-all">
+                            {copy.readNow}
+                            <ArrowRight className="h-4 w-4" />
+                          </span>
+                        </div>
+                      </Link>
+                    </m.article>
+                  ))}
                 </div>
 
-                <button
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  disabled={page >= totalPages}
-                  className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-40"
-                >
-                  {t(locale, 'newsPage.next')}
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </nav>
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  copy={copy}
+                  onPageChange={setPage}
+                />
+              </>
             )}
           </div>
         </section>
