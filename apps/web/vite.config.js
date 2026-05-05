@@ -334,6 +334,7 @@ export default defineConfig({
 					if (id.includes('lucide-react')) return 'icons';
 					if (id.includes('react-dom') || id.includes('react-router')) return 'react-vendor';
 					if (id.includes('@radix-ui')) return 'radix';
+					if (id.includes('clsx') || id.includes('class-variance-authority') || id.includes('tailwind-merge')) return 'utils';
 					return undefined;
 				},
 			},
