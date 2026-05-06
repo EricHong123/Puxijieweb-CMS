@@ -4,8 +4,9 @@ import { useForm } from 'react-hook-form';
 import api from '@/api/client';
 import { useToast } from '@/lib/toast';
 import { useKeyboardShortcuts } from '@/lib/useKeyboardShortcuts';
-import { ArrowLeft, Save, Eye, Globe } from 'lucide-react';
+import { ArrowLeft, Save, Eye, Globe, Tag, ChevronDown, History } from 'lucide-react';
 import SeoSidebar from '@/components/SeoSidebar';
+import VersionDiff from '@/components/VersionDiff';
 
 const LOCALES = [
   { key: 'en', label: 'English' },
@@ -20,6 +21,10 @@ export default function NewsEditorPage() {
   const isNew = !id;
   const [saving, setSaving] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [categories, setCategories] = useState<{ id: string; slug: string; name: string }[]>([]);
+  const [categoryIds, setCategoryIds] = useState<string[]>([]);
+  const [seoOpen, setSeoOpen] = useState(false);
+  const [showVersionDiff, setShowVersionDiff] = useState(false);
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
     defaultValues: {
@@ -31,12 +36,23 @@ export default function NewsEditorPage() {
       date: new Date().toISOString().split('T')[0],
       keywords: '',
       hero_image_url: '',
+      og_title: '',
+      og_description: '',
+      og_image_url: '',
+      canonical_url: '',
+      noindex: false,
     },
   });
 
   const bodyMd = watch('body_markdown');
 
   useKeyboardShortcuts({ onSave: () => handleSubmit(onSubmit)() });
+
+  useEffect(() => {
+    api.get('/news-categories', { params: { locale: 'en' } }).then(({ data }) => {
+      if (data.success) setCategories(data.data);
+    });
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -51,6 +67,12 @@ export default function NewsEditorPage() {
         setValue('date', a.date || '');
         setValue('keywords', (a.keywords || []).join(', '));
         setValue('hero_image_url', a.hero_image_url || '');
+        setValue('og_title', a.og_title || '');
+        setValue('og_description', a.og_description || '');
+        setValue('og_image_url', a.og_image_url || '');
+        setValue('canonical_url', a.canonical_url || '');
+        setValue('noindex', a.noindex || false);
+        setCategoryIds(a.category_ids || []);
       });
     }
   }, [id, setValue]);
@@ -61,6 +83,7 @@ export default function NewsEditorPage() {
       const payload = {
         ...formData,
         keywords: formData.keywords.split(',').map((k: string) => k.trim()).filter(Boolean),
+        category_ids: categoryIds,
       };
 
       if (isNew) {
@@ -92,6 +115,16 @@ export default function NewsEditorPage() {
           <Eye className="h-4 w-4" />
           {preview ? '编辑' : '预览'}
         </button>
+        {!isNew && (
+          <button
+            type="button"
+            onClick={() => setShowVersionDiff(true)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[hsl(var(--card))] text-warm-charcoal-muted border border-[hsl(var(--border))] rounded-lg text-sm font-medium hover:bg-[hsl(var(--secondary))]"
+          >
+            <History className="h-4 w-4" />
+            历史版本
+          </button>
+        )}
         <button
           onClick={handleSubmit(onSubmit)}
           disabled={saving}
@@ -142,6 +175,72 @@ export default function NewsEditorPage() {
               <input {...register('hero_image_url')} className="w-full px-3 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="https://..." />
             </div>
           </div>
+          {categories.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium text-warm-charcoal mb-2 flex items-center gap-1.5">
+                <Tag className="h-3.5 w-3.5" />分类
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((cat) => {
+                  const selected = categoryIds.includes(cat.id);
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setCategoryIds((prev) =>
+                        selected ? prev.filter((id) => id !== cat.id) : [...prev, cat.id]
+                      )}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                        selected
+                          ? 'bg-pastel-blue/10 text-pastel-blue border-pastel-blue/30'
+                          : 'bg-[hsl(var(--card))] text-warm-charcoal-muted border-[hsl(var(--border))] hover:border-pastel-blue/30'
+                      }`}
+                    >
+                      {cat.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* SEO Settings */}
+        <section className="bg-[hsl(var(--card))] rounded-xl border overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setSeoOpen(!seoOpen)}
+            className="w-full flex items-center justify-between px-6 py-4 bg-[hsl(var(--secondary))] hover:bg-[hsl(var(--secondary))]/80 transition-colors"
+          >
+            <h2 className="font-semibold text-warm-charcoal text-lg">SEO 设置</h2>
+            <ChevronDown className={`h-4 w-4 text-warm-charcoal-muted transition-transform ${seoOpen ? 'rotate-180' : ''}`} />
+          </button>
+          {seoOpen && (
+            <div className="p-6 space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="block text-xs font-medium text-warm-charcoal mb-1">OG 标题</label>
+                  <input {...register('og_title')} className="w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="社交分享标题，留空则使用文章标题" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-warm-charcoal mb-1">OG 图片 URL</label>
+                  <input {...register('og_image_url')} className="w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="https://..." />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-warm-charcoal mb-1">OG 描述</label>
+                <textarea {...register('og_description')} rows={2} className="w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="社交分享描述，留空则使用文章描述" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-warm-charcoal mb-1">Canonical URL</label>
+                <input {...register('canonical_url')} className="w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="https://puxijietech.com/news/article" />
+              </div>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" {...register('noindex')} className="rounded border-[hsl(var(--border))] text-pastel-amber focus:ring-pastel-amber/30" />
+                <span className="text-sm text-warm-charcoal-muted">noindex — 告诉搜索引擎不要索引此文章</span>
+              </label>
+            </div>
+          )}
         </section>
 
         {/* Content */}
@@ -168,9 +267,23 @@ export default function NewsEditorPage() {
         feedback={{
           title: watch('title'),
           metaDescription: watch('description'),
+          ogTitle: watch('og_title'),
+          ogDescription: watch('og_description'),
+          ogImageUrl: watch('og_image_url'),
+          canonicalUrl: watch('canonical_url'),
+          noindex: watch('noindex'),
         }}
       />
       </div>
+
+      {showVersionDiff && id && (
+        <VersionDiff
+          entityType="news"
+          entityId={id}
+          onClose={() => setShowVersionDiff(false)}
+          onRollback={() => window.location.reload()}
+        />
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '@/api/client';
-import { Plus, Edit3, Trash2, Eye, EyeOff, Globe } from 'lucide-react';
+import { Plus, Edit3, Trash2, Eye, EyeOff, Globe, Tag } from 'lucide-react';
 import { SkeletonList } from '@/components/SkeletonCard';
 
 interface Article {
@@ -18,15 +18,25 @@ export default function NewsPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [locale, setLocale] = useState('en');
+  const [category, setCategory] = useState('');
+  const [categories, setCategories] = useState<{ id: string; slug: string; name: string }[]>([]);
 
   const fetchNews = async () => {
     setLoading(true);
-    const { data } = await api.get('/news', { params: { locale, limit: '50' } });
+    const params: Record<string, string> = { locale, limit: '50' };
+    if (category) params.category = category;
+    const { data } = await api.get('/news', { params });
     if (data.success) setArticles(data.data.items);
     setLoading(false);
   };
 
-  useEffect(() => { fetchNews(); }, [locale]);
+  useEffect(() => {
+    api.get('/news-categories', { params: { locale } }).then(({ data }) => {
+      if (data.success) setCategories(data.data);
+    });
+  }, [locale]);
+
+  useEffect(() => { fetchNews(); }, [locale, category]);
 
   const togglePublish = async (id: string, current: boolean) => {
     await api.patch(`/news/${id}/publish`, { is_published: !current });
@@ -68,6 +78,35 @@ export default function NewsPage() {
           </button>
         ))}
       </div>
+
+      {categories.length > 0 && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <Tag className="h-3.5 w-3.5 text-warm-charcoal-muted" />
+          <button
+            onClick={() => setCategory('')}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+              !category
+                ? 'bg-pastel-blue/10 text-pastel-blue border-pastel-blue/30'
+                : 'bg-[hsl(var(--card))] text-warm-charcoal-muted border-[hsl(var(--border))] hover:border-pastel-blue/30'
+            }`}
+          >
+            全部
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setCategory(category === cat.slug ? '' : cat.slug)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                category === cat.slug
+                  ? 'bg-pastel-blue/10 text-pastel-blue border-pastel-blue/30'
+                  : 'bg-[hsl(var(--card))] text-warm-charcoal-muted border-[hsl(var(--border))] hover:border-pastel-blue/30'
+              }`}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="space-y-3">
         {loading ? (

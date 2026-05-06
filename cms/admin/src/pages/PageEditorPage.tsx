@@ -5,8 +5,10 @@ import api from '@/api/client';
 import { useToast } from '@/lib/toast';
 import { useKeyboardShortcuts } from '@/lib/useKeyboardShortcuts';
 import I18nTabs, { type Locale, LOCALES } from '@/components/I18nTabs';
-import { ArrowLeft, Save, Eye } from 'lucide-react';
+import { ArrowLeft, Save, Eye, ChevronDown, History } from 'lucide-react';
 import SeoSidebar from '@/components/SeoSidebar';
+import RichTextEditor from '@/components/RichTextEditor';
+import VersionDiff from '@/components/VersionDiff';
 
 const PAGE_TYPES = [
   { value: 'home', label: '首页' },
@@ -25,6 +27,11 @@ function buildEmptyTranslations() {
     headline_emphasis: '',
     subhead: '',
     body_json: '',
+    og_title: '',
+    og_description: '',
+    og_image_url: '',
+    canonical_url: '',
+    noindex: false,
   }));
 }
 
@@ -35,6 +42,8 @@ export default function PageEditorPage() {
   const isNew = !id;
   const [saving, setSaving] = useState(false);
   const [activeLocale, setActiveLocale] = useState<Locale>('en');
+  const [seoOpen, setSeoOpen] = useState(false);
+  const [showVersionDiff, setShowVersionDiff] = useState(false);
 
   const { register, handleSubmit, reset, watch, setValue, getValues, formState: { errors } } = useForm({
     defaultValues: {
@@ -70,6 +79,11 @@ export default function PageEditorPage() {
               headline_emphasis: t.headline_emphasis || '',
               subhead: t.subhead || '',
               body_json: typeof t.body_json === 'string' ? t.body_json : JSON.stringify(t.body_json || {}, null, 2),
+              og_title: t.og_title || '',
+              og_description: t.og_description || '',
+              og_image_url: t.og_image_url || '',
+              canonical_url: t.canonical_url || '',
+              noindex: t.noindex || false,
             };
           }
         }
@@ -116,6 +130,16 @@ export default function PageEditorPage() {
           <h1 className="text-2xl font-bold text-warm-charcoal">{isNew ? '新建页面' : `编辑: ${watch('slug')}`}</h1>
           <p className="text-sm text-muted-foreground mt-1">编辑页面内容和 SEO 信息</p>
         </div>
+        {!isNew && (
+          <button
+            type="button"
+            onClick={() => setShowVersionDiff(true)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[hsl(var(--card))] text-warm-charcoal-muted border border-[hsl(var(--border))] rounded-lg text-sm font-medium hover:bg-[hsl(var(--secondary))]"
+          >
+            <History className="h-4 w-4" />
+            历史版本
+          </button>
+        )}
         <button
           onClick={handleSubmit(onSubmit)}
           disabled={saving}
@@ -205,17 +229,53 @@ export default function PageEditorPage() {
                 </div>
               </div>
 
+              {/* SEO Settings */}
+              <div className="border rounded-lg overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setSeoOpen(!seoOpen)}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-[hsl(var(--secondary))] hover:bg-[hsl(var(--secondary))]/80 transition-colors"
+                >
+                  <span className="text-sm font-semibold text-warm-charcoal">SEO 设置</span>
+                  <ChevronDown className={`h-4 w-4 text-warm-charcoal-muted transition-transform ${seoOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {seoOpen && (
+                  <div className="p-4 space-y-4 bg-[hsl(var(--card))]">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <label className="block text-xs font-medium text-warm-charcoal mb-1">OG 标题</label>
+                        <input {...register(`translations.${activeIdx}.og_title`)} className="w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="社交分享标题，留空则使用页面标题" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-warm-charcoal mb-1">OG 图片 URL</label>
+                        <input {...register(`translations.${activeIdx}.og_image_url`)} className="w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="https://..." />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-warm-charcoal mb-1">OG 描述</label>
+                      <textarea {...register(`translations.${activeIdx}.og_description`)} rows={2} className="w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="社交分享描述，留空则使用 Meta 描述" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-warm-charcoal mb-1">Canonical URL</label>
+                      <input {...register(`translations.${activeIdx}.canonical_url`)} className="w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="https://puxijietech.com/page" />
+                    </div>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" {...register(`translations.${activeIdx}.noindex`)} className="rounded border-[hsl(var(--border))] text-pastel-amber focus:ring-pastel-amber/30" />
+                      <span className="text-sm text-warm-charcoal-muted">noindex — 告诉搜索引擎不要索引此页面</span>
+                    </label>
+                  </div>
+                )}
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-warm-charcoal mb-1.5">
-                  正文内容 (JSON / HTML)
+                  正文内容
                 </label>
-                <textarea
-                  {...register(`translations.${activeIdx}.body_json`)}
-                  rows={10}
-                  className="w-full px-3 py-2.5 rounded-lg border text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  placeholder='{"type":"doc","content":[...]} 或 <div>...</div>'
+                <RichTextEditor
+                  content={watch(`translations.${activeIdx}.body_json`) || ''}
+                  onChange={(json) => setValue(`translations.${activeIdx}.body_json`, json)}
+                  placeholder="开始编辑页面内容..."
                 />
-                <p className="text-xs text-muted-foreground mt-1">可输入 Tiptap JSON 或 HTML 格式</p>
               </div>
             </div>
           )}
@@ -225,9 +285,23 @@ export default function PageEditorPage() {
         feedback={{
           title: watch('translations')?.[activeIdx]?.title,
           metaDescription: watch('translations')?.[activeIdx]?.meta_description,
+          ogTitle: watch('translations')?.[activeIdx]?.og_title,
+          ogDescription: watch('translations')?.[activeIdx]?.og_description,
+          ogImageUrl: watch('translations')?.[activeIdx]?.og_image_url,
+          canonicalUrl: watch('translations')?.[activeIdx]?.canonical_url,
+          noindex: watch('translations')?.[activeIdx]?.noindex,
         }}
       />
       </div>
+
+      {showVersionDiff && id && (
+        <VersionDiff
+          entityType="page"
+          entityId={id}
+          onClose={() => setShowVersionDiff(false)}
+          onRollback={() => window.location.reload()}
+        />
+      )}
     </div>
   );
 }

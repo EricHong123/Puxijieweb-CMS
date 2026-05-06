@@ -16,6 +16,9 @@ import LegalPagesPage from '@/pages/LegalPagesPage';
 import SiteSettingsPage from '@/pages/SiteSettingsPage';
 import DeployPage from '@/pages/DeployPage';
 import AuditLogPage from '@/pages/AuditLogPage';
+import UsersPage from '@/pages/UsersPage';
+import MenusPage from '@/pages/MenusPage';
+import RedirectsPage from '@/pages/RedirectsPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -46,6 +49,9 @@ export default function App() {
         <Route path="settings" element={<SiteSettingsPage />} />
         <Route path="deploy" element={<DeployPage />} />
         <Route path="audit" element={<AuditLogPage />} />
+        <Route path="users" element={<UsersPage />} />
+        <Route path="menus" element={<MenusPage />} />
+        <Route path="redirects" element={<RedirectsPage />} />
       </Route>
     </Routes>
     </ErrorBoundary>

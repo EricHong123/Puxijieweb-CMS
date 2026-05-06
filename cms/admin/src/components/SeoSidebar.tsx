@@ -1,11 +1,16 @@
 import { cn } from '@/lib/utils';
 
 interface SeoFeedback {
+  title?: string;
   metaDescription?: string;
   hasImages?: boolean;
   imagesWithAlt?: number;
   totalImages?: number;
-  title?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImageUrl?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
 }
 
 interface Props {
@@ -49,7 +54,10 @@ export default function SeoSidebar({ feedback }: Props) {
     { ok: !!feedback.title && feedback.title.length >= 3, label: '有标题 (≥3字)' },
     { ok: !!feedback.metaDescription && feedback.metaDescription.length >= 50, label: 'Meta 描述 ≥50字' },
     { ok: !feedback.hasImages || (feedback.totalImages === feedback.imagesWithAlt), label: '图片有 alt 文本' },
-    { ok: !!feedback.metaDescription, label: '有 Meta 描述' },
+    { ok: !!feedback.ogTitle, label: '有 OG 标题' },
+    { ok: !!feedback.ogDescription, label: '有 OG 描述' },
+    { ok: !!feedback.ogImageUrl, label: '有 OG 图片' },
+    { ok: !feedback.noindex, label: '可被搜索引擎索引' },
   ];
 
   return (
@@ -74,6 +82,37 @@ export default function SeoSidebar({ feedback }: Props) {
         </div>
       )}
 
+      {feedback.ogTitle !== undefined && (
+        <div className="paper-card p-4">
+          <CharGauge
+            current={feedback.ogTitle?.length || 0}
+            min={30}
+            max={60}
+            label="OG 标题长度"
+          />
+        </div>
+      )}
+
+      {feedback.ogDescription !== undefined && (
+        <div className="paper-card p-4">
+          <CharGauge
+            current={feedback.ogDescription?.length || 0}
+            min={50}
+            max={200}
+            label="OG 描述长度"
+          />
+        </div>
+      )}
+
+      {feedback.canonicalUrl && (
+        <div className="paper-card p-4">
+          <div className="text-xs text-warm-charcoal-muted">
+            <span className="font-medium text-warm-charcoal">Canonical:</span>{' '}
+            <span className="break-all">{feedback.canonicalUrl}</span>
+          </div>
+        </div>
+      )}
+
       {feedback.hasImages && (
         <div className="paper-card p-4 space-y-2">
           <h3 className="font-semibold text-sm text-warm-charcoal">图片 SEO</h3>
@@ -90,6 +129,7 @@ export default function SeoSidebar({ feedback }: Props) {
           <li>描述 120-160 字适合摘要</li>
           <li>每张图片应有 alt 文本</li>
           <li>URL 简短且有描述性更佳</li>
+          <li>OG 标签决定社交分享预览</li>
         </ul>
       </div>
     </aside>

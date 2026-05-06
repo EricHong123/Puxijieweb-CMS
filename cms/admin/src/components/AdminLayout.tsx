@@ -6,7 +6,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import {
   LayoutDashboard, Package, Image, FileText, Newspaper,
   HelpCircle, Scale, Settings, Rocket, LogOut, History,
-  Menu, X, Globe, PenLine, ChevronDown,
+  Menu, X, Globe, PenLine, ChevronDown, Users, Navigation, ArrowLeftRight,
 } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
@@ -36,6 +36,9 @@ const navItems: NavItem[] = [
     { to: '/legal', icon: Scale, label: '法律页面' },
   ]},
   { to: '/settings', icon: Settings, label: '网站设置' },
+  { to: '/users', icon: Users, label: '用户管理' },
+  { to: '/menus', icon: Navigation, label: '菜单管理' },
+  { to: '/redirects', icon: ArrowLeftRight, label: '301 跳转' },
   { to: '/deploy', icon: Rocket, label: '部署' },
   { to: '/audit', icon: History, label: '操作日志' },
 ];

@@ -15,6 +15,10 @@ import { searchRoutes } from './routes/search';
 import { auditRoutes } from './routes/audit';
 import { versionRoutes } from './routes/versions';
 import { aiRoutes } from './routes/ai';
+import { userRoutes } from './routes/users';
+import { newsCategoryRoutes } from './routes/news-categories';
+import { menuRoutes } from './routes/menus';
+import { redirectRoutes } from './routes/redirects';
 import { auditMiddleware } from './lib/audit';
 import type { Env } from './lib/supabase';
 import { handleScheduledPublish } from './cron/publish-scheduled';
@@ -45,10 +49,10 @@ api.route('/search', searchRoutes);
 api.route('/audit-logs', auditRoutes);
 api.route('/versions', versionRoutes);
 api.route('/ai', aiRoutes);
-
-app.route('/api/v1', api);
-
-app.get('/health', (c) => c.json({ status: 'ok', timestamp: Date.now() }));
+api.route('/users', userRoutes);
+api.route('/news-categories', newsCategoryRoutes);
+api.route('/menus', menuRoutes);
+api.route('/redirects', redirectRoutes);
 
 // Cron endpoint for manual trigger or HTTP-based cron
 api.get('/cron/publish-scheduled', async (c) => {
@@ -59,6 +63,10 @@ api.get('/cron/publish-scheduled', async (c) => {
     return c.json({ success: false, error: err.message }, 500);
   }
 });
+
+app.route('/api/v1', api);
+
+app.get('/health', (c) => c.json({ status: 'ok', timestamp: Date.now() }));
 
 export default {
   fetch: app.fetch,

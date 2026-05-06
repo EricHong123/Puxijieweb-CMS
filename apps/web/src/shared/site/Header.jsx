@@ -39,6 +39,7 @@ import {
 import { products } from '@/features/products/data/products.js';
 import { getLocalizedProduct } from '@/features/products/utils/productI18n.js';
 import { getModelSlugById } from '@/features/products/utils/modelSlugs.js';
+import { cmsMenus } from '@/shared/site/menus.generated.js';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -168,7 +169,7 @@ function Header() {
         catalogDesc: 'Téléchargez le catalogue actuel sans prix pour revue sourcing.',
         faqDesc: 'Questions achats sur échantillons, paiement, certifications et logistique.',
         newsDesc: 'Éducation acheteur, sourcing enceintes étanches et actualités.',
-        aboutDesc: 'Profil usine, capacité de production et histoire de l’entreprise.',
+        aboutDesc: 'Profil usine, capacité de production et histoire de l\'entreprise.',
         contactDesc: 'Contact commercial par WeChat, email, téléphone ou demande.',
         helpDesc: 'Contacts support business et guide acheteur.',
         factoryBadge: 'Usine audio OEM',
@@ -254,113 +255,67 @@ function Header() {
     [languageOptions, locale]
   );
 
-  const productLinks = useMemo(
-    () => [
-      {
-        name: locale === 'fr' ? 'Enceintes étanches' : locale === 'vi' ? 'Loa chống nước' : 'Waterproof speakers',
-        desc: labels.productDesc1,
-        path: withLocale('/products?category=Waterproof%20Bluetooth%20Speaker'),
-        icon: Waves,
-      },
-      {
-        name: locale === 'fr' ? 'Enceintes Bluetooth' : locale === 'vi' ? 'Loa Bluetooth' : 'Bluetooth speakers',
-        desc: labels.productDesc2,
-        path: withLocale('/products?category=Normal%20Bluetooth%20Speaker'),
-        icon: Headphones,
-      },
-      {
-        name: locale === 'fr' ? 'Produits spécialisés' : locale === 'vi' ? 'Dòng đặc biệt' : 'Specialty speakers',
-        desc: labels.productDesc3,
-        path: withLocale('/products?category=Specialty%20Speaker'),
-        icon: Sparkles,
-      },
-      {
-        name: locale === 'fr' ? 'Écouteurs Bluetooth' : locale === 'vi' ? 'Tai nghe Bluetooth' : 'Bluetooth earbuds',
-        desc: labels.productDesc4,
-        path: withLocale('/products?category=Bluetooth%20Earbuds'),
-        icon: BadgeCheck,
-      },
-    ],
-    [labels, locale, withLocale]
-  );
+  // CMS-driven menu links — labels come from CMS, icons/descs are frontend metadata keyed by position
+  const menuData = useMemo(() => {
+    const mainMenu = cmsMenus.find((m) => m.slug === 'main-navigation');
+    return mainMenu?.locales?.[locale] || [];
+  }, [locale]);
 
-  const solutionLinks = useMemo(
-    () => [
-      {
-        name: t(locale, 'nav.b2b'),
-        desc: labels.b2bDesc,
-        path: withLocale('/b2b'),
-        icon: PackageSearch,
-      },
-      {
-        name: locale === 'fr' ? 'Fabrication OEM/ODM' : locale === 'vi' ? 'Sản xuất OEM/ODM' : 'OEM/ODM manufacturing',
-        desc: labels.oemDesc,
-        path: withLocale('/b2b'),
-        icon: Factory,
-      },
-      {
-        name: locale === 'fr' ? 'Marque distributeur' : locale === 'vi' ? 'Private label' : 'Private label audio',
-        desc: labels.privateLabelDesc,
-        path: withLocale('/products'),
-        icon: Boxes,
-      },
+  const menuMetaByGroup = useMemo(() => ({
+    products: [
+      { icon: Waves, desc: labels.productDesc1 },
+      { icon: Headphones, desc: labels.productDesc2 },
+      { icon: Sparkles, desc: labels.productDesc3 },
+      { icon: BadgeCheck, desc: labels.productDesc4 },
     ],
-    [labels, locale, withLocale]
-  );
+    solutions: [
+      { icon: PackageSearch, desc: labels.b2bDesc },
+      { icon: Factory, desc: labels.oemDesc },
+      { icon: Boxes, desc: labels.privateLabelDesc },
+    ],
+    resources: [
+      { icon: FlaskConical, desc: labels.labDesc },
+      { icon: Download, desc: labels.catalogDesc },
+      { icon: HelpCircle, desc: labels.faqDesc },
+      { icon: Newspaper, desc: labels.newsDesc },
+    ],
+    company: [
+      { icon: Building2, desc: labels.aboutDesc },
+      { icon: MessageCircle, desc: labels.contactDesc },
+      { icon: BookOpenText, desc: labels.helpDesc },
+    ],
+  }), [labels]);
 
-  const resourceLinks = useMemo(
-    () => [
-      {
-        name: t(locale, 'nav.lab'),
-        desc: labels.labDesc,
-        path: withLocale('/lab'),
-        icon: FlaskConical,
-      },
-      {
-        name: labels.catalog,
-        desc: labels.catalogDesc,
-        path: withLocale('/catalog-downloads'),
-        icon: Download,
-      },
-      {
-        name: t(locale, 'nav.faq'),
-        desc: labels.faqDesc,
-        path: withLocale('/faq'),
-        icon: HelpCircle,
-      },
-      {
-        name: labels.news,
-        desc: labels.newsDesc,
-        path: withLocale('/news'),
-        icon: Newspaper,
-      },
-    ],
-    [labels, locale, withLocale]
-  );
+  const groupByUrl = useMemo(() => {
+    const map = {};
+    const keyMap = {
+      '#group-products': 'products',
+      '#group-solutions': 'solutions',
+      '#group-resources': 'resources',
+      '#group-company': 'company',
+    };
+    for (const group of menuData) {
+      const key = keyMap[group.url];
+      if (key) map[key] = group.children || [];
+    }
+    return map;
+  }, [menuData]);
 
-  const companyLinks = useMemo(
-    () => [
-      {
-        name: t(locale, 'nav.about'),
-        desc: labels.aboutDesc,
-        path: withLocale('/about-us'),
-        icon: Building2,
-      },
-      {
-        name: t(locale, 'nav.contact'),
-        desc: labels.contactDesc,
-        path: withLocale('/contact'),
-        icon: MessageCircle,
-      },
-      {
-        name: locale === 'fr' ? 'Centre d’aide' : locale === 'vi' ? 'Trung tâm hỗ trợ' : 'Help center',
-        desc: labels.helpDesc,
-        path: withLocale('/help-center'),
-        icon: BookOpenText,
-      },
-    ],
-    [labels, locale, withLocale]
-  );
+  const buildLinks = (groupKey) => {
+    const children = groupByUrl[groupKey] || [];
+    const metaArr = menuMetaByGroup[groupKey] || [];
+    return children.map((child, i) => ({
+      name: child.label,
+      desc: metaArr[i]?.desc || '',
+      path: withLocale(child.url),
+      icon: metaArr[i]?.icon || ArrowRight,
+    }));
+  };
+
+  const productLinks = useMemo(() => buildLinks('products'), [groupByUrl, menuMetaByGroup, withLocale]);
+  const solutionLinks = useMemo(() => buildLinks('solutions'), [groupByUrl, menuMetaByGroup, withLocale]);
+  const resourceLinks = useMemo(() => buildLinks('resources'), [groupByUrl, menuMetaByGroup, withLocale]);
+  const companyLinks = useMemo(() => buildLinks('company'), [groupByUrl, menuMetaByGroup, withLocale]);
 
   const featuredModels = useMemo(() => {
     const wanted = ['qw-g34', 'qw-g31', 'qw-g23', 'me-136'];

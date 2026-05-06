@@ -1,6 +1,7 @@
 name = "puxijie-cms-api"
 main = "src/index.ts"
 compatibility_date = "2025-04-28"
+compatibility_flags = ["nodejs_compat"]
 
 [vars]
 GITHUB_REPO = "EricHong123/Puxijieweb-CMS"

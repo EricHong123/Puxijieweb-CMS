@@ -10,6 +10,11 @@ export const pageTranslationSchema = z.object({
   headline_emphasis: z.string().max(300).optional(),
   subhead: z.string().optional(),
   body_json: z.any().optional(),
+  og_title: z.string().max(200).optional(),
+  og_description: z.string().max(500).optional(),
+  og_image_url: z.string().max(500).optional(),
+  canonical_url: z.string().max(500).optional(),
+  noindex: z.boolean().optional(),
 });
 
 export const createPageSchema = z.object({
