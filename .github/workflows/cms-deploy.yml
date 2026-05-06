@@ -1,8 +1,6 @@
 name: CMS Deploy to Hostinger
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -38,17 +36,26 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
+      - name: Generate sitemap + llms.txt
+        run: node tools/generate-geo-files.mjs
+
       - name: Build
         run: npm run build
 
-      - name: Deploy to Hostinger via lftp FTP (incremental)
+      - name: Deploy to Hostinger via lftp (incremental mirror)
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+          echo "=== Starting incremental FTP mirror ==="
           lftp -c "
           set ftp:ssl-allow no
           set net:timeout 30
           set net:max-retries 3
+          set xfer:log 1
+          set xfer:log-file /tmp/lftp-xfer.log
           open -u ${{ secrets.HOSTINGER_SFTP_USER }},'${{ secrets.HOSTINGER_SFTP_PASSWORD }}' ftp://${{ secrets.HOSTINGER_SFTP_HOST }}
-          mirror -R --verbose --parallel=4 apps/web/.out/ /public_html/
+          mirror -R --verbose --parallel=4 --ignore-time apps/web/.out/ /public_html/
           "
+          echo "=== Transfer log ==="
+          cat /tmp/lftp-xfer.log || true
+          echo "=== Deploy done ==="
         working-directory: ./

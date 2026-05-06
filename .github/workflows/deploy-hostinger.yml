@@ -1,9 +1,8 @@
 name: React Vite Deploy
 
 on:
-  push:
-    branches:
-      - main # 每次推送到 main 分支时触发
+  workflow_dispatch:
+  # Disabled auto-deploy on push — use cms-deploy.yml instead (incremental lftp mirror)
 
 jobs:
   build-and-deploy:
