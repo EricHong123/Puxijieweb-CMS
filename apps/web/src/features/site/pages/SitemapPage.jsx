@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { m as motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -6,63 +6,76 @@ import Header from '@/shared/site/Header.jsx';
 import Footer from '@/shared/site/Footer.jsx';
 import { getSiteOrigin, t } from '@/shared/lib/i18n.js';
 import { useLocale } from '@/shared/lib/useLocale.js';
+import { products, getProductsByCategory } from '@/features/products/data/products.js';
+import { getModelSlugById } from '@/features/products/utils/modelSlugs.js';
+
+const CATEGORY_TRANSLATIONS = {
+  'Waterproof Bluetooth Speaker': { en: 'Waterproof Bluetooth Speakers', fr: 'Enceintes Bluetooth étanches', vi: 'Loa Bluetooth chống nước' },
+  'Normal Bluetooth Speaker': { en: 'Bluetooth Speakers', fr: 'Enceintes Bluetooth', vi: 'Loa Bluetooth' },
+  'Specialty Speaker': { en: 'Specialty Speakers', fr: 'Enceintes spécialisées', vi: 'Loa đặc biệt' },
+  'Bluetooth Earbuds': { en: 'Bluetooth Earbuds', fr: 'Écouteurs Bluetooth', vi: 'Tai nghe Bluetooth' },
+};
 
 function SitemapPage() {
   const locale = useLocale();
+
   const pageCopy = {
     en: {
-      seoLine: 'Quick access to outdoor waterproof speaker products, OEM/ODM services, wholesale programs, test reports, and catalogs.',
-      core: 'Core',
-      support: 'Support',
-      policy: 'Policy',
-      productPages: 'Product pages',
-      productDesc: 'Product detail pages are generated dynamically from the product listing. Start from',
-      productLink: 'Products',
-      productEnd: 'and choose your model.',
+      seoLine: 'Quick access to all Puxijie pages — products, model details, resources, legal, and news articles.',
+      mainPages: 'Main pages',
+      productCategories: 'Product categories',
+      productDetails: 'Product detail pages',
+      resources: 'Resources',
+      legal: 'Legal',
+      allProductsIn: 'All products in',
     },
     fr: {
-      seoLine: 'Accès rapide aux enceintes étanches outdoor, services OEM/ODM, programmes grossistes, rapports de test et catalogues.',
-      core: 'Pages principales',
-      support: 'Support',
-      policy: 'Politiques',
-      productPages: 'Pages produits',
-      productDesc: 'Les pages détail produit sont générées depuis la liste produits. Commencez par',
-      productLink: 'Produits',
-      productEnd: 'puis choisissez votre modèle.',
+      seoLine: 'Accès rapide à toutes les pages Puxijie — produits, modèles, ressources, mentions légales et actualités.',
+      mainPages: 'Pages principales',
+      productCategories: 'Catégories de produits',
+      productDetails: 'Pages détail produit',
+      resources: 'Ressources',
+      legal: 'Mentions légales',
+      allProductsIn: 'Tous les produits dans',
     },
     vi: {
-      seoLine: 'Truy cập nhanh sản phẩm loa chống nước outdoor, dịch vụ OEM/ODM, chương trình bán sỉ, báo cáo kiểm thử và catalog.',
-      core: 'Trang chính',
-      support: 'Hỗ trợ',
-      policy: 'Chính sách',
-      productPages: 'Trang sản phẩm',
-      productDesc: 'Trang chi tiết sản phẩm được tạo từ danh sách sản phẩm. Hãy bắt đầu từ',
-      productLink: 'Sản phẩm',
-      productEnd: 'và chọn model bạn cần.',
+      seoLine: 'Truy cập nhanh tất cả trang Puxijie — sản phẩm, chi tiết model, tài nguyên, pháp lý và tin tức.',
+      mainPages: 'Trang chính',
+      productCategories: 'Danh mục sản phẩm',
+      productDetails: 'Trang chi tiết sản phẩm',
+      resources: 'Tài nguyên',
+      legal: 'Pháp lý',
+      allProductsIn: 'Tất cả sản phẩm trong',
     },
   }[locale] ?? {};
-  const coreLinks = [
+
+  const mainLinks = [
     { label: t(locale, 'nav.home'), path: `/${locale}/` },
     { label: t(locale, 'nav.products'), path: `/${locale}/products` },
-    { label: t(locale, 'nav.lab'), path: `/${locale}/lab` },
-    { label: t(locale, 'nav.b2b'), path: `/${locale}/b2b` },
-    { label: t(locale, 'nav.contact'), path: `/${locale}/contact` },
     { label: t(locale, 'nav.about'), path: `/${locale}/about-us` },
+    { label: t(locale, 'nav.contact'), path: `/${locale}/contact` },
+    { label: t(locale, 'nav.b2b'), path: `/${locale}/b2b` },
+    { label: t(locale, 'nav.lab'), path: `/${locale}/lab` },
   ];
 
-  const supportLinks = [
-    { label: t(locale, 'nav.news'), path: `/${locale}/news` },
+  const resourceLinks = [
+    { label: t(locale, 'newsPage.title'), path: `/${locale}/news` },
+    { label: t(locale, 'nav.faq'), path: `/${locale}/faq` },
     { label: t(locale, 'catalogPage.title'), path: `/${locale}/catalog-downloads` },
     { label: t(locale, 'helpCenterPage.title'), path: `/${locale}/help-center` },
-    { label: t(locale, 'nav.faq'), path: `/${locale}/faq` },
   ];
 
-  const policyLinks = [
+  const legalLinks = [
     { label: t(locale, 'policies.termsTitle'), path: `/${locale}/terms-of-use` },
     { label: t(locale, 'policies.privacyTitle'), path: `/${locale}/privacy` },
     { label: t(locale, 'policies.warrantyTitle'), path: `/${locale}/warranty` },
     { label: t(locale, 'policies.dnsTitle'), path: `/${locale}/do-not-sell-share-my-data` },
   ];
+
+  const categories = useMemo(() => {
+    const catSet = new Set(products.map((p) => p.category).filter(Boolean));
+    return [...catSet].sort();
+  }, []);
 
   return (
     <>
@@ -133,11 +146,13 @@ function SitemapPage() {
 
         <section className="py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            {/* Row 1: Main Pages | Resources | Legal */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="rounded-3xl border border-gray-200 bg-white p-7">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">{pageCopy.core}</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">{pageCopy.mainPages}</h2>
                 <ul className="space-y-3">
-                  {coreLinks.map((l) => (
+                  {mainLinks.map((l) => (
                     <li key={l.path}>
                       <Link to={l.path} className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
                         {l.label}
@@ -148,9 +163,9 @@ function SitemapPage() {
               </div>
 
               <div className="rounded-3xl border border-gray-200 bg-white p-7">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">{pageCopy.support}</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">{pageCopy.resources}</h2>
                 <ul className="space-y-3">
-                  {supportLinks.map((l) => (
+                  {resourceLinks.map((l) => (
                     <li key={l.path}>
                       <Link to={l.path} className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
                         {l.label}
@@ -161,9 +176,9 @@ function SitemapPage() {
               </div>
 
               <div className="rounded-3xl border border-gray-200 bg-white p-7">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">{pageCopy.policy}</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">{pageCopy.legal}</h2>
                 <ul className="space-y-3">
-                  {policyLinks.map((l) => (
+                  {legalLinks.map((l) => (
                     <li key={l.path}>
                       <Link to={l.path} className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
                         {l.label}
@@ -174,15 +189,42 @@ function SitemapPage() {
               </div>
             </div>
 
-            <div className="mt-10 rounded-3xl border border-gray-200 bg-gray-50 p-7">
-              <h3 className="text-lg font-bold text-gray-900">{pageCopy.productPages}</h3>
-              <p className="mt-2 text-sm text-gray-700 leading-relaxed">
-                {pageCopy.productDesc}{' '}
-                <Link to={`/${locale}/products`} className="font-medium text-gray-900 hover:underline">
-                  {pageCopy.productLink}
-                </Link>{' '}
-                {pageCopy.productEnd}
-              </p>
+            {/* Row 2: Product Categories */}
+            <div className="mt-10 rounded-3xl border border-gray-200 bg-white p-7">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">{pageCopy.productCategories}</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {categories.map((cat) => (
+                  <div key={cat}>
+                    <Link
+                      to={`/${locale}/products?category=${encodeURIComponent(cat)}`}
+                      className="text-sm font-semibold text-gray-900 hover:text-gray-600 transition-colors"
+                    >
+                      {(CATEGORY_TRANSLATIONS[cat] && CATEGORY_TRANSLATIONS[cat][locale]) || cat}
+                    </Link>
+                    <span className="ml-1.5 text-xs text-gray-400">
+                      ({getProductsByCategory(cat).length})
+                    </span>
+                    <ul className="mt-2 space-y-1.5">
+                      {getProductsByCategory(cat).map((product) => {
+                        const modelSlug = getModelSlugById(product.id);
+                        const detailPath = modelSlug
+                          ? `/${locale}/model/${modelSlug}`
+                          : `/${locale}/products`;
+                        return (
+                          <li key={product.id}>
+                            <Link
+                              to={detailPath}
+                              className="text-xs text-gray-500 hover:text-gray-900 transition-colors"
+                            >
+                              {product.name}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -194,4 +236,3 @@ function SitemapPage() {
 }
 
 export default SitemapPage;
-
