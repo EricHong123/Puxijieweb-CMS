@@ -47,17 +47,19 @@ jobs:
       - name: Deploy to Hostinger via lftp (incremental mirror)
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq lftp
-          echo "=== Starting incremental FTP mirror ==="
+          echo "=== Starting FTP mirror ==="
           lftp -c "
           set ftp:ssl-allow no
-          set net:timeout 30
-          set net:max-retries 3
+          set ftp:passive-mode true
+          set net:timeout 60
+          set net:max-retries 5
+          set net:reconnect-interval-base 5
           set xfer:log 1
           set xfer:log-file /tmp/lftp-xfer.log
           open -u ${{ secrets.HOSTINGER_SFTP_USER }},'${{ secrets.HOSTINGER_SFTP_PASSWORD }}' ftp://${{ secrets.HOSTINGER_SFTP_HOST }}
-          mirror -R --verbose --parallel=4 --ignore-time apps/web/.out/ /public_html/
+          mirror -R --verbose --parallel=2 apps/web/.out/ /public_html/
           "
           echo "=== Transfer log ==="
           cat /tmp/lftp-xfer.log || true
-          echo "=== Deploy done ==="
+          echo "=== Done ==="
         working-directory: ./
