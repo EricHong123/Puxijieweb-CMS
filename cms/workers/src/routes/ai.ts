@@ -11,7 +11,8 @@ const app = new Hono<{ Bindings: Env }>();
 const chatRateLimiter = createRateLimiter({ windowMs: 60_000, maxRequests: 20 });
 const writeRateLimiter = createRateLimiter({ windowMs: 60_000, maxRequests: 5 });
 
-const MAX_TOOL_LOOP = 5;
+const MAX_TOOL_LOOP = 12;
+const MAX_TOOL_CALLS_PER_TURN = 16;
 
 // ---------------------------------------------------------------------------
 // Tool definitions (OpenAI/DeepSeek compatible)
@@ -275,7 +276,7 @@ const SEO_TOOLS: ToolDef[] = [
     function: {
       name: 'write_seo_article',
       description:
-        'Generate a complete SEO-optimized news article in markdown and save it as a draft. The article will follow B2B SEO best practices: proper heading hierarchy (H1→H2→H3), keyword placement (primary in title/H1/first paragraph), short paragraphs, bullet points, internal links to relevant puxijietech.com product pages, and an engaging tone tailored to the buyer persona. After saving, the article can be reviewed and published via the CMS admin panel.',
+        'Prepare context for a complete SEO-optimized news article in markdown. This tool does not save content; after it returns product links, related articles, and SEO requirements, write the article in your final response. Use create_news only if the user explicitly asks you to save the draft.',
       parameters: {
         type: 'object',
         properties: {
@@ -1336,6 +1337,9 @@ When asked to write an SEO article:
 - When editing, confirm exactly what was changed.
 - Default to English locale unless specified.
 - Use search_cms when the user's query is vague.
+- Use the fewest tools needed. Do not call the same tool with the same arguments twice in one answer; use the previous tool result and respond.
+- After a successful write operation, stop calling tools and summarize exactly what changed.
+- If a tool returns enough data to answer, answer from that data instead of looking up more context.
 - After any write operation, remind the user to trigger a deploy at /deploy to publish changes to the live site.
 - When writing SEO articles, always provide a complete, publication-ready draft — not just an outline.`;
 
@@ -1352,12 +1356,13 @@ async function callDeepSeek(
   messages: DeepSeekMessage[],
   apiKey: string,
   tools?: ToolDef[],
+  options?: { temperature?: number; maxTokens?: number },
 ): Promise<any> {
   const body: Record<string, unknown> = {
     model: 'deepseek-v4-flash',
     messages,
-    max_tokens: 2048,
-    temperature: 0.7,
+    max_tokens: options?.maxTokens ?? 2048,
+    temperature: options?.temperature ?? 0.7,
   };
 
   if (tools) {
@@ -1380,6 +1385,46 @@ async function callDeepSeek(
   }
 
   return response.json();
+}
+
+function stableStringify(value: unknown): string {
+  if (Array.isArray(value)) {
+    return `[${value.map((item) => stableStringify(item)).join(',')}]`;
+  }
+
+  if (value && typeof value === 'object') {
+    return `{${Object.entries(value as Record<string, unknown>)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, val]) => `${JSON.stringify(key)}:${stableStringify(val)}`)
+      .join(',')}}`;
+  }
+
+  return JSON.stringify(value);
+}
+
+function getToolFingerprint(toolName: string, args: Record<string, unknown>): string {
+  return `${toolName}:${stableStringify(args)}`;
+}
+
+async function forceFinalAnswer(
+  messages: DeepSeekMessage[],
+  apiKey: string,
+  reason: string,
+): Promise<string> {
+  const result = await callDeepSeek(
+    [
+      ...messages,
+      {
+        role: 'system',
+        content: `Stop using tools now. ${reason} Answer the user directly using the information already available. If the available information is incomplete, say what is missing and give the best next step.`,
+      },
+    ],
+    apiKey,
+    undefined,
+    { temperature: 0.3, maxTokens: 1800 },
+  );
+
+  return result.choices?.[0]?.message?.content || '我已经停止继续调用工具，但当前信息不足以生成完整答复。请补充更具体的内容或目标。';
 }
 
 // ---------------------------------------------------------------------------
@@ -1416,6 +1461,9 @@ app.post('/chat', requireAuth(), async (c) => {
   ];
 
   try {
+    const executedToolCalls = new Set<string>();
+    let toolCallCount = 0;
+
     // Function calling loop
     for (let loop = 0; loop < MAX_TOOL_LOOP; loop++) {
       const result = await callDeepSeek(deepseekMessages, apiKey, ALL_TOOLS);
@@ -1428,6 +1476,7 @@ app.post('/chat', requireAuth(), async (c) => {
       // If the model wants to call tools
       if (choice.finish_reason === 'tool_calls' || choice.message?.tool_calls?.length > 0) {
         const toolCalls = choice.message.tool_calls;
+        let shouldForceFinal = false;
 
         // Add assistant message with tool_calls to history
         deepseekMessages.push({
@@ -1451,6 +1500,34 @@ app.post('/chat', requireAuth(), async (c) => {
             });
             continue;
           }
+
+          const fingerprint = getToolFingerprint(toolName, args);
+          if (executedToolCalls.has(fingerprint)) {
+            shouldForceFinal = true;
+            deepseekMessages.push({
+              role: 'tool',
+              tool_call_id: tc.id,
+              content: JSON.stringify({
+                error: 'Duplicate tool call blocked. The same tool was already called with the same arguments in this conversation turn. Use the earlier tool result and answer the user now.',
+              }),
+            });
+            continue;
+          }
+
+          if (toolCallCount >= MAX_TOOL_CALLS_PER_TURN) {
+            shouldForceFinal = true;
+            deepseekMessages.push({
+              role: 'tool',
+              tool_call_id: tc.id,
+              content: JSON.stringify({
+                error: `Tool call budget reached (${MAX_TOOL_CALLS_PER_TURN}). Stop using tools and answer from the gathered results.`,
+              }),
+            });
+            continue;
+          }
+
+          executedToolCalls.add(fingerprint);
+          toolCallCount += 1;
 
           const executor = toolExecutors[toolName];
           if (!executor) {
@@ -1499,6 +1576,10 @@ app.post('/chat', requireAuth(), async (c) => {
               tool_call_id: tc.id,
               content: JSON.stringify(toolResult),
             });
+
+            if (WRITE_TOOLS.some((t) => t.function.name === toolName)) {
+              shouldForceFinal = true;
+            }
           } catch (err: any) {
             deepseekMessages.push({
               role: 'tool',
@@ -1506,6 +1587,21 @@ app.post('/chat', requireAuth(), async (c) => {
               content: JSON.stringify({ error: err.message }),
             });
           }
+        }
+
+        if (shouldForceFinal || loop === MAX_TOOL_LOOP - 1) {
+          const replyContent = await forceFinalAnswer(
+            deepseekMessages,
+            apiKey,
+            shouldForceFinal
+              ? 'A repeated call, write operation, or tool budget limit was reached.'
+              : 'The tool loop limit was reached.',
+          );
+
+          return c.json({
+            success: true,
+            data: { role: 'assistant', content: replyContent },
+          });
         }
 
         // Continue loop to send tool results back to the model
@@ -1522,9 +1618,15 @@ app.post('/chat', requireAuth(), async (c) => {
     }
 
     // Exceeded max loop iterations
+    const replyContent = await forceFinalAnswer(
+      deepseekMessages,
+      apiKey,
+      'The maximum tool loop count was reached.',
+    );
+
     return c.json({
       success: true,
-      data: { role: 'assistant', content: 'I ran into a loop while processing your request. Please try rephrasing.' },
+      data: { role: 'assistant', content: replyContent },
     });
 
   } catch (err: any) {
