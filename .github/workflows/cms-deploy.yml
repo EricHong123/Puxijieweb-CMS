@@ -92,7 +92,8 @@ jobs:
           du -sh "${BUILD_DIR}"
 
           echo "Top-level output:"
-          find "${BUILD_DIR}" -maxdepth 2 -type f | sort | head -80
+          find "${BUILD_DIR}" -maxdepth 2 -type f | sort > /tmp/build-files.txt
+          head -80 /tmp/build-files.txt
 
       - name: Install lftp
         run: |
