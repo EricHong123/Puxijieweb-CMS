@@ -9,61 +9,129 @@ concurrency:
   group: hostinger-production-deploy
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
+env:
+  WEB_DIR: apps/web
+  BUILD_DIR: apps/web/.out
+
 jobs:
   build-and-deploy:
+    name: Build site and upload to Hostinger
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/web
+    timeout-minutes: 45
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
 
-      - name: Install dependencies
+      - name: Install web dependencies
+        working-directory: ${{ env.WEB_DIR }}
         run: npm ci
 
-      - name: Process CMS images (WebP variants)
-        run: node ../../cms/scripts/process-images.mjs
+      - name: Validate deploy secrets
+        shell: bash
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          FTP_HOST: ${{ secrets.HOSTINGER_SFTP_HOST }}
+          FTP_USER: ${{ secrets.HOSTINGER_SFTP_USER }}
+          FTP_PASS: ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
+        run: |
+          set -euo pipefail
 
-      - name: Fetch CMS data from Supabase
-        run: node ../../cms/scripts/codegen.mjs
+          missing=0
+          for name in SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY FTP_HOST FTP_USER FTP_PASS; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Missing required GitHub secret: ${name}"
+              missing=1
+            fi
+          done
+
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Process CMS images
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node cms/scripts/process-images.mjs
 
-      - name: Generate sitemap + llms.txt
-        run: node tools/generate-geo-files.mjs
+      - name: Generate CMS content files
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node cms/scripts/codegen.mjs
 
-      - name: Build
+      - name: Build static website
+        working-directory: ${{ env.WEB_DIR }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: npm run build
 
-      - name: Deploy to Hostinger via lftp (incremental mirror)
+      - name: Verify build output
+        shell: bash
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq lftp
-          echo "=== Starting FTP mirror ==="
-          lftp -c "
+          set -euo pipefail
+
+          test -f "${BUILD_DIR}/index.html"
+          test -f "${BUILD_DIR}/sitemap.xml"
+          test -f "${BUILD_DIR}/llms.txt"
+
+          echo "Build output size:"
+          du -sh "${BUILD_DIR}"
+
+          echo "Top-level output:"
+          find "${BUILD_DIR}" -maxdepth 2 -type f | sort | head -80
+
+      - name: Install lftp
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+
+      - name: Upload to Hostinger
+        shell: bash
+        env:
+          FTP_HOST: ${{ secrets.HOSTINGER_SFTP_HOST }}
+          FTP_USER: ${{ secrets.HOSTINGER_SFTP_USER }}
+          FTP_PASS: ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          LOCAL_DIR="${GITHUB_WORKSPACE}/${BUILD_DIR}"
+          REMOTE_DIR="/public_html/"
+          LOG_FILE="/tmp/lftp-xfer.log"
+
+          echo "=== Starting Hostinger FTP mirror ==="
+          echo "Local: ${LOCAL_DIR}"
+          echo "Remote: ${REMOTE_DIR}"
+
+          lftp <<LFTP
+          set cmd:fail-exit yes
           set ftp:ssl-allow no
           set ftp:passive-mode true
-          set net:timeout 60
-          set net:max-retries 5
-          set net:reconnect-interval-base 5
-          set xfer:log 1
-          set xfer:log-file /tmp/lftp-xfer.log
-          open -u ${{ secrets.HOSTINGER_SFTP_USER }},'${{ secrets.HOSTINGER_SFTP_PASSWORD }}' ftp://${{ secrets.HOSTINGER_SFTP_HOST }}
-          mirror -R --verbose --parallel=2 apps/web/.out/ /public_html/
-          "
-          echo "=== Transfer log ==="
-          cat /tmp/lftp-xfer.log || true
-          echo "=== Done ==="
-        working-directory: ./
+          set net:timeout 90
+          set net:max-retries 8
+          set net:reconnect-interval-base 10
+          set net:reconnect-interval-multiplier 1
+          set xfer:clobber true
+          set xfer:log true
+          set xfer:log-file ${LOG_FILE}
+          open -u "${FTP_USER}","${FTP_PASS}" "ftp://${FTP_HOST}"
+          mirror -R --verbose --parallel=1 --exclude-glob ".DS_Store" "${LOCAL_DIR}/" "${REMOTE_DIR}"
+          bye
+          LFTP
+
+          echo "=== Transfer log tail ==="
+          tail -200 "${LOG_FILE}" || true
+          echo "=== Hostinger deploy complete ==="
