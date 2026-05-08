@@ -42,6 +42,9 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASSWORD }}
           FTP_HOST: ${{ secrets.HOSTINGER_SFTP_HOST }}
           FTP_USER: ${{ secrets.HOSTINGER_SFTP_USER }}
           FTP_PASS: ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
@@ -49,7 +52,7 @@ jobs:
           set -euo pipefail
 
           missing=0
-          for name in SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY FTP_HOST FTP_USER FTP_PASS; do
+          for name in SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY SSH_HOST SSH_USER SSH_PASS FTP_HOST FTP_USER FTP_PASS; do
             if [ -z "${!name}" ]; then
               echo "::error::Missing required GitHub secret: ${name}"
               missing=1
@@ -95,14 +98,17 @@ jobs:
           find "${BUILD_DIR}" -maxdepth 2 -type f | sort > /tmp/build-files.txt
           head -80 /tmp/build-files.txt
 
-      - name: Install lftp
+      - name: Install deploy tools
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq lftp
+          sudo apt-get install -y -qq lftp rsync sshpass
 
       - name: Upload to Hostinger
         shell: bash
         env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASSWORD }}
           FTP_HOST: ${{ secrets.HOSTINGER_SFTP_HOST }}
           FTP_USER: ${{ secrets.HOSTINGER_SFTP_USER }}
           FTP_PASS: ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
@@ -110,12 +116,37 @@ jobs:
           set -euo pipefail
 
           LOCAL_DIR="${GITHUB_WORKSPACE}/${BUILD_DIR}"
-          REMOTE_DIR="/public_html/"
+          SSH_REMOTE_DIR="public_html/"
+          FTP_REMOTE_DIR="/public_html/"
           LOG_FILE="/tmp/lftp-xfer.log"
 
-          echo "=== Starting Hostinger FTP mirror ==="
+          echo "=== Starting Hostinger rsync deploy ==="
           echo "Local: ${LOCAL_DIR}"
-          echo "Remote: ${REMOTE_DIR}"
+          echo "Remote: ${SSH_REMOTE_DIR}"
+
+          set +e
+          sshpass -p "${SSH_PASS}" rsync \
+            -azc \
+            --delete-delay \
+            --delay-updates \
+            --partial \
+            --itemize-changes \
+            --human-readable \
+            --stats \
+            --exclude ".DS_Store" \
+            -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+            "${LOCAL_DIR}/" \
+            "${SSH_USER}@${SSH_HOST}:${SSH_REMOTE_DIR}"
+          RSYNC_EXIT=$?
+          set -e
+
+          if [ "$RSYNC_EXIT" -eq 0 ]; then
+            echo "=== Hostinger rsync deploy complete ==="
+            exit 0
+          fi
+
+          echo "::warning::rsync deploy failed with exit code ${RSYNC_EXIT}; falling back to FTP mirror."
+          echo "=== Starting Hostinger FTP mirror fallback ==="
 
           lftp <<LFTP
           set cmd:fail-exit yes
@@ -129,10 +160,10 @@ jobs:
           set xfer:log true
           set xfer:log-file ${LOG_FILE}
           open -u "${FTP_USER}","${FTP_PASS}" "ftp://${FTP_HOST}"
-          mirror -R --verbose --parallel=1 --exclude-glob ".DS_Store" "${LOCAL_DIR}/" "${REMOTE_DIR}"
+          mirror -R --verbose --parallel=1 --exclude-glob ".DS_Store" "${LOCAL_DIR}/" "${FTP_REMOTE_DIR}"
           bye
           LFTP
 
           echo "=== Transfer log tail ==="
           tail -200 "${LOG_FILE}" || true
-          echo "=== Hostinger deploy complete ==="
+          echo "=== Hostinger FTP fallback deploy complete ==="
